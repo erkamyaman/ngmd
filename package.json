@@ -1,6 +1,30 @@
 {
   "name": "ngmd",
   "version": "0.0.0",
+  "description": "Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind. Drop a markdown file, get a route.",
+  "license": "MIT",
+  "author": {
+    "name": "Kam",
+    "url": "https://github.com/erkamyaman"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erkamyaman/ngmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erkamyaman/ngmd/issues"
+  },
+  "keywords": [
+    "angular",
+    "analogjs",
+    "spartan-ui",
+    "tailwind",
+    "docs",
+    "documentation",
+    "starter",
+    "shiki",
+    "markdown"
+  ],
   "type": "module",
   "engines": {
     "node": ">=20.19.1"
