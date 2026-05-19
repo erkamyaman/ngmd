@@ -87,18 +87,16 @@ export class Toc implements AfterViewInit {
   private scan(content: Element): void {
     const nodes = Array.from(content.querySelectorAll('h2, h3'));
     const result: Heading[] = nodes.map((node) => {
-      let id = node.id;
-      if (!id) {
-        id = (node.textContent ?? '')
-          .toLowerCase()
-          .trim()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '');
-        node.id = id;
-      }
+      const text = node.textContent?.trim() ?? '';
+      // Always overwrite the id with a clean slug so palette deep-links match.
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      node.id = id;
       return {
         id,
-        text: node.textContent?.trim() ?? '',
+        text,
         level: parseInt(node.tagName.substring(1), 10),
       };
     });

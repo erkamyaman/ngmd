@@ -1,47 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule, ChevronDown } from 'lucide-angular';
-
-interface NavItem {
-  label: string;
-  href: string;
-}
-
-interface NavSection {
-  label: string;
-  items: NavItem[];
-}
-
-const SECTIONS: NavSection[] = [
-  {
-    label: 'Getting Started',
-    items: [
-      { label: 'Introduction', href: '/welcome' },
-      { label: 'Changelog', href: '/getting-started/changelog' },
-      { label: 'About & Credits', href: '/getting-started/about' },
-    ],
-  },
-  {
-    label: 'Core Concepts',
-    items: [
-      { label: 'Markdown Routes', href: '/concepts/markdown-routes' },
-      { label: 'Theming', href: '/concepts/theming' },
-      { label: 'Components', href: '/concepts/components' },
-    ],
-  },
-  {
-    label: 'Help',
-    items: [{ label: 'Support', href: '/support' }],
-  },
-  {
-    label: 'Stack',
-    items: [
-      { label: 'Overview', href: '/stack/overview' },
-      { label: 'Technologies', href: '/stack/technologies' },
-      { label: 'Installation', href: '/stack/installation' },
-    ],
-  },
-];
+import config from '../../ngmd.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -84,10 +44,10 @@ const SECTIONS: NavSection[] = [
   `,
 })
 export class Sidebar {
-  readonly sections = SECTIONS;
+  readonly sections = config.nav;
   readonly chevron = ChevronDown;
   private readonly openSections = signal<Set<string>>(
-    new Set(SECTIONS.map((s) => s.label)),
+    new Set(config.nav.map((s) => s.label)),
   );
 
   isOpen(label: string): boolean {
