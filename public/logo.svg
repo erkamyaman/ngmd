@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2300 680" fill="none">
+  <defs>
+    <linearGradient id="hexgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3cac"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="pagegrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.97"/>
+      <stop offset="100%" stop-color="#e8d8ff" stop-opacity="0.88"/>
+    </linearGradient>
+    <linearGradient id="pagegrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5eeff" stop-opacity="0.93"/>
+      <stop offset="100%" stop-color="#d8b4fe" stop-opacity="0.85"/>
+    </linearGradient>
+  </defs>
+
+  <polygon points="340,52 616,202 616,478 340,628 64,478 64,202" fill="url(#hexgrad)"/>
+
+  <path d="M169,181 Q169,169 184,166 Q233,157 331,167 L331,483 Q233,475 184,483 Q169,486 169,495 Z"
+    fill="url(#pagegrad)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <path d="M511,181 Q511,169 496,166 Q447,157 349,167 L349,483 Q447,475 496,483 Q511,486 511,495 Z"
+    fill="url(#pagegrad2)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+
+  <line x1="340" y1="165" x2="340" y2="485" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+
+  <line x1="192" y1="221" x2="319" y2="215" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="192" y1="253" x2="319" y2="247" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="192" y1="285" x2="319" y2="279" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
+  <line x1="192" y1="317" x2="319" y2="311" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
+  <line x1="192" y1="349" x2="319" y2="343" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
+  <line x1="192" y1="381" x2="294" y2="376" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+
+  <line x1="361" y1="215" x2="488" y2="221" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="361" y1="247" x2="488" y2="253" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+  <line x1="361" y1="279" x2="488" y2="285" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
+  <line x1="361" y1="311" x2="488" y2="317" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
+  <line x1="361" y1="343" x2="488" y2="349" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
+  <line x1="386" y1="376" x2="488" y2="381" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+
+  <path d="M169,495 Q254,509 340,505 Q426,509 511,495" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+
+  <text
+    x="720"
+    y="465"
+    font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+    font-size="340"
+    font-weight="700"
+    letter-spacing="-10"
+    fill="currentColor"
+  >
+    NgMd
+  </text>
+</svg>

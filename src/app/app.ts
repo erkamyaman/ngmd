@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from 'lucide-angular';
 import { ThemeService } from './theme';
+import { LayoutMode } from './layout-mode.service';
 import { CommandPalette } from './components/command-palette';
 import { Sidebar } from './components/sidebar';
 import { Breadcrumb } from './components/breadcrumb';
@@ -52,11 +53,12 @@ import { ExternalLinks } from './components/external-links';
         }
 
         <a routerLink="/" class="flex items-center gap-2 text-lg font-semibold">
-          <span
-            class="inline-flex size-7 items-center justify-center rounded-lg bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900 text-sm"
-          >
-            N
-          </span>
+          <img
+            src="/logo-mark.svg"
+            alt=""
+            class="size-[34px] text-zinc-900 dark:text-zinc-50"
+            aria-hidden="true"
+          />
           NgMd
         </a>
 
@@ -207,6 +209,7 @@ import { ExternalLinks } from './components/external-links';
 export class App implements OnInit {
   readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
+  private readonly layout = inject(LayoutMode);
 
   readonly menuIcon = Menu;
   readonly closeIcon = X;
@@ -231,7 +234,10 @@ export class App implements OnInit {
 
   private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
   private readonly isDocsRoute = computed(
-    () => this.cleanUrl() !== '/' && this.cleanUrl() !== '',
+    () =>
+      this.cleanUrl() !== '/' &&
+      this.cleanUrl() !== '' &&
+      !this.layout.chromeHidden(),
   );
   readonly showSidebar = this.isDocsRoute;
   readonly showBreadcrumb = this.isDocsRoute;
