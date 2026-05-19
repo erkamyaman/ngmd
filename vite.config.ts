@@ -13,8 +13,17 @@ export default defineConfig(({ mode }) => ({
     mainFields: ['module'],
   },
   plugins: [
-    analog(),
-    tailwindcss()
+    analog({
+      content: {
+        highlighter: 'shiki',
+        shikiOptions: {
+          highlighter: {
+            additionalLangs: ['bash', 'md', 'json'],
+          },
+        },
+      },
+    }),
+    tailwindcss(),
   ],
   test: {
     globals: true,

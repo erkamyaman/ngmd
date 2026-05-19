@@ -7,6 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/src/styles.css" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('ngmd-theme');
+          var mode = stored === 'light' || stored === 'dark' ? stored : 'auto';
+          var resolved =
+            mode === 'auto'
+              ? matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : mode;
+          if (resolved === 'dark') document.documentElement.classList.add('dark');
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>
