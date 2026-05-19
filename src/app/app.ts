@@ -52,7 +52,7 @@ import { ExternalLinks } from './components/external-links';
           </button>
         }
 
-        <a routerLink="/" class="flex items-center gap-2 text-lg font-semibold">
+        <a routerLink="/" class="flex items-center gap-2 text-lg font-bold tracking-tight font-[Geist_Mono,ui-monospace,monospace]">
           <img
             src="/logo-mark.svg"
             alt=""

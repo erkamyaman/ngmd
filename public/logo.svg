@@ -42,10 +42,10 @@
   <text
     x="720"
     y="465"
-    font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-    font-size="340"
+    font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace"
+    font-size="320"
     font-weight="700"
-    letter-spacing="-10"
+    letter-spacing="-12"
     fill="currentColor"
   >
     NgMd
