@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { readFileSync } from 'node:fs';
 import { ngmdMarkedExtensions } from './src/marked-extensions';
 import { pageMetaPlugin } from './page-meta.plugin';
+import { internalLinkGuard } from './link-guard.plugin';
 import config from './src/ngmd.config';
 
 /**
@@ -48,6 +49,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     externalLinkGuard(),
+    internalLinkGuard(),
     pageMetaPlugin({ repoUrl: config.site.githubUrl, branch: 'main' }),
     analog({
       content: {

@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http';
 import {
   ApplicationConfig,
+  inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
@@ -13,6 +14,7 @@ import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import { provideContent, withMarkdownRenderer } from '@analogjs/content';
 import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter';
 import { withInMemoryScrolling } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 import { marked } from 'marked';
 import { ngmdMarkedExtensions } from '../marked-extensions';
 
@@ -38,6 +40,12 @@ export const appConfig: ApplicationConfig = {
     // singleton here too.
     provideAppInitializer(() => {
       marked.use(...ngmdMarkedExtensions);
+      // Sticky header is ~57px tall; offset anchor scroll so headings land
+      // below it with breathing room. Without this, Angular's anchor scroll
+      // ignores CSS scroll-margin-top and pins headings flush against the
+      // header, where backdrop-blur visually destroys them.
+      const scroller = inject(ViewportScroller);
+      scroller.setOffset([0, 88]);
     }),
   ],
 };

@@ -95,7 +95,7 @@
     line-height: 1.2;
     margin-block: 0 1rem;
     letter-spacing: -0.02em;
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem;
   }
 
   analog-markdown h2,
@@ -107,7 +107,7 @@
     padding-block-end: 0.5rem;
     border-block-end: 1px solid var(--border);
     letter-spacing: -0.01em;
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem;
   }
 
   analog-markdown h3,
@@ -115,7 +115,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin-block: 2rem 0.75rem;
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem;
   }
 
   analog-markdown p,

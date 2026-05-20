@@ -81,3 +81,7 @@ Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starligh
 ### Is this production-ready?
 
 NgMd is in active early development. The core (markdown rendering, theming, navigation) is stable. Versioning, i18n, and search adapters are on the roadmap.
+
+
+
+

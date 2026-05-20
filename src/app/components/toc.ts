@@ -68,7 +68,13 @@ export class Toc implements AfterViewInit {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', '#' + id);
+      // index.html has <base href="/">, so a relative `#frag` resolves to
+      // `/#frag` and strips the path. Pass the full path explicitly.
+      history.replaceState(
+        null,
+        '',
+        `${location.pathname}${location.search}#${id}`,
+      );
     }
   }
 
