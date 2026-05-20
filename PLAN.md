@@ -89,15 +89,18 @@ Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 
 ### In scope
 
-- Markdown → HTML rendering pipeline
-- Component primitives lifted from adev's vocabulary (cards, pills, callouts, code blocks)
+- Markdown → HTML rendering pipeline (plain `.md` files under `src/app/pages/` route directly via AnalogJS, no `.page.ts` boilerplate for prose)
 - Sidebar navigation (config-driven by v1)
 - Cmd+K command palette with content-aware search
 - Code highlighting (Shiki)
 - Theming (light/dark, CSS-variable rebrand)
 - Landing-page primitives (hero, feature grid) — addresses a gap ng-doc leaves open
-- Build-time anchor / external-link validation (concept lifted from adev's pipeline)
 - Versioning + i18n (built-in by v2, not bolted on)
+
+### Explicitly punted on (rev'd Spartan-only migration, May 2026)
+
+- adev-style custom HTML tags inside markdown (`<docs-callout>`, `<docs-card>`, etc.). Dual-pipeline (build-time vs runtime marked) and HTML-escape friction made them more cost than they were worth. If chrome components are needed, they live as Angular components in `.page.ts` files, not as marked preprocess hooks.
+- Build-time anchor / external-link validation (was lifted from adev). Removed alongside the marked extensions.
 
 ### Out of scope (at least for v1)
 
@@ -156,9 +159,7 @@ Once v1 is feature-complete, ship the starter's own documentation site to Vercel
 
 ## Things to lift directly from adev
 
-- `<docs-card>` / `<docs-pill>` / `<docs-code>` / `<docs-callout>` component patterns
-- `AdevDocsRenderer` pattern for marked (auto `target="_blank"` on external links)
-- Build-time anchor validation (`findUntargetedExternalAnchor` style guard)
+Nothing, currently. The Spartan-only migration on May 2026 (branch `feat/spartan-ui-migration`) explored porting adev's `<docs-callout>` / `<docs-tabs>` / `<docs-code>` etc. as marked extensions, then ripped them after the dual-pipeline (build-time vs runtime marked instance) and HTML-escape friction proved heavier than the authoring win. If we revisit, the path is Angular components composed in `.page.ts`, not marked preprocess hooks.
 
 ## Lessons learned during v0
 
