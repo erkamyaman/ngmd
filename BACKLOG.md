@@ -6,20 +6,30 @@ Status legend: ✅ done · 🟡 partial · ❌ not done
 
 ---
 
-## 1. Markdown-native components (adev / ng-doc style)
+## 1. Authoring components
 
-Authors write a custom tag in `.md` and a marked extension renders it inline. We currently only have Angular-component versions used at page level — these would extend the same components to be authorable from inside markdown.
+NgMd's model: prose lives in `.md`, chrome lives as Angular components composed in `.page.ts`. The adev pattern of custom HTML tags inside markdown was explored and rejected in May 2026 (dual-pipeline marked instances plus HTML-escape friction made it more cost than win). Inline media (`<ngmd-video>`, `<ngmd-image>`) is the exception, kept as marked extensions because the tags are self-closing leaves with no markdown body.
 
-- ❌ `<docs-video src="..." title="..."/>` — YouTube / Vimeo / MP4 embed
-- ❌ `<docs-image src="..." alt="..." caption="..."/>` — figure with caption + lazy load
-- ❌ `<docs-decorative-header title="..." imgSrc="..."/>` — page hero with background image
-- ❌ `<docs-code-multifile>` — tabbed multi-FILE code blocks (different from our template-tab pattern)
-- ❌ `<docs-workflow>` — numbered step guide with progress indicator
-- ❌ `<docs-alert type="...">` — adev's alert variant (similar to but distinct from our callout)
-- ❌ `<docs-card-container>` with `<docs-card>` children inside markdown
-- 🟡 `<docs-callout>` — Angular component done; marked-extension version pending
-- 🟡 `<docs-tabs>` — Angular component done; marked-extension version pending
-- 🟡 `<docs-pill-row>` — Angular component done; marked-extension version pending
+Shipped as Angular components under `src/app/ui/`:
+
+- ✅ `<ngmd-callout type="info|tip|success|warning|danger" title="...">` — bordered box with coloured stripe
+- ✅ `<ngmd-alert severity="info|warning|critical|helpful|important">` — single-line banner
+- ✅ `<ngmd-card title="..." link="..." cta="...">` — bordered card, optional router link
+- ✅ `<ngmd-tabs>` + `<ng-template ngmdTab="...">` — Spartan brain tabs with a11y
+- ✅ `<ngmd-pill-row>` + `<ngmd-pill href="..." title="...">` — horizontal pill links
+- ✅ `<ngmd-workflow>` + `<ngmd-step title="...">` — numbered step list
+- ✅ `<ngmd-hero title="..." gradient>` — page hero (replaces adev's decorative-header)
+- ✅ `<ngmd-code-block header="..." language="..." [code]>` — code block with header bar, lazy-loaded shiki + dual theme
+
+Shipped as marked extensions (usable inline in `.md`):
+
+- ✅ `<ngmd-video src="..." title="..."/>` — YouTube / Vimeo URL normalisation
+- ✅ `<ngmd-image src="..." alt="..." caption="..."/>` — figure with caption + lazy load
+
+Open follow-ups:
+
+- ❌ `<ngmd-card-container>` for n-up card grids
+- ❌ Multi-file code blocks (a `<ngmd-code-block>` array variant for tabbed multi-file demos)
 
 ## 2. Page chrome (every docs starter has these)
 
@@ -134,6 +144,8 @@ Authors write a custom tag in `.md` and a marked extension renders it inline. We
 - ✅ Geist Mono wordmark
 - ✅ SVG favicon
 - ✅ License, README, package.json metadata
-- ✅ Component vocabulary: callout (5 variants), tabbed code blocks, pill row
-- ✅ Components showcase page with Shiki-highlighted source snippets
+- ✅ Authoring component suite under `src/app/ui/`: callout, alert, card, tabs (Spartan brain), pill row, workflow, hero, code-block (lazy-shiki + dual theme), video, image
+- ✅ `<ngmd-video>` + `<ngmd-image>` marked extensions for inline media in `.md`
+- ✅ Two showcase pages: `/concepts/components` and `/concepts/markdown-components`
 - ✅ Open Graph + meta tags
+- ✅ Spartan brain installed (`@spartan-ng/brain` 0.0.1-alpha.694), tabs primitive in use

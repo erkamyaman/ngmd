@@ -5,6 +5,8 @@ import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import { readFileSync } from 'node:fs';
 import { ngmdMarkedExtensions } from './src/marked-extensions';
+import { pageMetaPlugin } from './page-meta.plugin';
+import config from './src/ngmd.config';
 
 /**
  * Build-time guard: errors when a markdown file in `src/content/` contains
@@ -46,6 +48,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     externalLinkGuard(),
+    pageMetaPlugin({ repoUrl: config.site.githubUrl, branch: 'main' }),
     analog({
       content: {
         highlighter: 'shiki',

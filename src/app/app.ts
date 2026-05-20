@@ -22,6 +22,7 @@ import { Breadcrumb } from './components/breadcrumb';
 import { Toc } from './components/toc';
 import { CodeCopy } from './components/code-copy';
 import { ExternalLinks } from './components/external-links';
+import { PageFooter } from './components/page-footer';
 import { MediaEnhancer } from './components/media-enhancer';
 
 @Component({
@@ -37,6 +38,7 @@ import { MediaEnhancer } from './components/media-enhancer';
     CodeCopy,
     ExternalLinks,
     MediaEnhancer,
+    PageFooter,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -190,6 +192,11 @@ import { MediaEnhancer } from './components/media-enhancer';
             </details>
           }
           <router-outlet />
+          @if (showFooter()) {
+            <div class="mx-auto max-w-3xl px-4 sm:px-8">
+              <app-page-footer />
+            </div>
+          }
         </main>
 
         @if (showToc()) {
@@ -245,6 +252,7 @@ export class App implements OnInit {
   readonly showSidebar = this.isDocsRoute;
   readonly showBreadcrumb = this.isDocsRoute;
   readonly showToc = this.isDocsRoute;
+  readonly showFooter = this.isDocsRoute;
 
   ngOnInit(): void {
     this.theme.initFromStorage();
