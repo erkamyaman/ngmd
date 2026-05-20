@@ -22,6 +22,7 @@ import { Breadcrumb } from './components/breadcrumb';
 import { Toc } from './components/toc';
 import { CodeCopy } from './components/code-copy';
 import { ExternalLinks } from './components/external-links';
+import { MediaEnhancer } from './components/media-enhancer';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,7 @@ import { ExternalLinks } from './components/external-links';
     Toc,
     CodeCopy,
     ExternalLinks,
+    MediaEnhancer,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -204,6 +206,7 @@ import { ExternalLinks } from './components/external-links';
     <app-command-palette #palette />
     <app-code-copy />
     <app-external-links />
+    <app-media-enhancer />
   `,
 })
 export class App implements OnInit {
