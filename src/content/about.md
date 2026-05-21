@@ -16,8 +16,8 @@ It exists to fill an empty lane in the Angular ecosystem: a modern, brandable do
 
 NgMd wouldn't exist without these projects:
 
-- **[AnalogJS](https://analogjs.org)** by Brandon Roberts and contributors. The full-stack Angular meta-framework that powers NgMd's file-based routing, SSR, and markdown content collections.
-- **[Spartan UI](https://www.spartan.ng)** by Robin Goetz. Headless Angular primitives and the copy-paste philosophy that NgMd's component layer is modeled on.
+- **[AnalogJS](https://analogjs.org)** by [Brandon Roberts](https://github.com/brandonroberts) and contributors. The full-stack Angular meta-framework that powers NgMd's file-based routing, SSR, and markdown content collections.
+- **[Spartan UI](https://www.spartan.ng)** by [Robin Goetz](https://github.com/goetzrobin). Headless Angular primitives and the copy-paste philosophy that NgMd's component layer is modeled on.
 - **[shadcn/ui](https://ui.shadcn.com)** for popularising the "own your components" idea that both Spartan and NgMd adopt.
 - **[Tailwind CSS](https://tailwindcss.com)** for the styling system every NgMd component is built with.
 - **[Shiki](https://shiki.style)** for VS Code-grade syntax highlighting in markdown code blocks.

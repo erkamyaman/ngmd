@@ -151,6 +151,12 @@
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 3px;
+    transition: color 0.15s ease;
+  }
+
+  analog-markdown a:hover,
+  analog-markdown-route a:hover {
+    color: var(--accent);
   }
 
   analog-markdown a:focus-visible,

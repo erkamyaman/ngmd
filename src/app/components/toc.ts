@@ -27,10 +27,8 @@ interface Heading {
               <a
                 [href]="'#' + h.id"
                 (click)="scrollToHeading(h.id, $event)"
-                class="block text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50"
-                [class.text-fuchsia-700]="showActive() && active() === h.id"
-                [class.dark:text-fuchsia-300]="showActive() && active() === h.id"
-                [class.font-medium]="showActive() && active() === h.id"
+                class="block rounded px-2 -mx-2 py-0.5 text-zinc-500 hover:bg-fuchsia-100 dark:hover:bg-fuchsia-500/10 hover:text-fuchsia-700 dark:hover:text-fuchsia-300 focus:outline-none focus-visible:outline-none"
+                [class]="isActive(h.id) ? 'bg-fuchsia-100 dark:bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300 font-medium' : ''"
               >
                 {{ h.text }}
               </a>
@@ -49,6 +47,10 @@ export class Toc implements AfterViewInit {
   readonly headings = signal<Heading[]>([]);
   readonly active = signal<string>('');
   private observer?: IntersectionObserver;
+
+  isActive(id: string): boolean {
+    return this.showActive() && this.active() === id;
+  }
 
   ngAfterViewInit(): void {
     this.scanWithRetry();
