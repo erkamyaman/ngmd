@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { ngmdMarkedExtensions } from './src/marked-extensions';
 import { pageMetaPlugin } from './page-meta.plugin';
 import { internalLinkGuard } from './link-guard.plugin';
+import { sitemapPlugin } from './sitemap.plugin';
 import config from './src/ngmd.config';
 
 /**
@@ -51,6 +52,7 @@ export default defineConfig(() => ({
     externalLinkGuard(),
     internalLinkGuard(),
     pageMetaPlugin({ repoUrl: config.site.githubUrl, branch: 'main' }),
+    sitemapPlugin({ siteUrl: config.site.url }),
     analog({
       content: {
         highlighter: 'shiki',

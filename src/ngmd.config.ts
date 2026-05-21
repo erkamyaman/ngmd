@@ -20,6 +20,8 @@ export interface SiteConfig {
   name: string;
   /** One-liner description used in meta tags + social previews. */
   description: string;
+  /** Public origin (no trailing slash). Used by sitemap.xml + robots.txt. */
+  url: string;
   /** Repository URL. Powers the GitHub icon in the header. */
   githubUrl: string;
   /** Optional social / community links rendered in the header. */
@@ -40,6 +42,7 @@ const config: NgmdConfig = {
     name: 'NgMd',
     description:
       'Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind.',
+    url: 'https://ngmd.dev',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
   },
 

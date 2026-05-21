@@ -1,0 +1,39 @@
+{
+  "name": "create-ngmd",
+  "version": "0.0.1",
+  "description": "Scaffold a new NgMd project. Run via `pnpm create ngmd@latest` / `npm create ngmd@latest` / `yarn create ngmd` / `bun create ngmd`.",
+  "license": "MIT",
+  "author": {
+    "name": "Kam",
+    "url": "https://github.com/erkamyaman"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erkamyaman/ngmd.git",
+    "directory": "create-ngmd"
+  },
+  "homepage": "https://ngmd.dev",
+  "keywords": [
+    "angular",
+    "analogjs",
+    "docs",
+    "starter",
+    "scaffolder",
+    "create"
+  ],
+  "type": "module",
+  "bin": {
+    "create-ngmd": "index.mjs"
+  },
+  "scripts": {
+    "build-template": "node build-template.mjs",
+    "prepublishOnly": "node build-template.mjs"
+  },
+  "engines": {
+    "node": ">=20.19.1"
+  },
+  "files": [
+    "index.mjs",
+    "template"
+  ]
+}
