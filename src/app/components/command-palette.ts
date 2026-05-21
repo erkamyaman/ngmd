@@ -90,8 +90,7 @@ function stripMarkdown(s: string): string {
                 <button
                   type="button"
                   class="flex w-full cursor-pointer items-center gap-4 rounded-lg px-4 py-3 text-left"
-                  [class.bg-zinc-100]="i === active()"
-                  [class.dark:bg-zinc-900]="i === active()"
+                  [class]="i === active() ? 'bg-fuchsia-500/10' : ''"
                   (mouseenter)="active.set(i)"
                   (click)="select()"
                 >

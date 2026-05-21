@@ -29,8 +29,8 @@ import config from '../../ngmd.config';
                 <li>
                   <a
                     [routerLink]="item.href"
-                    routerLinkActive="border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 font-medium"
-                    class="block rounded-md border border-transparent px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50"
+                    routerLinkActive="bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300 font-medium"
+                    class="block rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50"
                   >
                     {{ item.label }}
                   </a>

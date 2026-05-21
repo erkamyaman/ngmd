@@ -28,8 +28,8 @@ interface Heading {
                 [href]="'#' + h.id"
                 (click)="scrollToHeading(h.id, $event)"
                 class="block text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50"
-                [class.text-zinc-900]="showActive() && active() === h.id"
-                [class.dark:text-zinc-50]="showActive() && active() === h.id"
+                [class.text-fuchsia-700]="showActive() && active() === h.id"
+                [class.dark:text-fuchsia-300]="showActive() && active() === h.id"
                 [class.font-medium]="showActive() && active() === h.id"
               >
                 {{ h.text }}

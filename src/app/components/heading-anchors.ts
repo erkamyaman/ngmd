@@ -49,7 +49,7 @@ export class HeadingAnchors implements AfterViewInit {
     button.type = 'button';
     button.setAttribute('aria-label', `Copy link to ${heading.id}`);
     button.className =
-      'ml-2 inline-flex items-center justify-center size-5 align-middle relative -top-[2px] rounded text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 opacity-0 transition-opacity focus:opacity-100';
+      'ml-2 inline-flex items-center justify-center size-5 align-middle relative -top-[2px] rounded text-zinc-400 hover:text-fuchsia-600 dark:hover:text-fuchsia-400 opacity-0 transition-opacity focus:opacity-100';
     button.innerHTML = this.linkIcon();
 
     heading.addEventListener('mouseenter', () => (button.style.opacity = '1'));

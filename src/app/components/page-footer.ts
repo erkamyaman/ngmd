@@ -39,7 +39,7 @@ import { navItems } from '../../ngmd.config';
           @if (prev(); as p) {
             <a
               [routerLink]="p.href"
-              class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors sm:col-start-1"
+              class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-fuchsia-500 dark:hover:border-fuchsia-400 transition-colors sm:col-start-1"
             >
               <span class="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                 <i-lucide [img]="prevIcon" class="size-3.5"></i-lucide>
@@ -51,7 +51,7 @@ import { navItems } from '../../ngmd.config';
           @if (next(); as n) {
             <a
               [routerLink]="n.href"
-              class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors text-right sm:col-start-2"
+              class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-fuchsia-500 dark:hover:border-fuchsia-400 transition-colors text-right sm:col-start-2"
             >
               <span class="flex items-center justify-end gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                 Next
