@@ -62,3 +62,46 @@ analog({
   },
 });
 ```
+
+## Importing code from real files
+
+To keep doc examples in sync with the source, import the file directly with `file="..."` in the fence. GitHub-style line ranges (`#L5-L10`) work too:
+
+```ts file="src/app/pages/welcome.page.ts#L1-L5"
+```
+
+Lines tagged with `// ngmd-ignore-line` are stripped from the imported snippet, so you can hide setup boilerplate from doc readers while keeping the source file runnable.
+
+## Grouped code tabs
+
+Tag adjacent fences with `group="..."` (and an optional `name="..."` for the tab label) to merge them into a tabbed UI. The `active` flag picks the initial tab.
+
+```bash group="install" name="pnpm" active
+pnpm create ngmd@latest my-docs
+```
+
+```bash group="install" name="npm"
+npm create ngmd@latest my-docs
+```
+
+```bash group="install" name="yarn"
+yarn create ngmd my-docs
+```
+
+```bash group="install" name="bun"
+bun create ngmd my-docs
+```
+
+## Highlighting specific lines
+
+Append `{1,3-5}` after the language to highlight matching lines. The selector accepts comma-separated single lines or ranges.
+
+```ts {3-5}
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-hello',
+  template: '<h1>Hello, NgMd</h1>',
+})
+export class Hello {}
+```

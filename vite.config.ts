@@ -4,7 +4,7 @@ import { defineConfig, type Plugin } from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import { readFileSync } from 'node:fs';
-import { ngmdMarkedExtensions } from './src/marked-extensions';
+import { getBuildExtensions } from './src/marked-extensions';
 import { pageMetaPlugin } from './page-meta.plugin';
 import { internalLinkGuard } from './link-guard.plugin';
 import { sitemapPlugin } from './sitemap.plugin';
@@ -41,7 +41,7 @@ function externalLinkGuard(): Plugin {
   };
 }
 
-export default defineConfig(() => ({
+export default defineConfig(async () => ({
   build: {
     target: ['es2020'],
   },
@@ -57,7 +57,7 @@ export default defineConfig(() => ({
       content: {
         highlighter: 'shiki',
         markedOptions: {
-          extensions: ngmdMarkedExtensions,
+          extensions: await getBuildExtensions(),
         },
         shikiOptions: {
           highlighter: {

@@ -16,7 +16,7 @@ import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter';
 import { withInMemoryScrolling } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { marked } from 'marked';
-import { ngmdMarkedExtensions } from '../marked-extensions';
+import { ngmdRuntimeExtensions } from '../marked-extensions';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,7 +39,7 @@ export const appConfig: ApplicationConfig = {
     // at runtime, so register our preprocess hooks on the shared marked
     // singleton here too.
     provideAppInitializer(() => {
-      marked.use(...ngmdMarkedExtensions);
+      marked.use(...ngmdRuntimeExtensions);
       // Sticky header is ~57px tall; offset anchor scroll so headings land
       // below it with breathing room. Without this, Angular's anchor scroll
       // ignores CSS scroll-margin-top and pins headings flush against the

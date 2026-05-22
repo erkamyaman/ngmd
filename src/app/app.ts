@@ -23,6 +23,7 @@ import { Toc } from './components/toc';
 import { CodeCopy } from './components/code-copy';
 import { ExternalLinks } from './components/external-links';
 import { HeadingAnchors } from './components/heading-anchors';
+import { CodeGroup } from './components/code-group';
 import { PageFooter } from './components/page-footer';
 import { MediaEnhancer } from './components/media-enhancer';
 
@@ -39,6 +40,7 @@ import { MediaEnhancer } from './components/media-enhancer';
     CodeCopy,
     ExternalLinks,
     HeadingAnchors,
+    CodeGroup,
     MediaEnhancer,
     PageFooter,
   ],
@@ -216,6 +218,7 @@ import { MediaEnhancer } from './components/media-enhancer';
     <app-code-copy />
     <app-external-links />
     <app-heading-anchors />
+    <app-code-group />
     <app-media-enhancer />
   `,
 })
