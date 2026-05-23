@@ -13,10 +13,11 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import { provideContent, withMarkdownRenderer } from '@analogjs/content';
 import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter';
-import { withInMemoryScrolling } from '@angular/router';
+import { withInMemoryScrolling, TitleStrategy } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { marked } from 'marked';
 import { ngmdRuntimeExtensions } from '../marked-extensions';
+import { NgmdTitleStrategy } from './title-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,6 +34,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideClientHydration(withEventReplay()),
     provideContent(withMarkdownRenderer(), withShikiHighlighter()),
+    { provide: TitleStrategy, useClass: NgmdTitleStrategy },
     // AnalogJS's runtime MarkedSetupService only registers gfm/mangle/shiki.
     // The `markedOptions` in vite.config.ts only feeds the build-time
     // MarkdownRouteComponent. Pages using `<analog-markdown [content]>` parse

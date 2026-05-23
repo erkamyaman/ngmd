@@ -11,8 +11,6 @@ import {
   Sun,
   Moon,
   SunMoon,
-  Languages,
-  ChevronDown,
 } from 'lucide-angular';
 import { ThemeService } from './theme';
 import { LayoutMode } from './layout-mode.service';
@@ -88,17 +86,8 @@ import { MediaEnhancer } from './components/media-enhancer';
         <div class="ml-auto flex items-center gap-2">
           <button
             type="button"
-            class="hidden md:inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-            aria-label="Language"
-          >
-            <i-lucide [img]="langIcon" class="size-4"></i-lucide>
-            English
-            <i-lucide [img]="chevronIcon" class="size-3.5"></i-lucide>
-          </button>
-          <button
-            type="button"
             (click)="palette.toggle()"
-            class="hidden sm:inline-flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-w-56"
+            class="hidden lg:inline-flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-w-56"
           >
             <i-lucide [img]="searchIcon" class="size-4"></i-lucide>
             <span class="flex-1 text-left">Search documentation...</span>
@@ -118,7 +107,7 @@ import { MediaEnhancer } from './components/media-enhancer';
           <button
             type="button"
             (click)="palette.toggle()"
-            class="sm:hidden rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+            class="lg:hidden rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             aria-label="Search"
           >
             <i-lucide [img]="searchIcon" class="size-5"></i-lucide>
@@ -234,8 +223,6 @@ export class App implements OnInit {
   readonly sunIcon = Sun;
   readonly moonIcon = Moon;
   readonly autoIcon = SunMoon;
-  readonly langIcon = Languages;
-  readonly chevronIcon = ChevronDown;
 
   readonly drawerOpen = signal(false);
 

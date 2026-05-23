@@ -18,26 +18,34 @@ Shipped as Angular components under `src/app/ui/`:
 - ✅ `<ngmd-tabs>` + `<ng-template ngmdTab="...">` — Spartan brain tabs with a11y
 - ✅ `<ngmd-pill-row>` + `<ngmd-pill href="..." title="...">` — horizontal pill links
 - ✅ `<ngmd-workflow>` + `<ngmd-step title="...">` — numbered step list
-- ✅ `<ngmd-hero title="..." gradient>` — page hero (replaces adev's decorative-header)
+- ✅ `<ngmd-hero title="..." gradient>` — page hero
 - ✅ `<ngmd-code-block header="..." language="..." [code]>` — code block with header bar, lazy-loaded shiki + dual theme
 
 Shipped as marked extensions (usable inline in `.md`):
 
 - ✅ `<ngmd-video src="..." title="..."/>` — YouTube / Vimeo URL normalisation
 - ✅ `<ngmd-image src="..." alt="..." caption="..."/>` — figure with caption + lazy load
+- ✅ `*Keyword` inline auto-linking — declare in `ngmd.config.ts > keywords`, `*AnalogJS` etc. become links
+
+Code-fence affordances (build-time marked extensions):
+
+- ✅ ` ```ts file="src/foo.ts#L5-L20" ` — import code from source, GitHub-style line ranges, `// ngmd-ignore-line` strip markers, header bar links to GitHub
+- ✅ ` ```bash group="install" name="pnpm" active ` — adjacent fences with same `group=` merge into a tabbed UI
+- ✅ ` ```ts {1,3-5} ` — highlight matching lines with a fuchsia stripe + tint
 
 Open follow-ups:
 
 - ❌ `<ngmd-card-container>` for n-up card grids
-- ❌ Multi-file code blocks (a `<ngmd-code-block>` array variant for tabbed multi-file demos)
+- ❌ Combined `file=` + `{1,3-5}` line highlight on the same fence
+- ❌ Diff view via ` ```diff ` (shiki supports natively, just need CSS)
 
 ## 2. Page chrome (every docs starter has these)
 
-- ❌ Previous / Next page navigation at the bottom of each doc page (auto-derived from `ngmd.config.ts` nav)
-- ❌ "Edit on GitHub" link per page (link to source `.md` file in repo)
-- ❌ "Last updated" timestamp pulled from git history
+- ✅ Previous / Next page navigation at the bottom of each doc page (auto-derived from `ngmd.config.ts` nav)
+- ✅ "Edit on GitHub" link per page
+- ✅ "Last updated" timestamp pulled from git history (`git log -1 --format=%cs`)
+- ✅ Heading anchor copy-link — hover an h1/h2/h3 to reveal a `#` icon that copies the URL
 - ❌ Reading time estimate (word count / 200 wpm)
-- ❌ Heading anchor copy-link — hover an h2/h3 to reveal a `#` icon that copies the URL with fragment
 - ❌ "Was this page helpful?" feedback widget at bottom
 - ❌ Page-level frontmatter overrides for layout / title / description / OG image
 
@@ -63,8 +71,8 @@ Open follow-ups:
 
 ## 5. Library-author features (where ng-doc beats us)
 
-- ❌ API reference auto-generation from JSDoc / ts-morph (the BIG ng-doc feature)
-- ❌ Keyword auto-linking — mentions of `SomeService` become links to its API page
+- ❌ API reference auto-generation from JSDoc / ts-morph (the BIG ng-doc feature — explicitly punted)
+- ✅ Keyword auto-linking — page-tier via `*Keyword` (API-tier deferred, depends on auto-gen above)
 - ❌ Symbol search in palette
 - ❌ Component playgrounds with editable code + Stackblitz launcher
 - ❌ Interactive props/args/controls (Storybook-style)
@@ -72,11 +80,11 @@ Open follow-ups:
 
 ## 6. Build / infrastructure
 
-- ✅ Build-time external-link guard (ours is `vite.config.ts`)
-- ❌ Build-time anchor validation — check every `#fragment` link points to a real heading
-- ❌ Build-time broken-link check across all markdown
-- ❌ Sitemap.xml auto-generation
-- ❌ robots.txt
+- ✅ Build-time external-link guard (Vite plugin, errors on raw external `<a>` without `target="_blank"`)
+- ✅ Build-time internal-link guard (errors on broken `#fragment` and `/route#fragment` links)
+- ✅ Build-time page-meta plugin (`virtual:ngmd/page-meta` exposes `editUrl` + `lastUpdated` per route)
+- ✅ Sitemap.xml auto-generation
+- ✅ robots.txt
 - ❌ RSS feed for changelog / blog
 - ❌ Service worker / PWA support
 - ❌ OG image auto-generation per page
@@ -85,7 +93,8 @@ Open follow-ups:
 
 ## 7. Theming / branding
 
-- ✅ CSS-variable theme tokens (`--bg`, `--fg`, `--muted`, `--border`, `--primary`, `--accent`, `--radius-*`, `--font-*`)
+- ✅ CSS-variable theme tokens (`--bg`, `--bg-muted`, `--fg`, `--muted`, `--border`, `--border-strong`, `--primary`, `--accent`, `--accent-soft`, `--accent-gradient`, `--radius-*`, `--font-*`)
+- ✅ Fuchsia accent wired through sidebar active, TOC active, palette row, prev/next hover, heading anchor hover, markdown link hover + focus ring
 - 🟡 Theme is documented in `theming.md` but the live preview / swatch grid is missing
 - ❌ Live theme preview component that swaps tokens
 - ❌ Theme presets / palettes (e.g. "Stone", "Slate", "Rose", "Violet")
@@ -101,7 +110,7 @@ Open follow-ups:
 
 ## 9. Authoring DX
 
-- ❌ `npx create-ngmd` scaffolder for new projects
+- 🟡 `npx create-ngmd` scaffolder — built under `create-ngmd/`, working locally (`node create-ngmd/index.mjs my-docs`), not yet published to npm
 - ❌ `ngmd add <component>` CLI for shadcn-style component installation
 - ❌ `ngmd new page <slug>` CLI to generate a new markdown page + sidebar entry
 - ❌ VS Code snippets for common docs patterns (callout, tabs, pill row)
@@ -114,38 +123,58 @@ Open follow-ups:
 - ❌ Keyboard shortcut help dialog (press `?`)
 - ❌ Inline code-block copy success toast
 - ❌ Code-block line numbers
-- ❌ Code-block line highlighting (` ```ts {3-5}`)
-- ❌ Code-block diff view (` ```diff` blocks already supported by Shiki)
+- ✅ Code-block line highlighting (` ```ts {3-5}` syntax)
+- ❌ Code-block diff view (` ```diff` blocks — shiki supports, needs CSS)
 - ❌ Inline `Show source` toggle on component demos
 - ❌ Lighthouse audit + a11y compliance pass
 
 ## 11. Already shipped (for reference)
 
-- ✅ AnalogJS + Vite + Angular 21 + pnpm/npm/yarn/bun support
+Foundation:
+
+- ✅ AnalogJS + Vite 8 + Angular 21 + pnpm/npm/yarn/bun support
 - ✅ Markdown content collections via `src/content/`
-- ✅ Shiki syntax highlighting (bash, md, json, ts, html, css)
-- ✅ Custom marked renderer wiring
-- ✅ Tailwind v4 + class-based dark mode + `@variant dark`
+- ✅ Shiki syntax highlighting pinned to `1.29.2` (`bash`, `md`, `json`, `ts`, `html`, `css`)
+- ✅ Tailwind v4 + class-based dark mode (`@variant dark`)
 - ✅ Light / dark / auto theme cycle with no-flash inline boot script
-- ✅ Translucent sticky header with backdrop-blur
+- ✅ Spartan brain installed (`@spartan-ng/brain` `0.0.1-alpha.694`)
+
+Chrome:
+
+- ✅ Translucent sticky header with `backdrop-blur-sm`
 - ✅ Sidebar accordion driven by `ngmd.config.ts`
 - ✅ Breadcrumb derived from current route
 - ✅ Right-side on-page TOC with scroll-spy
-- ✅ Mobile drawer for sidebar
-- ✅ Mobile "On this page" collapsible
-- ✅ Cmd+K command palette with content-aware search (pages + headings + body snippets)
-- ✅ Code-block copy buttons on every `<pre>`
+- ✅ Mobile drawer for sidebar + collapsible "On this page"
+- ✅ Cmd+K command palette with content-aware search
+- ✅ Page footer per docs route: prev/next + edit-on-github + last-updated
+- ✅ Heading anchor copy buttons (h1/h2/h3, fuchsia hover)
+- ✅ Code-block copy buttons on every `<pre>` (runtime enhancer)
 - ✅ External links auto-targeted to a new tab (runtime enhancer)
-- ✅ Build-time external-link guard (Vite plugin)
-- ✅ Smooth scroll on page navigation
+- ✅ Smooth scroll on page navigation, sticky-header offset via `ViewportScroller.setOffset`
 - ✅ Body scroll lock when palette open
 - ✅ 404 page with chrome-hidden layout
-- ✅ Hexagon logo with Angular-gradient stroke
-- ✅ Geist Mono wordmark
-- ✅ SVG favicon
-- ✅ License, README, package.json metadata
+
+Authoring:
+
 - ✅ Authoring component suite under `src/app/ui/`: callout, alert, card, tabs (Spartan brain), pill row, workflow, hero, code-block (lazy-shiki + dual theme), video, image
 - ✅ `<ngmd-video>` + `<ngmd-image>` marked extensions for inline media in `.md`
+- ✅ `*Keyword` inline auto-linking (12 default keywords in `ngmd.config.ts`)
+- ✅ Code-fence file imports with GitHub-linked header bar
+- ✅ Code-fence group tabs (`group="install" name="pnpm" active`)
+- ✅ Code-fence line highlighting (` ```ts {1,3-5} `)
+
+Build pipeline:
+
+- ✅ External-link guard (Vite plugin, errors on raw external anchors missing `target="_blank"`)
+- ✅ Internal-link guard (errors on broken in-page and cross-page anchor fragments)
+- ✅ page-meta plugin → `virtual:ngmd/page-meta`
+- ✅ sitemap plugin → `sitemap.xml` + `robots.txt` emitted into client build
+
+Distribution:
+
+- ✅ `create-ngmd/` scaffolder (Node builtins, slim template, package-manager detection)
 - ✅ Two showcase pages: `/concepts/components` and `/concepts/markdown-components`
-- ✅ Open Graph + meta tags
-- ✅ Spartan brain installed (`@spartan-ng/brain` 0.0.1-alpha.694), tabs primitive in use
+- ✅ Hexagon logo with rose → fuchsia → purple gradient stroke, Geist Mono wordmark
+- ✅ Open Graph + meta tags, SVG favicon
+- ✅ License, README, package.json metadata
