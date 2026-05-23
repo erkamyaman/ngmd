@@ -100,12 +100,12 @@ Things the markdown pipeline gives you without writing JavaScript:
 
 | Tool | Role |
 |---|---|
-| [Angular](https://angular.dev) (v21) | Framework |
-| [AnalogJS](https://analogjs.org) | File-based routing, SSR/SSG, content collections |
-| [Spartan UI brain](https://www.spartan.ng) | Headless primitives (tabs a11y) |
-| [Tailwind v4](https://tailwindcss.com) | Styling |
-| [Shiki](https://shiki.style) | Code highlighting |
-| [Marked](https://marked.js.org) | Markdown parsing |
+| <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v21) | Framework |
+| <a href="https://analogjs.org" target="_blank" rel="noopener noreferrer">AnalogJS</a> | File-based routing, SSR/SSG, content collections |
+| <a href="https://www.spartan.ng" target="_blank" rel="noopener noreferrer">Spartan UI brain</a> | Headless primitives (tabs a11y) |
+| <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind v4</a> | Styling |
+| <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a> | Code highlighting |
+| <a href="https://marked.js.org" target="_blank" rel="noopener noreferrer">Marked</a> | Markdown parsing |
 
 ## Scripts
 
@@ -145,4 +145,4 @@ v0. Core (markdown rendering, theming, navigation, site frame, authoring compone
 
 ## License
 
-MIT © 2026, Kam ([@erkamyaman](https://github.com/erkamyaman))
+MIT © 2026, Kam (<a href="https://github.com/erkamyaman" target="_blank" rel="noopener noreferrer">@erkamyaman</a>)
