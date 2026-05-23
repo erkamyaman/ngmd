@@ -14,19 +14,24 @@ Angular has no equivalent to what VitePress, Starlight, Nextra, and Docusaurus g
 
 ## Credits
 
-NgMd wouldn't exist without these projects:
+None of this exists without [Angular](https://angular.dev). The framework is the floor everything else stands on.
 
-- **[AnalogJS](https://analogjs.org)** by [Brandon Roberts](https://github.com/brandonroberts) and contributors. The full-stack Angular meta-framework that powers NgMd's file-based routing, SSR, and markdown content collections.
-- **[Spartan UI](https://www.spartan.ng)** by [Robin Goetz](https://github.com/goetzrobin). Headless Angular primitives and the copy-paste philosophy that NgMd's component layer is modeled on.
-- **[shadcn/ui](https://ui.shadcn.com)** for popularising the "own your components" idea that both Spartan and NgMd adopt.
-- **[Tailwind CSS](https://tailwindcss.com)** for the styling system every NgMd component is built with.
-- **[Shiki](https://shiki.style)** for VS Code-grade syntax highlighting in markdown code blocks.
-- **[Marked](https://marked.js.org)** for the markdown rendering pipeline.
-- **[Vite](https://vitejs.dev)** for the fast dev server and build tooling everything runs on.
-- **[Lucide](https://lucide.dev)** for the icon set used in the chrome.
-- **[Angular](https://angular.dev)** for being the framework that makes all of this possible.
+[AnalogJS](https://analogjs.org), by [Brandon Roberts](https://github.com/brandonroberts) and contributors, is the meta-framework powering every piece of NgMd's runtime — file-based routing, SSR, markdown content collections, the build pipeline.
 
-Inspiration also came from the docs sites of **VitePress**, **Starlight**, **Nextra**, and **Docusaurus**, which set the bar for what a modern docs starter should feel like.
+NgMd's authoring components borrow [Spartan UI](https://www.spartan.ng)'s philosophy: headless Angular primitives you own, styled with Tailwind, no opaque dependencies. Credit to [Robin Goetz](https://github.com/goetzrobin) for proving the pattern works in Angular.
+
+The spark came from [Santosh Yadav](https://github.com/santoshyadavdev). His 2023 [AnalogJS discussion](https://github.com/analogjs/analog/discussions/779) named the gap NgMd was built to fill.
+
+Other projects NgMd builds on:
+
+- **[Vite](https://vitejs.dev)** — dev server and build tool.
+- **[Tailwind CSS](https://tailwindcss.com)** — the styling system every component uses.
+- **[Shiki](https://shiki.style)** — VS Code-grade syntax highlighting in markdown code blocks.
+- **[Marked](https://marked.js.org)** — markdown rendering pipeline.
+- **[Lucide](https://lucide.dev)** — the icon set used in the chrome.
+- **[shadcn/ui](https://ui.shadcn.com)** — popularised the "own your components" idea that both Spartan and NgMd adopt.
+
+Inspiration came from the docs sites of **VitePress**, **Starlight**, **Nextra**, and **Docusaurus**, which set the bar for what a modern docs starter should feel like.
 
 ## License
 
