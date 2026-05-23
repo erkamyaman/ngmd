@@ -29,9 +29,8 @@ Release notes and version history for NgMd.
 ## Coming next
 
 - `npx create-ngmd` published to npm
-- Public deploy of ngmd.dev
-- Code-block line highlighting (` ```ts {3-5}`)
 - Search ranking improvements (fuzzy + weighted) in Cmd+K palette
+- Custom domain (`ngmd.dev`) migration from the current Netlify subdomain
 
 ## v1 (later)
 

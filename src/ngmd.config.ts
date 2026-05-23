@@ -52,7 +52,7 @@ const config: NgmdConfig = {
     description:
       'Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind.',
     tagline: 'Angular docs starter',
-    url: 'https://ngmd.dev',
+    url: 'https://ngmd.netlify.app',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
   },
 

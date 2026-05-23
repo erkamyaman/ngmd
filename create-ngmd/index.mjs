@@ -151,7 +151,7 @@ async function main() {
   console.log(`  ${c.cyan}cd${c.reset} ${name}`);
   console.log(`  ${c.cyan}${install}${c.reset}`);
   console.log(`  ${c.cyan}${dev}${c.reset}\n`);
-  console.log(`${c.dim}Docs:${c.reset} https://ngmd.dev`);
+  console.log(`${c.dim}Docs:${c.reset} https://ngmd.netlify.app`);
   console.log(`${c.dim}Issues:${c.reset} https://github.com/erkamyaman/ngmd/issues\n`);
 }
 

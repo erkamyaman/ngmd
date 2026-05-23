@@ -9,7 +9,8 @@ A modern, AnalogJS-native, branding-flexible docs site starter and component too
 Availability:
 - npm: `ngmd`, `ng-md`, `@ngmd/*` scope — all free
 - GitHub: no Angular-related collisions
-- Domain: `ngmd.dev` unregistered
+- Deployed: [ngmd.netlify.app](https://ngmd.netlify.app) (May 2026)
+- Custom domain: `ngmd.dev` available for future migration
 
 ## Current status (v0 built)
 
@@ -199,7 +200,7 @@ src/
 
 ## Open questions
 
-- Domain to register (`ngmd.dev` available)
+- Whether to register `ngmd.dev` as a custom domain (currently on `ngmd.netlify.app`)
 - License (likely MIT)
 - Repo location (personal or new org)
 - Branding direction (logo, color palette)
