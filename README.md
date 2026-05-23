@@ -35,67 +35,19 @@ pnpm install
 pnpm run dev
 ```
 
-`npm create ngmd@latest`, `yarn create ngmd`, and `bun create ngmd` all work too. The scaffolder detects which one you used and tailors the next-steps output.
+`npm create ngmd@latest`, `yarn create ngmd`, and `bun create ngmd` all work too.
 
 ## Authoring model
 
-Two patterns. Pick per page.
+Two patterns, pick per page. **Prose pages** stay in markdown — drop a `.md` file under `src/content/`, the sidebar / TOC / prev-next / edit-on-github all derive from `ngmd.config.ts` and `git log`. **Chrome pages** compose Angular components in `.page.ts` around your markdown using NgMd's authoring suite (callouts, alerts, cards, tabs on Spartan brain, pill rows, workflows, hero, code blocks, video, image).
 
-**Prose pages** stay in markdown. Drop a `.md` file under `src/app/pages/` and it becomes a route automatically (no `.page.ts` required). Frontmatter sets the title, body becomes the page. The sidebar, TOC, prev/next footer, and edit-on-github link all derive from `ngmd.config.ts` and `git log`.
+The fork: prose in markdown, authoring components in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
 
-**Chrome pages** compose Angular components in `.page.ts` around your markdown. NgMd ships an authoring suite under `src/app/ui/`: callouts, alerts, cards, tabs (on Spartan brain primitives), pill rows, workflows, hero, code blocks, video, image. Each is a real Angular component with typed inputs, accessibility baked in, and no template-string escape gymnastics.
+## What's in the box
 
-The fork: prose lives in markdown, authoring components live in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
+Site frame, palette, prev/next footer, edit-on-github, heading anchors, shiki dual-theme, fuchsia accent. Build-time link guards, sitemap, page-meta plugin. Authoring components and code-fence affordances (`*Keyword` auto-linking, ` ```ts file="..." ` imports, group tabs, line highlighting).
 
-## Build-time affordances
-
-Things the markdown pipeline gives you without writing JavaScript:
-
-- `*Keyword` inline auto-linking. Declare keywords in `ngmd.config.ts > keywords`, write `*AnalogJS` anywhere in prose, get a link.
-- `` ```ts file="src/foo.ts#L5-L20" `` imports code from a real source file, GitHub-line-range syntax, header bar links back to GitHub.
-- `` ```bash group="install" name="pnpm" active `` clusters adjacent fences into a tabbed group.
-- `` ```ts {1,3-5} `` highlights matching lines with the accent stripe.
-- `// ngmd-ignore-line` strips a line from an imported snippet.
-- External anchors without `target="_blank"` error at build time.
-- Broken in-page (`#fragment`) and cross-page (`/route#fragment`) markdown links error at build time.
-
-## Out of the box
-
-- Sticky translucent header with backdrop-blur, brand wordmark
-- Sidebar accordion driven by `ngmd.config.ts`, mobile drawer
-- Breadcrumb from route, right-side scroll-spy TOC, mobile collapsible
-- Cmd+K command palette over pages + headings + body snippets
-- Page footer: prev/next sibling, edit-on-github, last-updated (from `git log`)
-- Heading hover anchor (`#` button copies the deep link)
-- Code-block copy buttons, shiki dual-theme highlighting
-- 404 page with chrome-hidden layout
-- Light / dark / auto theme cycle, no-flash inline boot script
-- Fuchsia accent wired through every active state (sidebar, TOC, palette, hover)
-
-## Configure
-
-`src/ngmd.config.ts` is the single source of truth:
-
-```ts
-{
-  site: {
-    name: 'NgMd',
-    tagline: 'Angular docs starter',
-    description: '...',
-    url: 'https://ngmd.netlify.app',
-    githubUrl: 'https://github.com/you/your-repo',
-  },
-  nav: [
-    { label: 'Getting Started', items: [{ label: 'Welcome', href: '/welcome' }] },
-  ],
-  keywords: {
-    AnalogJS: 'https://analogjs.org',
-    // ...
-  },
-}
-```
-
-`src/styles.css` carries the theme tokens (`--bg`, `--fg`, `--accent`, `--radius-*`, `--font-*`). Change one var, the whole site follows.
+Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
 
 ## Stack
 
@@ -108,37 +60,9 @@ Things the markdown pipeline gives you without writing JavaScript:
 | <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a> | Code highlighting |
 | <a href="https://marked.js.org" target="_blank" rel="noopener noreferrer">Marked</a> | Markdown parsing |
 
-## Scripts
-
-```bash
-pnpm run dev       # Vite dev server
-pnpm run build     # Production build (SSR + static prerender)
-pnpm run preview   # Serve the production build
-pnpm run test      # Vitest
-```
-
 ## Deploy
 
-`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. The sitemap and `robots.txt` land in `dist/client/` automatically. Update `site.url` in `ngmd.config.ts` to wherever you're hosting so the sitemap references the right origin.
-
-## Project layout
-
-```
-src/
-├── app/
-│   ├── components/        Chrome: palette, sidebar, breadcrumb, TOC, footer
-│   ├── pages/             File-based routes (.page.ts + .md)
-│   ├── ui/                Authoring components: callout, tabs, card, etc.
-│   ├── app.config.ts      Wires router + content + title strategy + scroll offset
-│   └── app.ts             Shell template
-├── content/               Markdown content collection
-├── marked-extensions/     Build + runtime marked customisations
-├── ngmd.config.ts         Site config (name, nav, keywords)
-└── styles.css             Tailwind + theme tokens
-
-create-ngmd/               The `pnpm create ngmd` scaffolder
-*.plugin.ts                Build-time vite plugins (page-meta, sitemap, link guards)
-```
+`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/client/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap references the right URL.
 
 ## Status
 
