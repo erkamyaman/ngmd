@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  LucideAngularModule,
-  BookOpen,
-  Palette,
-  Zap,
-  Search,
-  Code,
-  Sparkles,
-  ArrowRight,
-  Github,
-} from 'lucide-angular';
+import { LucideAngularModule, ArrowRight, Github } from 'lucide-angular';
+import { animate, stagger } from 'motion';
 
 @Component({
   selector: 'app-home',
@@ -40,10 +31,12 @@ import {
           <i-lucide [img]="arrowIcon" class="size-3.5"></i-lucide>
         </a>
 
-        <h1 class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
-          The Angular docs
+        <h1 #hero class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
+          <span class="ngmd-hero-anim inline-block mr-[0.25em]">The</span>
+          <span class="ngmd-hero-anim inline-block mr-[0.25em]">Angular</span>
+          <span class="ngmd-hero-anim inline-block mr-[0.25em]">docs</span>
           <span
-            class="block bg-gradient-to-r from-rose-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent"
+            class="ngmd-hero-anim block bg-gradient-to-r from-rose-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent ngmd-hero-gradient pb-1"
           >
             starter you've been missing
           </span>
@@ -297,9 +290,30 @@ import {
     </section>
   `,
 })
-export default class Home {
+export default class Home implements AfterViewInit {
+  readonly hero = viewChild<ElementRef<HTMLElement>>('hero');
+
   readonly arrowIcon = ArrowRight;
   readonly githubIcon = Github;
+
+  ngAfterViewInit(): void {
+    // Browser-only. Motion touches window; SSR would crash. Skipping here
+    // also means SSR'd HTML ships with words visible (no inline opacity:0),
+    // which is the correct fallback if hydration or motion ever fails.
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    const root = this.hero()?.nativeElement;
+    if (!root) return;
+    const parts = root.querySelectorAll<HTMLElement>('.ngmd-hero-anim');
+    if (parts.length === 0) return;
+
+    animate(
+      parts,
+      { opacity: [0, 1], transform: ['translateY(0.5em)', 'translateY(0)'] },
+      { duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1] },
+    );
+  }
 
   readonly features = [
     {

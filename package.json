@@ -61,6 +61,7 @@
     "marked-highlight": "^2.2.1",
     "marked-mangle": "^1.1.10",
     "marked-shiki": "^1.2.1",
+    "motion": "^12.40.0",
     "postcss": "^8.5.3",
     "prismjs": "^1.29.0",
     "rxjs": "~7.8.0",

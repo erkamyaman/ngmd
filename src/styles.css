@@ -8,6 +8,35 @@
   animation-duration: 150ms;
   animation-timing-function: ease;
 }
+
+/* Hero title animation. The gradient span slowly shifts horizontally so the
+ * fuchsia core appears to pulse through the text. Whole h1 fades up on
+ * first paint. Honours prefers-reduced-motion. */
+@keyframes ngmd-hero-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ngmd-hero-gradient-flow {
+  from { background-position: 200% 50%; }
+  to { background-position: -100% 50%; }
+}
+
+.ngmd-hero-fade {
+  animation: ngmd-hero-fade-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ngmd-hero-gradient {
+  background-size: 300% auto;
+  animation: ngmd-hero-gradient-flow 5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ngmd-hero-fade,
+  .ngmd-hero-gradient {
+    animation: none;
+  }
+}
 @plugin '@tailwindcss/typography';
 
 @variant dark (&:where(.dark, .dark *));
