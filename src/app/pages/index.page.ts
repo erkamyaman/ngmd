@@ -225,7 +225,7 @@ import {
               class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500"
             >
               <span>Browser → /welcome</span>
-              <span class="text-rose-500">live</span>
+              <span class="text-fuchsia-500">live</span>
             </div>
             <div class="p-6">
               <h3 class="text-2xl font-bold mb-3">Welcome</h3>
@@ -287,7 +287,7 @@ import {
         <div class="mt-8">
           <a
             routerLink="/welcome"
-            class="inline-flex items-center gap-2 text-base font-medium text-rose-500 hover:text-rose-600"
+            class="inline-flex items-center gap-2 text-base font-medium text-fuchsia-500 hover:text-fuchsia-600"
           >
             Read the docs
             <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
