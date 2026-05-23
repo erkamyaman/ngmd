@@ -1,10 +1,9 @@
-<p align="center">
+<h1 align="center">
   <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">
-    <img src="https://ngmd.netlify.app/logo-mark.svg" alt="NgMd" width="90" />
+    <img src="https://ngmd.netlify.app/logo-mark.svg" alt="" width="56" align="middle" />
   </a>
-</p>
-
-<h1 align="center">NgMd</h1>
+  &nbsp;NgMd
+</h1>
 
 <p align="center">
   Angular docs starter. Drop a markdown file, get a route.
