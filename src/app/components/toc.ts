@@ -70,6 +70,12 @@ export class Toc implements AfterViewInit {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Force-activate the clicked id. The IntersectionObserver uses a
+      // `rootMargin: '0px 0px -70% 0px'` so only the top 30% of viewport
+      // counts as "in view"; the LAST heading can't reach that region if
+      // there isn't enough content below it, leaving scroll-spy stuck on
+      // an earlier heading. Setting active directly here bypasses that.
+      this.active.set(id);
       // index.html has <base href="/">, so a relative `#frag` resolves to
       // `/#frag` and strips the path. Pass the full path explicitly.
       history.replaceState(
@@ -131,5 +137,23 @@ export class Toc implements AfterViewInit {
       { rootMargin: '0px 0px -70% 0px', threshold: 0 },
     );
     nodes.forEach((node) => this.observer!.observe(node));
+
+    // Bottom-of-page guard: when the user scrolls within ~100px of the
+    // bottom of the document, force-activate the last heading. The
+    // IntersectionObserver alone can't reach this state because the last
+    // heading never enters the top 30% of the viewport if there's not
+    // enough content below it.
+    const last = nodes[nodes.length - 1];
+    const onScroll = () => {
+      const scrolled = window.innerHeight + window.scrollY;
+      const fullHeight = document.documentElement.scrollHeight;
+      if (scrolled >= fullHeight - 100) {
+        this.active.set(last.id);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    this.destroyRef.onDestroy(() =>
+      window.removeEventListener('scroll', onScroll),
+    );
   }
 }
