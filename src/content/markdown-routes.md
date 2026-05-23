@@ -8,7 +8,7 @@ NgMd turns markdown files into routes automatically via AnalogJS content collect
 
 ## File-based routing
 
-Any `.md` file in `src/content/` becomes available through `injectContent()`. A matching `.page.ts` in `src/app/pages/` decides how it renders.
+Any `.md` file in `src/content/` becomes available through `injectContent()`. A `.page.ts` in `src/app/pages/` defines the route and pulls the markdown in.
 
 ```
 src/
@@ -17,6 +17,8 @@ src/
 └── app/pages/
     └── welcome.page.ts
 ```
+
+The page reads the content via `injectContent({ customFilename: 'welcome' })` and renders it with `<analog-markdown [content]>`. For routes that need chrome (callouts, tabs, cards) compose Angular components in the `.page.ts` template around the markdown body.
 
 ## Page frontmatter
 
@@ -52,7 +54,7 @@ Layouts are just Angular components rendered around the `<router-outlet>`. NgMd 
 
 ## Code highlighting
 
-All fenced code blocks pass through Shiki at build time. Set the theme in `vite.config.ts`:
+All fenced code blocks pass through Shiki at build time. NgMd emits dual-theme HTML (github-light and github-dark in one pass) and swaps the active palette under `.dark` via a small CSS rule in `styles.css`. To change themes, edit `shikiOptions` in `vite.config.ts`:
 
 ```ts
 analog({
@@ -62,6 +64,22 @@ analog({
   },
 });
 ```
+
+## Inline media
+
+Two marked extensions ship runtime-side so you can drop media into prose without writing TypeScript.
+
+```html
+<ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo" />
+
+<ngmd-image src="/screenshot.png" alt="Sidebar accordion" caption="The sidebar reads from ngmd.config.ts" />
+```
+
+YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus caption plus lazy-load by default.
+
+## Link integrity
+
+The build pipeline fails on broken anchors. External links inside raw HTML must carry `target="_blank"`. Internal `#fragment` and `/route#fragment` markdown links must resolve to real headings in the target file. Broken links error at build time rather than reaching production.
 
 ## Importing code from real files
 

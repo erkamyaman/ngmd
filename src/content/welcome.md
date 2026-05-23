@@ -4,84 +4,75 @@ title: Introduction
 
 # Introduction
 
-Modern documentation sites for Angular. Drop a markdown file. Get a route.
-
-NgMd gives you a beautifully branded docs site without the boilerplate. Built with signals, SSR-compatible, and zoneless-ready, on top of AnalogJS and Spartan UI.
+Angular docs starter. Drop a markdown file. Get a route.
 
 ## How it works
 
-NgMd uses a two-layer authoring model that separates content from presentation:
+NgMd uses a two-layer authoring model that separates prose from chrome.
 
-### 📝 Content as markdown
+### Content as markdown
 
-Your docs live as `.md` files in `src/content/`. Frontmatter handles metadata, marked handles rendering, Shiki handles code highlighting.
+Your docs live as `.md` files in `src/content/`. Frontmatter handles metadata, marked handles rendering, Shiki handles code highlighting (dual-theme: github-light and github-dark in one pass).
 
-**You own it:** Plain markdown, version-controlled, portable to any other tool.
+You own the files. Plain markdown, version-controlled, portable to any other tool.
 
-### 🎨 UI as Angular components
+### Chrome as Angular components
 
-The chrome (sidebar, breadcrumb, TOC, command palette) is composed of Angular components in `src/app/components/`. Built on Tailwind v4 with Spartan UI primitives.
+The site chrome (sidebar, breadcrumb, TOC, Cmd+K palette, page footer with prev/next + edit-on-github + last-updated) lives as components in `src/app/components/`. Authoring components (callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block) live in `src/app/ui/`. Both are built on Tailwind v4, with Spartan UI's brain primitives for accessibility-sensitive pieces like tabs.
 
-**You copy it:** Components live in your codebase. Customize without fighting a theming API.
-
-This hybrid approach means you can write your docs in plain markdown while still owning every pixel of the surrounding interface.
+You own the components. They live in your codebase. Customise without fighting a theming API.
 
 ## Get started
 
-The fastest path to your first page. Pick your package manager:
-
 ```bash
-# pnpm (recommended)
 pnpm create ngmd@latest my-docs
+# or: npm create ngmd@latest, yarn create ngmd, bun create ngmd
 
-# npm
-npm create ngmd@latest my-docs
-
-# yarn
-yarn create ngmd my-docs
-
-# bun
-bun create ngmd my-docs
-```
-
-Then:
-
-```bash
 cd my-docs
-pnpm install   # or npm install / yarn / bun install
+pnpm install
 pnpm run dev
 ```
 
-Open `http://localhost:5173` and you're running. Head to **Installation** for the manual setup or **Quick Start** to build your first page.
+Open `http://localhost:5173` and you are running.
+
+## What's in the box
+
+- File-based routing for `.md` and `.page.ts` via AnalogJS
+- Light, dark, and auto theme cycle with no-flash boot script
+- Sticky translucent header, sidebar accordion from config, breadcrumb, scroll-spy TOC, Cmd+K palette over pages plus headings plus body snippets
+- Page footer with prev/next sibling cards, edit-on-github link, last-updated date from `git log`
+- Heading hover anchor that copies the deep link
+- `*Keyword` inline auto-linking driven by `ngmd.config.ts`
+- Code-fence affordances: `file="src/foo.ts#L5-L20"` imports, `group="install"` tabs, `{1,3-5}` line highlighting
+- Build-time guards: external anchors must have `target="_blank"`, internal anchors must resolve to real headings
+- Sitemap.xml and robots.txt auto-emitted
+- Custom title strategy formats every page as `NgMd | <title>`
+- Route crossfades via the browser's View Transitions API
 
 ## FAQ
 
 ### What is NgMd?
 
-A modern Angular docs-site starter built on AnalogJS. Drop markdown files in `src/content/`, get a routed, beautifully styled documentation site with sidebar nav, breadcrumb, on-page TOC, and Cmd+K search.
+An Angular docs starter on top of AnalogJS. Drop markdown files in `src/content/`, get a routed, branded documentation site with the chrome above.
 
 ### Do I need AnalogJS to use this?
 
-Yes. NgMd is AnalogJS-native. The runtime, file-based routing, SSR, and markdown content collections all come from AnalogJS. If you want a non-Analog setup, plain Angular CLI plus Angular Universal would require rebuilding the routing and rendering pipeline.
+Yes. NgMd is AnalogJS-native. The runtime, file-based routing, SSR, and markdown content collections all come from AnalogJS.
 
 ### What's the difference between Markdown content and Components?
 
-**Markdown** is your prose: installation guides, API references, conceptual explainers. Lives in `src/content/`, edited as plain text.
+Markdown is your prose: installation guides, API references, conceptual explainers. Lives in `src/content/`, edited as plain text.
 
-**Components** are the chrome around your prose: sidebar, header, code-copy buttons, command palette. Lives in `src/app/components/`, edited as TypeScript.
+Authoring components are the chrome around your prose, used inside `.page.ts` files: callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block. Lives in `src/app/ui/`, edited as TypeScript.
 
 ### Why copy components instead of installing them?
 
-Same philosophy as Spartan UI and shadcn/ui. Owning the source code means no theming API to learn, no version conflicts, no waiting for maintainers to add a feature you need. Edit Tailwind classes directly and ship.
+Same philosophy as Spartan UI and shadcn/ui. Owning the source means no theming API to learn, no version conflicts, no waiting for maintainers to add a feature you need. Edit Tailwind classes directly and ship.
 
 ### Is NgMd inspired by VitePress or Starlight?
 
-Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts that pattern for the Angular ecosystem where no canonical equivalent exists.
+Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts the pattern for Angular, where no canonical equivalent exists.
 
 ### Is this production-ready?
 
-NgMd is in active early development. The core (markdown rendering, theming, navigation) is stable. Versioning, i18n, and search adapters are on the roadmap.
-
-
-
-
+NgMd is in active early development. The core (markdown rendering, theming, navigation, build pipeline) is stable. Versioning, i18n, library-style API reference, and search adapters are on the roadmap.

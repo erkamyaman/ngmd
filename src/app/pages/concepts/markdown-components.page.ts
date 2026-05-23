@@ -36,8 +36,8 @@ import { NgmdUi } from '../../ui';
         Pass <code>link</code> to make the whole card a router link.
       </p>
       <ngmd-card title="Markdown routes" link="/concepts/markdown-routes" cta="Learn more">
-        Drop a <code>.md</code> file under <code>src/app/pages/</code> and it
-        becomes a route. No <code>.page.ts</code> needed.
+        Drop a <code>.md</code> file under <code>src/content/</code> and load
+        it via <code>injectContent</code> in a <code>.page.ts</code> route.
       </ngmd-card>
 
       <h2 id="pill-row" class="text-2xl font-semibold mt-12 mb-3">Pill row</h2>
@@ -46,9 +46,9 @@ import { NgmdUi } from '../../ui';
         <code>target="_blank"</code> automatically.
       </p>
       <ngmd-pill-row>
-        <ngmd-pill href="/getting-started/installation" title="Installation" />
-        <ngmd-pill href="/getting-started/quick-start" title="Quick start" />
+        <ngmd-pill href="/welcome" title="Introduction" />
         <ngmd-pill href="/concepts/components" title="Components" />
+        <ngmd-pill href="/concepts/markdown-routes" title="Markdown Routes" />
       </ngmd-pill-row>
 
       <h2 id="tabs" class="text-2xl font-semibold mt-12 mb-3">Tabs</h2>
@@ -105,7 +105,7 @@ import { NgmdUi } from '../../ui';
           Scaffold a new project with your favourite package manager.
         </ngmd-step>
         <ngmd-step title="Drop in a markdown file">
-          Add a <code>.md</code> file under <code>src/app/pages/</code>.
+          Add a <code>.md</code> file under <code>src/content/</code>.
           Frontmatter handles metadata. The body becomes the page.
         </ngmd-step>
         <ngmd-step title="Compose components when you need chrome">

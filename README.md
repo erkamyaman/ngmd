@@ -5,7 +5,7 @@ Angular docs starter. Drop a markdown file, get a route.
 **Live demo**: [ngmd.netlify.app](https://ngmd.netlify.app)
 **npm**: [create-ngmd](https://www.npmjs.com/package/create-ngmd)
 
-Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site chrome (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
+Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 
 ## Try it
 
@@ -26,7 +26,7 @@ Two patterns. Pick per page.
 
 **Chrome pages** compose Angular components in `.page.ts` around your markdown. NgMd ships an authoring suite under `src/app/ui/`: callouts, alerts, cards, tabs (on Spartan brain primitives), pill rows, workflows, hero, code blocks, video, image. Each is a real Angular component with typed inputs, accessibility baked in, and no template-string escape gymnastics.
 
-The fork: prose lives in markdown, chrome lives in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
+The fork: prose lives in markdown, authoring components live in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
 
 ## Build-time affordances
 
@@ -123,7 +123,7 @@ create-ngmd/               The `pnpm create ngmd` scaffolder
 
 ## Status
 
-v0. Core (markdown rendering, theming, navigation, chrome, authoring components, build pipeline) is in place. Versioning, i18n, library-style API reference, and search adapters are on the roadmap. See [BACKLOG.md](./BACKLOG.md).
+v0. Core (markdown rendering, theming, navigation, site frame, authoring components, build pipeline) is in place. Versioning, i18n, library-style API reference, and search adapters are on the roadmap. See [BACKLOG.md](./BACKLOG.md).
 
 ## License
 
