@@ -59,7 +59,7 @@ Things the markdown pipeline gives you without writing JavaScript:
 - External anchors without `target="_blank"` error at build time.
 - Broken in-page (`#fragment`) and cross-page (`/route#fragment`) markdown links error at build time.
 
-## Chrome shipped out of the box
+## Out of the box
 
 - Sticky translucent header with backdrop-blur, brand wordmark
 - Sidebar accordion driven by `ngmd.config.ts`, mobile drawer
