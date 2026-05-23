@@ -82,9 +82,13 @@ export class Toc implements AfterViewInit {
 
   private scanWithRetry(attempt = 0): void {
     if (typeof document === 'undefined' || attempt > 20) return;
+    // Prefer the markdown wrappers for content-driven pages; fall back to
+    // `main article` for TS-driven pages (components.page.ts, etc.) that
+    // render Angular templates directly without analog-markdown.
     const content =
       document.querySelector('main analog-markdown') ??
-      document.querySelector('main analog-markdown-route');
+      document.querySelector('main analog-markdown-route') ??
+      document.querySelector('main article');
     if (!content || content.querySelectorAll('h2, h3').length === 0) {
       setTimeout(() => this.scanWithRetry(attempt + 1), 50);
       return;
