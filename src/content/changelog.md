@@ -19,6 +19,14 @@ Release notes and version history for NgMd.
 - **Sitemap and robots.txt** auto-generated into the client bundle from the same route enumeration as page-meta
 - **Fuchsia accent** wired through sidebar active item, TOC active item, command palette row highlight, prev/next hover border, heading anchor hover, and markdown link focus ring
 - **`create-ngmd` scaffolder** under `create-ngmd/` — Node 20 builtins only, copies a slimmed template, rewrites placeholders, prints next-steps tailored to the detected package manager
+- **Code-fence `file="..."` imports** with GitHub-style line ranges (`#L5-L20`), `// ngmd-ignore-line` stripping, and a header bar linking back to the source on GitHub
+- **Code-fence group tabs** — adjacent ` ```bash group="install" ` fences cluster into a tabbed UI, pre-rendered through shiki at build time
+- **Code-fence line highlighting** — ` ```ts {1,3-5} ` highlights matching lines with the accent stripe
+- **Keyword auto-linking** — declare in `ngmd.config.ts > keywords`, write `*AnalogJS` in prose, get an external link with `target="_blank"`
+- **Custom title strategy** — every page renders as `${siteName} | ${pageTitle}`, with a `site.tagline` for the homepage
+- **Live deploy** at [ngmd.netlify.app](https://ngmd.netlify.app)
+- **`withViewTransitions()`** for smooth crossfades between routes (Chrome ≥111, Safari ≥18, Firefox ≥130)
+- **`netlify.toml`** committed for one-click deploys of new NgMd sites
 
 ### Changed
 
