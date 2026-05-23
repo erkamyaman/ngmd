@@ -55,7 +55,9 @@ function loadFile(spec: string): { code: string; rangeFragment: string } {
 
 function githubBlobUrl(filePath: string, rangeFragment: string): string {
   const repo = config.site.githubUrl.replace(/\.git$/, '');
-  return `${repo}/blob/main/${filePath}${rangeFragment}`;
+  // encodeURI keeps `/` and `.` as-is but escapes brackets, so paths like
+  // `src/app/pages/[...slug].page.ts` resolve on GitHub instead of breaking.
+  return `${repo}/blob/main/${encodeURI(filePath)}${rangeFragment}`;
 }
 
 export const ngmdCodeImportExtension: MarkedExtension = {
