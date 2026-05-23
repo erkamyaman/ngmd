@@ -33,11 +33,11 @@ import {
           href="https://github.com/erkamyaman/ngmd"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-6 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          class="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-4 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-6 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
-          <span class="text-rose-500">★</span>
+          <span class="text-yellow-400">★</span>
           Star on GitHub
-          <i-lucide [img]="arrowIcon" class="size-3"></i-lucide>
+          <i-lucide [img]="arrowIcon" class="size-3.5"></i-lucide>
         </a>
 
         <h1 class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
