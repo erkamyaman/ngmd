@@ -12,7 +12,7 @@ NgMd uses a two-layer authoring model that separates prose from UI.
 
 ### Content as markdown
 
-Your docs live as `.md` files in `src/content/`. Frontmatter handles metadata, marked handles rendering, Shiki handles code highlighting (dual-theme: github-light and github-dark in one pass).
+Your docs live as `.md` files in `src/content/`. The path under `src/content/` becomes the URL (`concepts/theming.md` → `/concepts/theming`), so adding a page is a one-file change. Frontmatter handles metadata, marked handles rendering, Shiki handles code highlighting (dual-theme: github-light and github-dark in one pass).
 
 You own the files. Plain markdown, version-controlled, portable to any other tool.
 
@@ -63,7 +63,7 @@ Yes. NgMd is AnalogJS-native. The runtime, file-based routing, SSR, and markdown
 
 Markdown is your prose: installation guides, API references, conceptual explainers. Lives in `src/content/`, edited as plain text.
 
-Authoring components wrap your prose with structure, used inside `.page.ts` files: callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block. Live in `src/app/ui/`, edited as TypeScript.
+Authoring components wrap your prose with structure, composed inside `.page.ts` files for component pages: callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block. Live in `src/app/ui/`, edited as TypeScript.
 
 ### Why copy components instead of installing them?
 

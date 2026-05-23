@@ -8,17 +8,17 @@ NgMd turns markdown files into routes automatically via AnalogJS content collect
 
 ## File-based routing
 
-Any `.md` file in `src/content/` becomes available through `injectContent()`. A `.page.ts` in `src/app/pages/` defines the route and pulls the markdown in.
+Drop a `.md` file under `src/content/`, get a route at the matching path. No per-page wrapper to write. The mapping is direct: the path under `src/content/` becomes the URL.
 
 ```
-src/
-├── content/
-│   └── welcome.md
-└── app/pages/
-    └── welcome.page.ts
+src/content/welcome.md              →  /welcome
+src/content/getting-started/about.md →  /getting-started/about
+src/content/concepts/theming.md     →  /concepts/theming
 ```
 
-The page reads the content via `injectContent({ customFilename: 'welcome' })` and renders it with `<analog-markdown [content]>`. For routes that need authoring components (callouts, tabs, cards) compose them in the `.page.ts` template around the markdown body.
+One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `<analog-markdown [content]>`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
+
+For pages that need bespoke layouts or want to compose authoring components directly (callouts, tabs, cards, workflows, hero), write a named `.page.ts` in `src/app/pages/` instead. Angular's router prefers the more specific match, so a named route wins over the catch-all.
 
 ## Page frontmatter
 
@@ -35,8 +35,10 @@ order: 1
 You can read these in your page component:
 
 ```ts
-const welcome$ = injectContent<{ title: string; order: number }>('welcome');
+const welcome$ = injectContent<{ title: string; order: number }>('slug');
 ```
+
+The `'slug'` argument names the route param that the catch-all populates with the URL path. For a named `.page.ts` that handles a specific file, pass `{ customFilename: 'welcome' }` instead.
 
 ## Dynamic routes
 

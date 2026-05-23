@@ -10,29 +10,14 @@ import type { Plugin } from 'vite';
  *   - `[text](/path)` — `/path` must be a known route
  *   - `[text](/path#fragment)` — both the route and the heading slug must exist
  *
- * Routes are discovered by scanning `src/content/*.md` (mapped via the same
- * CONTENT_TO_ROUTE convention page-meta uses) and `src/app/pages/**\/*.page.ts`.
+ * Routes are discovered by walking `src/content/**\/*.md` (each markdown
+ * file's path under content/ becomes its route) and `src/app/pages/**\/*.page.ts`.
  * External (`http(s)://`), mail (`mailto:`), and relative (`./foo`) links are
  * skipped; the existing externalLinkGuard covers raw HTML external anchors.
  *
  * Heading slugs are computed with the same lowercase + dash + strip-punct
  * rule the rendered TOC uses, so dev-time and runtime stay in sync.
  */
-
-const CONTENT_TO_ROUTE: Record<string, string> = {
-  welcome: '/welcome',
-  about: '/getting-started/about',
-  changelog: '/getting-started/changelog',
-  installation: '/getting-started/installation',
-  'quick-start': '/getting-started/quick-start',
-  theming: '/concepts/theming',
-  components: '/concepts/components',
-  'markdown-routes': '/concepts/markdown-routes',
-  'stack-overview': '/stack/overview',
-  'stack-technologies': '/stack/technologies',
-  'stack-installation': '/stack/installation',
-  support: '/support',
-};
 
 function slugify(s: string): string {
   return s
@@ -50,6 +35,32 @@ function walkPageFiles(dir: string, root: string, out: string[] = []): string[] 
       walkPageFiles(full, root, out);
     } else if (entry.isFile() && entry.name.endsWith('.page.ts')) {
       out.push(relative(root, full));
+    }
+  }
+  return out;
+}
+
+/**
+ * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
+ * Route mirrors the path under `src/content/` with the .md stripped.
+ * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
+ */
+function walkContentFiles(
+  dir: string,
+  root: string,
+  baseDir: string = dir,
+  out: Array<[string, string]> = [],
+): Array<[string, string]> {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkContentFiles(full, root, baseDir, out);
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      const rel = relative(root, full);
+      const fromContent = relative(baseDir, full)
+        .replace(/\\/g, '/')
+        .replace(/\.md$/, '');
+      out.push([rel, '/' + fromContent]);
     }
   }
   return out;
@@ -86,17 +97,17 @@ export function internalLinkGuard(): Plugin {
     if (primed) return;
     primed = true;
 
-    // .md → route
-    for (const [name, route] of Object.entries(CONTENT_TO_ROUTE)) {
-      const rel = `src/content/${name}.md`;
-      const full = join(root, rel);
-      try {
-        statSync(full);
-      } catch {
-        continue;
+    // .md → route (walk src/content/ tree)
+    const contentDir = join(root, 'src/content');
+    try {
+      statSync(contentDir);
+      for (const [rel, route] of walkContentFiles(contentDir, root)) {
+        const full = join(root, rel);
+        routes.set(route, rel);
+        headingsByRoute.set(route, extractHeadings(readFileSync(full, 'utf8')));
       }
-      routes.set(route, rel);
-      headingsByRoute.set(route, extractHeadings(readFileSync(full, 'utf8')));
+    } catch {
+      // src/content missing — skip
     }
 
     // .page.ts → route (no heading scrape; just makes the route resolvable)

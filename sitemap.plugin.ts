@@ -7,28 +7,39 @@ import type { Plugin } from 'vite';
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
  *
  * Discovery mirrors the page-meta plugin: walks `src/app/pages/*.page.ts` and
- * `src/content/*.md` (mapped via CONTENT_TO_ROUTE), pulls each file's last
- * commit date via `git log -1 --format=%cs` to populate `<lastmod>`, falls
- * back to mtime for uncommitted files, and writes both files via Rollup's
- * `emitFile` so they land at the client root.
+ * `src/content/**\/*.md` (each markdown file's path becomes its route), pulls
+ * each file's last commit date via `git log -1 --format=%cs` to populate
+ * `<lastmod>`, falls back to mtime for uncommitted files, and writes both
+ * files via Rollup's `emitFile` so they land at the client root.
  *
  * `robots.txt` is a one-liner pointing at the sitemap.
  */
 
-const CONTENT_TO_ROUTE: Record<string, string> = {
-  welcome: '/welcome',
-  about: '/getting-started/about',
-  changelog: '/getting-started/changelog',
-  installation: '/getting-started/installation',
-  'quick-start': '/getting-started/quick-start',
-  theming: '/concepts/theming',
-  components: '/concepts/components',
-  'markdown-routes': '/concepts/markdown-routes',
-  'stack-overview': '/stack/overview',
-  'stack-technologies': '/stack/technologies',
-  'stack-installation': '/stack/installation',
-  support: '/support',
-};
+/**
+ * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
+ * Route mirrors the path under `src/content/` with the .md stripped.
+ * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
+ */
+function walkContentFiles(
+  dir: string,
+  root: string,
+  baseDir: string = dir,
+  out: Array<[string, string]> = [],
+): Array<[string, string]> {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkContentFiles(full, root, baseDir, out);
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      const rel = relative(root, full);
+      const fromContent = relative(baseDir, full)
+        .replace(/\\/g, '/')
+        .replace(/\.md$/, '');
+      out.push([rel, '/' + fromContent]);
+    }
+  }
+  return out;
+}
 
 function gitDate(file: string, cwd: string): string {
   try {
@@ -107,14 +118,14 @@ export function sitemapPlugin(opts: { siteUrl: string }): Plugin {
         // src/app/pages missing — fine
       }
 
-      for (const [name, route] of Object.entries(CONTENT_TO_ROUTE)) {
-        const rel = `src/content/${name}.md`;
-        try {
-          statSync(join(root, rel));
-        } catch {
-          continue;
+      const contentDir = join(root, 'src/content');
+      try {
+        statSync(contentDir);
+        for (const [rel, route] of walkContentFiles(contentDir, root)) {
+          entries.set(route, gitDate(rel, root));
         }
-        entries.set(route, gitDate(rel, root));
+      } catch {
+        // src/content missing — skip
       }
 
       const urls = [...entries.entries()]

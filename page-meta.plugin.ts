@@ -6,10 +6,11 @@ import type { Plugin } from 'vite';
 /**
  * Build-time map of page URL → { editUrl, lastUpdated }.
  *
- * Walks `src/app/pages` (for `.page.ts` routes) and `src/content` (for `.md`
- * referenced by `injectContent({ customFilename })`), pulls the latest commit
- * date via `git log`, and emits a typed module under the virtual id
- * `virtual:ngmd/page-meta` which the runtime imports.
+ * Walks `src/app/pages` (for `.page.ts` routes) and `src/content/**\/*.md`
+ * (each markdown file's path under content/ becomes its route, matching the
+ * `[...slug].page.ts` catch-all), pulls the latest commit date via `git log`,
+ * and emits a typed module under the virtual id `virtual:ngmd/page-meta`
+ * which the runtime imports.
  *
  * If the file is uncommitted, lastUpdated falls back to its mtime in ISO
  * date form so dev iteration still shows something.
@@ -64,21 +65,31 @@ function routeFromPagePath(rel: string): string {
   return '/' + trimmed;
 }
 
-const CONTENT_TO_ROUTE: Record<string, string> = {
-  // Maps customFilename (without .md) → page route for content-driven pages.
-  welcome: '/welcome',
-  about: '/getting-started/about',
-  changelog: '/getting-started/changelog',
-  installation: '/getting-started/installation',
-  'quick-start': '/getting-started/quick-start',
-  theming: '/concepts/theming',
-  components: '/concepts/components',
-  'markdown-routes': '/concepts/markdown-routes',
-  'stack-overview': '/stack/overview',
-  'stack-technologies': '/stack/technologies',
-  'stack-installation': '/stack/installation',
-  support: '/support',
-};
+/**
+ * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
+ * Route mirrors the path under `src/content/` with the .md stripped.
+ * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
+ */
+function walkContentFiles(
+  dir: string,
+  root: string,
+  baseDir: string = dir,
+  out: Array<[string, string]> = [],
+): Array<[string, string]> {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkContentFiles(full, root, baseDir, out);
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      const rel = relative(root, full);
+      const fromContent = relative(baseDir, full)
+        .replace(/\\/g, '/')
+        .replace(/\.md$/, '');
+      out.push([rel, '/' + fromContent]);
+    }
+  }
+  return out;
+}
 
 export function pageMetaPlugin(opts: {
   repoUrl: string;
@@ -114,16 +125,21 @@ export function pageMetaPlugin(opts: {
         };
       }
 
-      // src/content/<name>.md → route via CONTENT_TO_ROUTE
-      for (const [name, route] of Object.entries(CONTENT_TO_ROUTE)) {
-        const rel = `src/content/${name}.md`;
-        const date = gitDate(rel, root);
-        if (!date) continue;
-        // .md edit URL wins when present (more useful for prose pages)
-        map[route] = {
-          editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
-          lastUpdated: date,
-        };
+      // src/content/**/*.md → route (mirrors the [...slug] catch-all)
+      const contentDir = join(root, 'src/content');
+      try {
+        statSync(contentDir);
+        for (const [rel, route] of walkContentFiles(contentDir, root)) {
+          const date = gitDate(rel, root);
+          if (!date) continue;
+          // .md edit URL wins when present (more useful for prose pages)
+          map[route] = {
+            editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
+            lastUpdated: date,
+          };
+        }
+      } catch {
+        // src/content missing — skip
       }
 
       return `export const pageMeta = ${JSON.stringify(map, null, 2)};`;

@@ -82,8 +82,11 @@ function writeReadme() {
     'pnpm dev\n' +
     '```\n\n' +
     '## Add a page\n\n' +
-    'Drop a `.md` file under `src/app/pages/` (or under `src/content/` and ' +
-    'reference it via `injectContent`). Headings become anchors automatically.\n\n' +
+    'Drop a `.md` file under `src/content/`. The path becomes the URL: ' +
+    '`src/content/install.md` resolves at `/install`, ' +
+    '`src/content/guides/auth.md` at `/guides/auth`. No `.page.ts` wrapper ' +
+    'needed; the catch-all at `src/app/pages/[...slug].page.ts` renders ' +
+    'every prose route.\n\n' +
     '## Build\n\n' +
     '```bash\n' +
     'pnpm build\n' +
@@ -132,18 +135,19 @@ function slimDocsContent() {
     '# Welcome\n\n' +
     'This is your first docs page, rendered from `src/content/welcome.md`.\n\n' +
     '## Add a page\n\n' +
-    'Drop a new `.md` file under `src/content/` and load it with ' +
-    '`injectContent({ customFilename })` in a `.page.ts` route, or put `.md` ' +
-    'files directly under `src/app/pages/` to get a file-router route with ' +
-    'zero TypeScript.\n\n' +
+    'Drop a new `.md` file under `src/content/`. The path becomes the URL: ' +
+    '`src/content/install.md` resolves at `/install`, ' +
+    '`src/content/guides/auth.md` at `/guides/auth`. The catch-all at ' +
+    '`src/app/pages/[...slug].page.ts` renders every prose route, no wrapper ' +
+    'required.\n\n' +
     '## Add nav\n\n' +
     'Edit the `nav` array in `src/ngmd.config.ts`. Sidebar, command palette, ' +
     'breadcrumb, and prev/next footer all read from there.\n\n' +
     '## Authoring components\n\n' +
     'NgMd ships a small authoring component library under `src/app/ui/`: callouts, alerts, ' +
     'cards, tabs (Spartan brain), pill rows, workflows, hero, and a code ' +
-    'block with shiki highlighting. Compose them in `.page.ts` around your ' +
-    'markdown.\n';
+    'block with shiki highlighting. Compose them in a `.page.ts` route for ' +
+    'pages that need bespoke layout; for prose pages, stick with markdown.\n';
   mkdirSync(CONTENT, { recursive: true });
   writeFileSync(join(CONTENT, 'welcome.md'), welcome);
   console.log('  + src/content/welcome.md (placeholder)');

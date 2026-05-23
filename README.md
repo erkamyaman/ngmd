@@ -39,7 +39,7 @@ pnpm run dev
 
 ## Authoring model
 
-Two patterns, pick per page. **Prose pages** stay in markdown — drop a `.md` file under `src/content/`, the sidebar / TOC / prev-next / edit-on-github all derive from `ngmd.config.ts` and `git log`. **Chrome pages** compose Angular components in `.page.ts` around your markdown using NgMd's authoring suite (callouts, alerts, cards, tabs on Spartan brain, pill rows, workflows, hero, code blocks, video, image).
+Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's authoring suite (callouts, alerts, cards, tabs on Spartan brain, pill rows, workflows, hero, code blocks, video, image).
 
 The fork: prose in markdown, authoring components in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
 
