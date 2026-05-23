@@ -1,6 +1,7 @@
 import type { MarkedExtension } from 'marked';
 import { ngmdVideoExtension } from './ngmd-video';
 import { ngmdImageExtension } from './ngmd-image';
+import { ngmdKeywordsExtension } from './ngmd-keywords';
 
 /**
  * Marked extensions are split into two arrays.
@@ -21,6 +22,7 @@ export const ngmdRuntimeExtensions: MarkedExtension[] = [
   {
     extensions: [ngmdVideoExtension, ngmdImageExtension],
   },
+  ngmdKeywordsExtension,
 ];
 
 // Build-time-only extensions are imported lazily below so the runtime bundle

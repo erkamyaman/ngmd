@@ -35,6 +35,13 @@ export interface NgmdConfig {
   site: SiteConfig;
   /** Sidebar sections, in render order. */
   nav: NavSection[];
+  /**
+   * Inline-link keywords. In any `.md` body, `*Keyword` resolves to a link
+   * pointing at the configured URL. Unknown keywords log a warning and fall
+   * back to literal `*Keyword` text. Change the URL here once, every doc
+   * follows.
+   */
+  keywords?: Record<string, string>;
 }
 
 const config: NgmdConfig = {
@@ -44,6 +51,21 @@ const config: NgmdConfig = {
       'Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind.',
     url: 'https://ngmd.dev',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
+  },
+
+  keywords: {
+    NgMd: '/welcome',
+    AnalogJS: 'https://analogjs.org',
+    Angular: 'https://angular.dev',
+    Tailwind: 'https://tailwindcss.com',
+    Shiki: 'https://shiki.style',
+    Marked: 'https://marked.js.org',
+    Vite: 'https://vitejs.dev',
+    Spartan: 'https://www.spartan.ng',
+    VitePress: 'https://vitepress.dev',
+    Starlight: 'https://starlight.astro.build',
+    Docusaurus: 'https://docusaurus.io',
+    Nextra: 'https://nextra.site',
   },
 
   nav: [

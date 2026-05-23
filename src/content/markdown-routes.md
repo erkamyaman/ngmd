@@ -105,3 +105,11 @@ import { Component } from '@angular/core';
 })
 export class Hello {}
 ```
+
+## Auto-linked keywords
+
+Define keywords in `ngmd.config.ts > keywords`. Prefix any name with `*` in markdown prose to turn it into a link without writing the URL each time.
+
+For example, *NgMd is built on *AnalogJS with *Tailwind v4, *Shiki for code highlighting, and *Spartan brain primitives. Compare against *VitePress, *Starlight, *Nextra, and *Docusaurus to see where the bar sits.
+
+Unknown keywords (`*WrongName`) log a warning at build time and fall back to literal text so the build never fails on a typo.
