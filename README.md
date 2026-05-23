@@ -3,6 +3,7 @@
 Angular docs starter. Drop a markdown file, get a route.
 
 **Live demo**: [ngmd.netlify.app](https://ngmd.netlify.app)
+**npm**: [create-ngmd](https://www.npmjs.com/package/create-ngmd)
 
 Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site chrome (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 

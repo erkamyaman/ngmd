@@ -1,6 +1,10 @@
 # create-ngmd
 
+[![npm version](https://img.shields.io/npm/v/create-ngmd.svg)](https://www.npmjs.com/package/create-ngmd)
+
 Scaffold a new [NgMd](https://github.com/erkamyaman/ngmd) docs project.
+
+Live demo: [ngmd.netlify.app](https://ngmd.netlify.app)
 
 ```bash
 pnpm create ngmd@latest my-docs

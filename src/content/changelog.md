@@ -18,7 +18,7 @@ Release notes and version history for NgMd.
 - **Build-time page-meta** virtual module (`virtual:ngmd/page-meta`) — emits per-route `editUrl` and `lastUpdated` baked at build time
 - **Sitemap and robots.txt** auto-generated into the client bundle from the same route enumeration as page-meta
 - **Fuchsia accent** wired through sidebar active item, TOC active item, command palette row highlight, prev/next hover border, heading anchor hover, and markdown link focus ring
-- **`create-ngmd` scaffolder** under `create-ngmd/` — Node 20 builtins only, copies a slimmed template, rewrites placeholders, prints next-steps tailored to the detected package manager
+- **`create-ngmd` scaffolder** published to [npmjs.com/package/create-ngmd](https://www.npmjs.com/package/create-ngmd) — `pnpm create ngmd@latest my-docs` (also `npm` / `yarn` / `bun`). Node 20 builtins only, copies a slimmed template, rewrites placeholders, detects the package manager and tailors the next-steps output
 - **Code-fence `file="..."` imports** with GitHub-style line ranges (`#L5-L20`), `// ngmd-ignore-line` stripping, and a header bar linking back to the source on GitHub
 - **Code-fence group tabs** — adjacent ` ```bash group="install" ` fences cluster into a tabbed UI, pre-rendered through shiki at build time
 - **Code-fence line highlighting** — ` ```ts {1,3-5} ` highlights matching lines with the accent stripe
@@ -36,9 +36,9 @@ Release notes and version history for NgMd.
 
 ## Coming next
 
-- `npx create-ngmd` published to npm
 - Search ranking improvements (fuzzy + weighted) in Cmd+K palette
 - Custom domain (`ngmd.dev`) migration from the current Netlify subdomain
+- OG image auto-generation per page
 
 ## v1 (later)
 
