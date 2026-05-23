@@ -1,9 +1,27 @@
-# NgMd
+<p align="center">
+  <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">
+    <img src="https://ngmd.netlify.app/logo.svg" alt="NgMd" width="220" />
+  </a>
+</p>
 
-Angular docs starter. Drop a markdown file, get a route.
+<p align="center">
+  <strong>Angular docs starter. Drop a markdown file, get a route.</strong>
+</p>
 
-**Live demo**: [ngmd.netlify.app](https://ngmd.netlify.app)
-**npm**: [create-ngmd](https://www.npmjs.com/package/create-ngmd)
+<p align="center">
+  <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">Live demo</a>
+  &nbsp;·&nbsp;
+  <a href="https://www.npmjs.com/package/create-ngmd" target="_blank" rel="noopener noreferrer">npm</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/erkamyaman/ngmd" target="_blank" rel="noopener noreferrer">GitHub</a>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/create-ngmd" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/create-ngmd.svg?color=d946ef" alt="npm version" /></a>
+  <a href="https://github.com/erkamyaman/ngmd/blob/main/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/l/create-ngmd.svg?color=d946ef" alt="MIT licence" /></a>
+</p>
+
+---
 
 Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 
