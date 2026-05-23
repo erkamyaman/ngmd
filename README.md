@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">
-    <img src="https://ngmd.netlify.app/logo-mark.svg" alt="" width="56" align="middle" />
+    <img src="https://ngmd.netlify.app/logo-mark.svg" alt="" height="48" align="absmiddle" />
   </a>
   &nbsp;NgMd
 </h1>
