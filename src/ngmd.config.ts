@@ -90,6 +90,10 @@ const config: NgmdConfig = {
       ],
     },
     {
+      label: 'AI',
+      items: [{ label: 'Agent Skills', href: '/ai/agent-skills' }],
+    },
+    {
       label: 'Help',
       items: [{ label: 'Support', href: '/support' }],
     },

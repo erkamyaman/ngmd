@@ -48,6 +48,7 @@ Open `http://localhost:5173` and you are running.
 - Sitemap.xml and robots.txt auto-emitted
 - Custom title strategy formats every page as `NgMd | <title>`
 - Route crossfades via the browser's View Transitions API
+- Agent skills (`ngmd-new-site`, `ngmd-authoring`) shipped in [`skills/`](/ai/agent-skills) for Claude Code / Gemini CLI / Antigravity
 
 ## FAQ
 

@@ -110,14 +110,14 @@ Open follow-ups:
 
 ## 9. Authoring DX
 
-- 🟡 `npx create-ngmd` scaffolder — built under `create-ngmd/`, working locally (`node create-ngmd/index.mjs my-docs`), not yet published to npm
+- ✅ `npx create-ngmd` scaffolder — published as `create-ngmd@0.0.3` on npm. Works via `pnpm create ngmd@latest`, `npm create ngmd@latest`, `yarn create ngmd`, `bun create ngmd`. Slim template ships with the `[...slug].page.ts` catch-all so users drop `.md` files and get routes with no wrapper.
 - ❌ `ngmd add <component>` CLI for shadcn-style component installation
 - ❌ `ngmd new page <slug>` CLI to generate a new markdown page + sidebar entry
 - ❌ VS Code snippets for common docs patterns (callout, tabs, pill row)
 
 ## 10. Polish / nice-to-have
 
-- ❌ Animated transitions between routes (fade-in, etc.)
+- ✅ View Transitions API crossfade between routes (`withViewTransitions()` in `app.config.ts`, 150ms duration tuned in `styles.css`; falls back to default behaviour on Chrome <111)
 - ❌ Loading skeleton while markdown content loads
 - ❌ Back-to-top button
 - ❌ Keyboard shortcut help dialog (press `?`)

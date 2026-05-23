@@ -45,7 +45,7 @@ The fork: prose in markdown, authoring components in TypeScript. The dual-pipeli
 
 ## What's in the box
 
-Site frame, palette, prev/next footer, edit-on-github, heading anchors, shiki dual-theme, fuchsia accent. Build-time link guards, sitemap, page-meta plugin. Authoring components and code-fence affordances (`*Keyword` auto-linking, ` ```ts file="..." ` imports, group tabs, line highlighting).
+Site frame, palette, prev/next footer, edit-on-github, heading anchors, shiki dual-theme, fuchsia accent. Build-time link guards, sitemap, page-meta plugin. Authoring components and code-fence affordances (`*Keyword` auto-linking, ` ```ts file="..." ` imports, group tabs, line highlighting). [Agent skills](https://ngmd.netlify.app/ai/agent-skills) for Claude Code / Gemini CLI / Antigravity so coding agents already know the conventions.
 
 Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
 
