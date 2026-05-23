@@ -22,8 +22,11 @@ interface NgmdKeywordToken extends Tokens.Generic {
   url: string;
 }
 
-const KEYWORD_RE = /^\*([A-Z][a-zA-Z0-9]+)\b/;
-const HINT_RE = /\*[A-Z]/;
+// `(?!\*)` after the leading `*` prevents matching the second `*` of a
+// `**bold**` pair. `(?!\*)` after the keyword prevents matching the inside
+// of `**Keyword**` (which would leave one stray `*` and one stray `**`).
+const KEYWORD_RE = /^\*(?!\*)([A-Z][a-zA-Z0-9]+)\b(?!\*)/;
+const HINT_RE = /\*(?!\*)[A-Z]/;
 const warned = new Set<string>();
 
 function lookup(keyword: string): string | undefined {
