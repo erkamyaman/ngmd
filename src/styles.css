@@ -1,4 +1,13 @@
 @import 'tailwindcss';
+
+/* View Transitions API tuning. Angular's withViewTransitions() crossfades
+ * route changes via these pseudo-elements. Shorten the default ~250ms to
+ * 150ms so it stays snappy. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 150ms;
+  animation-timing-function: ease;
+}
 @plugin '@tailwindcss/typography';
 
 @variant dark (&:where(.dark, .dark *));

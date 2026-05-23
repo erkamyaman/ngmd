@@ -13,7 +13,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import { provideContent, withMarkdownRenderer } from '@analogjs/content';
 import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter';
-import { withInMemoryScrolling, TitleStrategy } from '@angular/router';
+import { withInMemoryScrolling, withViewTransitions, TitleStrategy } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { marked } from 'marked';
 import { ngmdRuntimeExtensions } from '../marked-extensions';
@@ -27,6 +27,12 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
         scrollPositionRestoration: 'disabled',
       }),
+      // Native browser View Transitions API: takes a snapshot of the old
+      // route, renders the new one, then crossfades. Hides the markdown
+      // resolution gap that caused the "flash of stale content" bug
+      // without needing a manual isNavigating signal or opacity hacks.
+      // Falls back to default behaviour on older browsers (Chrome <111).
+      withViewTransitions(),
     ),
     provideHttpClient(
       withFetch(),
