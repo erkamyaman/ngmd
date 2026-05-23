@@ -85,7 +85,7 @@ The build pipeline fails on broken anchors. External links inside raw HTML must 
 
 To keep doc examples in sync with the source, import the file directly with `file="..."` in the fence. GitHub-style line ranges (`#L5-L10`) work too:
 
-```ts file="src/app/pages/welcome.page.ts#L1-L5"
+```ts file="src/app/pages/[...slug].page.ts#L1-L7"
 ```
 
 Lines tagged with `// ngmd-ignore-line` are stripped from the imported snippet, so you can hide setup boilerplate from doc readers while keeping the source file runnable.
