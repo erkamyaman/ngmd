@@ -19,10 +19,6 @@ The fastest way to reach the maintainers and other users is through GitHub:
 - **Discussions**: ask questions, share patterns, show off what you built
 - **Pull Requests**: contribute fixes, docs, or new features
 
-### Discord
-
-A community Discord server is on the roadmap. Until then, GitHub Discussions is the gathering place.
-
 ## Sponsorship
 
 NgMd is built and maintained in the open. If your team or company relies on it, consider sponsoring the project:
