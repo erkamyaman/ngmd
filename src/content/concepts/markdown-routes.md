@@ -10,11 +10,9 @@ NgMd turns markdown files into routes automatically via AnalogJS content collect
 
 Drop a `.md` file under `src/content/`, get a route at the matching path. No per-page wrapper to write. The mapping is direct: the path under `src/content/` becomes the URL.
 
-```
-src/content/welcome.md              →  /welcome
-src/content/getting-started/about.md →  /getting-started/about
-src/content/concepts/theming.md     →  /concepts/theming
-```
+- `src/content/welcome.md` → `/welcome`
+- `src/content/getting-started/about.md` → `/getting-started/about`
+- `src/content/concepts/theming.md` → `/concepts/theming`
 
 One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `<analog-markdown [content]>`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
 

@@ -174,7 +174,7 @@ Build pipeline:
 Distribution:
 
 - ✅ `create-ngmd/` scaffolder (Node builtins, slim template, package-manager detection)
-- ✅ Two showcase pages: `/concepts/components` and `/concepts/markdown-components`
+- ✅ Showcase page at `/concepts/components` demoing every NgmdUi component
 - ✅ Hexagon logo with rose → fuchsia → purple gradient stroke, Geist Mono wordmark
 - ✅ Open Graph + meta tags, SVG favicon
 - ✅ License, README, package.json metadata
