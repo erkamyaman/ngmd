@@ -1,11 +1,13 @@
 <p align="center">
   <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">
-    <img src="https://ngmd.netlify.app/logo.svg" alt="NgMd" width="220" />
+    <img src="https://ngmd.netlify.app/logo-mark.svg" alt="NgMd" width="90" />
   </a>
 </p>
 
+<h1 align="center">NgMd</h1>
+
 <p align="center">
-  <strong>Angular docs starter. Drop a markdown file, get a route.</strong>
+  Angular docs starter. Drop a markdown file, get a route.
 </p>
 
 <p align="center">
