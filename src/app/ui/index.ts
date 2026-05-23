@@ -21,7 +21,7 @@ import { NgmdTab, NgmdTabs } from './tabs';
 import { NgmdVideo } from './video';
 
 /**
- * Spread into a page's `imports` to get every chrome component in one go:
+ * Spread into a page's `imports` to get every authoring component in one go:
  *   `imports: [...NgmdUi]`. For lighter pages, import only what you use.
  *
  * Not declared `as const`: Angular's standalone-component compiler needs

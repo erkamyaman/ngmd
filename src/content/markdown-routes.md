@@ -18,7 +18,7 @@ src/
     └── welcome.page.ts
 ```
 
-The page reads the content via `injectContent({ customFilename: 'welcome' })` and renders it with `<analog-markdown [content]>`. For routes that need chrome (callouts, tabs, cards) compose Angular components in the `.page.ts` template around the markdown body.
+The page reads the content via `injectContent({ customFilename: 'welcome' })` and renders it with `<analog-markdown [content]>`. For routes that need authoring components (callouts, tabs, cards) compose them in the `.page.ts` template around the markdown body.
 
 ## Page frontmatter
 

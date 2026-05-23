@@ -7,7 +7,7 @@ import { pageMeta } from 'virtual:ngmd/page-meta';
 import { navItems } from '../../ngmd.config';
 
 /**
- * Bottom-of-page chrome shown under every docs route: previous/next sibling
+ * Bottom-of-page frame shown under every docs route: previous/next sibling
  * pages derived from `ngmd.config.ts`, an "Edit on GitHub" link, and the
  * page's last-updated date (commit cs from `git log`, baked at build time
  * via the page-meta vite plugin).

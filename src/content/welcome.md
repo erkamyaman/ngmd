@@ -8,7 +8,7 @@ Angular docs starter. Drop a markdown file. Get a route.
 
 ## How it works
 
-NgMd uses a two-layer authoring model that separates prose from chrome.
+NgMd uses a two-layer authoring model that separates prose from UI.
 
 ### Content as markdown
 
@@ -16,9 +16,9 @@ Your docs live as `.md` files in `src/content/`. Frontmatter handles metadata, m
 
 You own the files. Plain markdown, version-controlled, portable to any other tool.
 
-### Chrome as Angular components
+### UI as Angular components
 
-The site chrome (sidebar, breadcrumb, TOC, Cmd+K palette, page footer with prev/next + edit-on-github + last-updated) lives as components in `src/app/components/`. Authoring components (callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block) live in `src/app/ui/`. Both are built on Tailwind v4, with Spartan UI's brain primitives for accessibility-sensitive pieces like tabs.
+The site frame (sidebar, breadcrumb, TOC, Cmd+K palette, page footer with prev/next + edit-on-github + last-updated) lives as components in `src/app/components/`. Authoring components (callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block) live in `src/app/ui/`. Both are built on Tailwind v4, with Spartan UI's brain primitives for accessibility-sensitive pieces like tabs.
 
 You own the components. They live in your codebase. Customise without fighting a theming API.
 
@@ -53,7 +53,7 @@ Open `http://localhost:5173` and you are running.
 
 ### What is NgMd?
 
-An Angular docs starter on top of AnalogJS. Drop markdown files in `src/content/`, get a routed, branded documentation site with the chrome above.
+An Angular docs starter on top of AnalogJS. Drop markdown files in `src/content/`, get a routed, branded documentation site with the site frame and features listed above.
 
 ### Do I need AnalogJS to use this?
 
@@ -63,7 +63,7 @@ Yes. NgMd is AnalogJS-native. The runtime, file-based routing, SSR, and markdown
 
 Markdown is your prose: installation guides, API references, conceptual explainers. Lives in `src/content/`, edited as plain text.
 
-Authoring components are the chrome around your prose, used inside `.page.ts` files: callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block. Lives in `src/app/ui/`, edited as TypeScript.
+Authoring components wrap your prose with structure, used inside `.page.ts` files: callout, alert, card, tabs, pill row, workflow, hero, video, image, code-block. Live in `src/app/ui/`, edited as TypeScript.
 
 ### Why copy components instead of installing them?
 

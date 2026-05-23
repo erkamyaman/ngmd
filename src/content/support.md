@@ -4,39 +4,39 @@ title: Support
 
 # Support
 
-Whether you're shipping personal docs or enterprise documentation, here are the ways to get help and support NgMd.
+Ways to get help and support NgMd.
 
-## Community Support
+## Community support
 
-NgMd is MIT-licensed, free, and open source. Community support is the best place to start.
+NgMd is MIT-licensed and open source. Start here.
 
 ### GitHub
 
-The fastest way to reach the maintainers and other users is through GitHub:
+The fastest path to the maintainer and other users:
 
-- **Bug Reports**: file an issue when something doesn't work as documented
-- **Feature Requests**: propose new components, primitives, or workflows
-- **Discussions**: ask questions, share patterns, show off what you built
-- **Pull Requests**: contribute fixes, docs, or new features
+- **Bug reports**: file an issue when something doesn't work as documented
+- **Feature requests**: propose new components, primitives, or workflows
+- **Discussions**: ask questions, share patterns, show what you built
+- **Pull requests**: contribute fixes, docs, or new features
 
 ## Sponsorship
 
-NgMd is built and maintained in the open. If your team or company relies on it, consider sponsoring the project:
+If your team relies on NgMd, consider sponsoring:
 
 - **One-time** sponsorship via GitHub Sponsors
 - **Recurring** monthly support to keep the project healthy
-- **Logo placement** on the site for sponsoring organizations
+- **Logo placement** on the site for sponsoring organisations
 
-Sponsorship directly funds documentation, releases, and the time it takes to keep the stack working with the latest Angular, AnalogJS, and Spartan UI versions.
+Sponsorship funds documentation, releases, and the time to keep the stack working with the latest Angular, AnalogJS, and Spartan UI versions.
 
-## Paid Support
+## Paid support
 
 Private consulting and enterprise support packages are on the horizon for teams that need:
 
-- Migration help (Docusaurus / VitePress → NgMd)
+- Migration help (Docusaurus / VitePress to NgMd)
 - Custom theming and branding work
 - Component primitives built for your design system
-- SLA-backed bug fix turnarounds
+- SLA-backed bug-fix turnarounds
 
 Reach out via GitHub if you'd like to start a conversation.
 

@@ -108,7 +108,7 @@ import { NgmdUi } from '../../ui';
           Add a <code>.md</code> file under <code>src/content/</code>.
           Frontmatter handles metadata. The body becomes the page.
         </ngmd-step>
-        <ngmd-step title="Compose components when you need chrome">
+        <ngmd-step title="Compose authoring components when you need them">
           Switch to <code>.page.ts</code> only when you want tabs, cards,
           callouts, or other layout components around your markdown.
         </ngmd-step>

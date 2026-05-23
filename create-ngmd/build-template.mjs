@@ -140,7 +140,7 @@ function slimDocsContent() {
     'Edit the `nav` array in `src/ngmd.config.ts`. Sidebar, command palette, ' +
     'breadcrumb, and prev/next footer all read from there.\n\n' +
     '## Authoring components\n\n' +
-    'NgMd ships a small chrome library under `src/app/ui/`: callouts, alerts, ' +
+    'NgMd ships a small authoring component library under `src/app/ui/`: callouts, alerts, ' +
     'cards, tabs (Spartan brain), pill rows, workflows, hero, and a code ' +
     'block with shiki highlighting. Compose them in `.page.ts` around your ' +
     'markdown.\n';

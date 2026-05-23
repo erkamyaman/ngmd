@@ -8,7 +8,7 @@ Two paths. Use the scaffolder unless you're integrating into an existing AnalogJ
 
 ## Path A. Scaffold a fresh project
 
-The fastest and recommended route. The published `create-ngmd` package handles everything: scaffolds AnalogJS, installs deps, copies the NgMd chrome and authoring components, sets up the build pipeline.
+The fastest and recommended route. The published `create-ngmd` package handles everything: scaffolds AnalogJS, installs deps, copies the NgMd site frame and authoring components, sets up the build pipeline.
 
 ```bash
 pnpm create ngmd@latest my-docs
