@@ -171,6 +171,22 @@
     scroll-margin-top: 6rem;
   }
 
+  /* Inline code inside headings: strip the heavy code-span box and lean on
+   * the brand accent instead. Lets identifiers like skill names, hook names,
+   * or symbol references read as accent-coloured monospace titles rather
+   * than the dense gray pill the inline-code rule applies in body prose. */
+  analog-markdown h1 code,
+  analog-markdown-route h1 code,
+  analog-markdown h2 code,
+  analog-markdown-route h2 code,
+  analog-markdown h3 code,
+  analog-markdown-route h3 code {
+    color: var(--accent);
+    background: transparent;
+    padding: 0;
+    font-size: 0.95em;
+  }
+
   analog-markdown p,
   analog-markdown-route p {
     margin-block: 1rem;
