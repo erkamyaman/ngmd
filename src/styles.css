@@ -26,6 +26,21 @@
   animation: ngmd-hero-fade-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Hide hero words and the gradient line at first paint so SSR HTML doesn't
+ * flash before motion takes over. Motion sets opacity:1 + translateY(0)
+ * via inline styles, which override these defaults. */
+.ngmd-hero-anim {
+  opacity: 0;
+  transform: translateY(0.5em);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ngmd-hero-anim {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .ngmd-hero-gradient {
   background-size: 300% auto;
   animation: ngmd-hero-gradient-flow 5s linear infinite;

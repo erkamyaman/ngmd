@@ -32,9 +32,7 @@ import { animate, stagger } from 'motion';
         </a>
 
         <h1 #hero class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
-          <span class="ngmd-hero-anim inline-block mr-[0.25em]">The</span>
-          <span class="ngmd-hero-anim inline-block mr-[0.25em]">Angular</span>
-          <span class="ngmd-hero-anim inline-block mr-[0.25em]">docs</span>
+          <span class="ngmd-hero-anim inline-block">The</span>&nbsp;<span class="ngmd-hero-anim inline-block">Angular</span>&nbsp;<span class="ngmd-hero-anim inline-block">docs</span>
           <span
             class="ngmd-hero-anim block bg-gradient-to-r from-rose-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent ngmd-hero-gradient pb-1"
           >
