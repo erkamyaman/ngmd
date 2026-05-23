@@ -14,6 +14,7 @@ import {
 } from 'lucide-angular';
 import { ThemeService } from './theme';
 import { LayoutMode } from './layout-mode.service';
+import siteConfig from '../ngmd.config';
 import { CommandPalette } from './components/command-palette';
 import { Sidebar } from './components/sidebar';
 import { Breadcrumb } from './components/breadcrumb';
@@ -114,7 +115,7 @@ import { MediaEnhancer } from './components/media-enhancer';
           </button>
           <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <a
-            href="https://github.com/erkamyaman/ngmd"
+            [href]="githubUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
@@ -223,6 +224,8 @@ export class App implements OnInit {
   readonly sunIcon = Sun;
   readonly moonIcon = Moon;
   readonly autoIcon = SunMoon;
+
+  readonly githubUrl = siteConfig.site.githubUrl;
 
   readonly drawerOpen = signal(false);
 
