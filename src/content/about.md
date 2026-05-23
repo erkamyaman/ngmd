@@ -10,7 +10,7 @@ Built on the shoulders of incredible open source projects.
 
 **NgMd** is a project by Kam ([@erkamyaman](https://github.com/erkamyaman)).
 
-It exists to fill an empty lane in the Angular ecosystem: a modern, brandable docs starter on par with VitePress (Vue), Starlight (Astro), Nextra (Next), and Docusaurus (React).
+Angular has no equivalent to what VitePress, Starlight, Nextra, and Docusaurus give Vue, Astro, Next, and React: drop a markdown file, get a brandable docs site. NgMd fills that gap.
 
 ## Credits
 

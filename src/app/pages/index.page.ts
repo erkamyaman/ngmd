@@ -30,7 +30,7 @@ import {
     <section class="relative">
       <div class="mx-auto max-w-6xl px-6 pt-24 pb-20 text-center">
         <a
-          href="https://github.com"
+          href="https://github.com/erkamyaman/ngmd"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-3 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-6 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
@@ -63,7 +63,7 @@ import {
             <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
           </a>
           <a
-            href="https://github.com"
+            href="https://github.com/erkamyaman/ngmd"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-6 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
