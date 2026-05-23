@@ -1,66 +1,126 @@
 # NgMd
 
-A modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind.
+Angular docs starter. Drop a markdown file, get a route.
 
-Drop a markdown file. Get a route. Beautifully branded out of the box.
+Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site chrome (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 
-## Quick start
+## Try it
 
 ```bash
+pnpm create ngmd@latest my-docs
+cd my-docs
 pnpm install
 pnpm run dev
 ```
 
-Open `http://localhost:5173`.
+`npm create ngmd@latest`, `yarn create ngmd`, and `bun create ngmd` all work too. The scaffolder detects which one you used and tailors the next-steps output.
 
-`npm`, `yarn`, and `bun` are also supported.
+## Authoring model
+
+Two patterns. Pick per page.
+
+**Prose pages** stay in markdown. Drop a `.md` file under `src/app/pages/` and it becomes a route automatically (no `.page.ts` required). Frontmatter sets the title, body becomes the page. The sidebar, TOC, prev/next footer, and edit-on-github link all derive from `ngmd.config.ts` and `git log`.
+
+**Chrome pages** compose Angular components in `.page.ts` around your markdown. NgMd ships an authoring suite under `src/app/ui/`: callouts, alerts, cards, tabs (on Spartan brain primitives), pill rows, workflows, hero, code blocks, video, image. Each is a real Angular component with typed inputs, accessibility baked in, and no template-string escape gymnastics.
+
+The fork: prose lives in markdown, chrome lives in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
+
+## Build-time affordances
+
+Things the markdown pipeline gives you without writing JavaScript:
+
+- `*Keyword` inline auto-linking. Declare keywords in `ngmd.config.ts > keywords`, write `*AnalogJS` anywhere in prose, get a link.
+- `` ```ts file="src/foo.ts#L5-L20" `` imports code from a real source file, GitHub-line-range syntax, header bar links back to GitHub.
+- `` ```bash group="install" name="pnpm" active `` clusters adjacent fences into a tabbed group.
+- `` ```ts {1,3-5} `` highlights matching lines with the accent stripe.
+- `// ngmd-ignore-line` strips a line from an imported snippet.
+- External anchors without `target="_blank"` error at build time.
+- Broken in-page (`#fragment`) and cross-page (`/route#fragment`) markdown links error at build time.
+
+## Chrome shipped out of the box
+
+- Sticky translucent header with backdrop-blur, brand wordmark
+- Sidebar accordion driven by `ngmd.config.ts`, mobile drawer
+- Breadcrumb from route, right-side scroll-spy TOC, mobile collapsible
+- Cmd+K command palette over pages + headings + body snippets
+- Page footer: prev/next sibling, edit-on-github, last-updated (from `git log`)
+- Heading hover anchor (`#` button copies the deep link)
+- Code-block copy buttons, shiki dual-theme highlighting
+- 404 page with chrome-hidden layout
+- Light / dark / auto theme cycle, no-flash inline boot script
+- Fuchsia accent wired through every active state (sidebar, TOC, palette, hover)
+
+## Configure
+
+`src/ngmd.config.ts` is the single source of truth:
+
+```ts
+{
+  site: {
+    name: 'NgMd',
+    tagline: 'Angular docs starter',
+    description: '...',
+    url: 'https://ngmd.dev',
+    githubUrl: 'https://github.com/you/your-repo',
+  },
+  nav: [
+    { label: 'Getting Started', items: [{ label: 'Welcome', href: '/welcome' }] },
+  ],
+  keywords: {
+    AnalogJS: 'https://analogjs.org',
+    // ...
+  },
+}
+```
+
+`src/styles.css` carries the theme tokens (`--bg`, `--fg`, `--accent`, `--radius-*`, `--font-*`). Change one var, the whole site follows.
 
 ## Stack
 
-- **[Angular](https://angular.dev)** — the framework (v21+).
-- **[AnalogJS](https://analogjs.org)** — Vite-based meta-framework providing file-based routing, SSR/SSG, and markdown content collections.
-- **[Spartan UI](https://www.spartan.ng)** — headless Angular primitives + copy/paste components.
-- **[Tailwind v4](https://tailwindcss.com)** — utility CSS with class-based dark mode.
-- **[Shiki](https://shiki.style)** — VS Code-grade syntax highlighting.
-- **[Marked](https://marked.js.org)** — markdown parser.
+| Tool | Role |
+|---|---|
+| [Angular](https://angular.dev) (v21) | Framework |
+| [AnalogJS](https://analogjs.org) | File-based routing, SSR/SSG, content collections |
+| [Spartan UI brain](https://www.spartan.ng) | Headless primitives (tabs a11y) |
+| [Tailwind v4](https://tailwindcss.com) | Styling |
+| [Shiki](https://shiki.style) | Code highlighting |
+| [Marked](https://marked.js.org) | Markdown parsing |
 
-## Features
+## Scripts
 
-- File-based markdown routes (`src/content/*.md`)
-- Light / dark / auto theme cycle with no-flash inline boot script
-- Sidebar accordion, breadcrumb, on-page TOC
-- Cmd+K command palette
-- Code-block copy buttons
-- Smooth scroll between page changes
-- External links auto-targeted to a new tab
+```bash
+pnpm run dev       # Vite dev server
+pnpm run build     # Production build (SSR + static prerender)
+pnpm run preview   # Serve the production build
+pnpm run test      # Vitest
+```
+
+## Deploy
+
+`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. The sitemap and `robots.txt` land in `dist/client/` automatically. Update `site.url` in `ngmd.config.ts` to wherever you're hosting so the sitemap references the right origin.
 
 ## Project layout
 
 ```
 src/
 ├── app/
-│   ├── components/      Sidebar, TOC, breadcrumb, command palette, etc.
-│   ├── pages/           File-based routes
-│   ├── app.config.ts    Wires router + content + theme
-│   ├── app.ts           Shell (header, sidebar, main, TOC)
-│   └── theme.ts         Light/dark/auto theme service
-├── content/             Markdown content collection
-├── styles.css           Tailwind + theme variables
-└── main.ts
-```
+│   ├── components/        Chrome: palette, sidebar, breadcrumb, TOC, footer
+│   ├── pages/             File-based routes (.page.ts + .md)
+│   ├── ui/                Authoring components: callout, tabs, card, etc.
+│   ├── app.config.ts      Wires router + content + title strategy + scroll offset
+│   └── app.ts             Shell template
+├── content/               Markdown content collection
+├── marked-extensions/     Build + runtime marked customisations
+├── ngmd.config.ts         Site config (name, nav, keywords)
+└── styles.css             Tailwind + theme tokens
 
-## Scripts
-
-```bash
-pnpm run dev       # Vite dev server
-pnpm run build     # Production build (SSR + static)
-pnpm run preview   # Serve the production build
-pnpm run test      # Vitest
+create-ngmd/               The `pnpm create ngmd` scaffolder
+*.plugin.ts                Build-time vite plugins (page-meta, sitemap, link guards)
 ```
 
 ## Status
 
-Early development. The core (markdown rendering, theming, navigation, chrome) is in place. Versioning, i18n, and search adapters are on the roadmap. See [`PLAN.md`](./PLAN.md) for the full plan.
+v0. Core (markdown rendering, theming, navigation, chrome, authoring components, build pipeline) is in place. Versioning, i18n, library-style API reference, and search adapters are on the roadmap. See [BACKLOG.md](./BACKLOG.md).
 
 ## License
 

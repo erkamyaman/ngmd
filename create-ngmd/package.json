@@ -1,7 +1,7 @@
 {
   "name": "create-ngmd",
   "version": "0.0.1",
-  "description": "Scaffold a new NgMd project. Run via `pnpm create ngmd@latest` / `npm create ngmd@latest` / `yarn create ngmd` / `bun create ngmd`.",
+  "description": "Scaffold a NgMd Angular docs site. Run via `pnpm create ngmd@latest` / `npm create ngmd@latest` / `yarn create ngmd` / `bun create ngmd`.",
   "license": "MIT",
   "author": {
     "name": "Kam",
@@ -12,13 +12,19 @@
     "url": "git+https://github.com/erkamyaman/ngmd.git",
     "directory": "create-ngmd"
   },
-  "homepage": "https://ngmd.dev",
+  "bugs": "https://github.com/erkamyaman/ngmd/issues",
+  "homepage": "https://github.com/erkamyaman/ngmd#readme",
   "keywords": [
     "angular",
+    "angular-docs",
     "analogjs",
     "docs",
+    "documentation",
     "starter",
     "scaffolder",
+    "shiki",
+    "tailwind",
+    "vite",
     "create"
   ],
   "type": "module",
@@ -34,6 +40,10 @@
   },
   "files": [
     "index.mjs",
+    "README.md",
     "template"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
