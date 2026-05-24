@@ -24,6 +24,7 @@ import { ExternalLinks } from './components/external-links';
 import { HeadingAnchors } from './components/heading-anchors';
 import { CodeGroup } from './components/code-group';
 import { PageFooter } from './components/page-footer';
+import { SourceActions } from './components/source-actions';
 import { MediaEnhancer } from './components/media-enhancer';
 
 @Component({
@@ -42,6 +43,7 @@ import { MediaEnhancer } from './components/media-enhancer';
     CodeGroup,
     MediaEnhancer,
     PageFooter,
+    SourceActions,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -77,10 +79,10 @@ import { MediaEnhancer } from './components/media-enhancer';
             Docs
           </a>
           <a
-            routerLink="/support"
+            routerLink="/help"
             class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
           >
-            Support
+            Help
           </a>
         </nav>
 
@@ -169,6 +171,9 @@ import { MediaEnhancer } from './components/media-enhancer';
         <main class="flex-1 min-w-0">
           @if (showBreadcrumb()) {
             <app-breadcrumb />
+          }
+          @if (showFooter()) {
+            <app-source-actions />
           }
           @if (showToc()) {
             <details

@@ -69,7 +69,7 @@ const NOT_FOUND = '__ngmd-not-found__';
           </div>
         </section>
       } @else {
-        <article class="max-w-3xl mx-auto p-8">
+        <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
           <analog-markdown [content]="doc.content" />
         </article>
       }

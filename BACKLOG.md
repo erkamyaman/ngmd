@@ -15,7 +15,7 @@ Shipped as Angular components under `src/app/ui/`:
 - ✅ `<ngmd-callout type="info|tip|success|warning|danger" title="...">` — bordered box with coloured stripe
 - ✅ `<ngmd-alert severity="info|warning|critical|helpful|important">` — single-line banner
 - ✅ `<ngmd-card title="..." link="..." cta="...">` — bordered card, optional router link
-- ✅ `<ngmd-tabs>` + `<ng-template ngmdTab="...">` — hand-rolled tabs with ARIA roles, arrow-key navigation, and Home/End shortcuts
+- ✅ `<ngmd-tabs>` + `<ngmd-tab title="...">` — hand-rolled tabs with ARIA roles, arrow-key navigation, and Home/End shortcuts. Works inline in `.md` (children are components, not directive-on-template).
 - ✅ `<ngmd-pill-row>` + `<ngmd-pill href="..." title="...">` — horizontal pill links
 - ✅ `<ngmd-workflow>` + `<ngmd-step title="...">` — numbered step list
 - ✅ `<ngmd-hero title="..." gradient>` — page hero
@@ -38,8 +38,12 @@ Code-fence affordances (build-time marked extensions):
 Open follow-ups:
 
 - ✅ `<ngmd-card-grid columns="2|3">` — n-up card grid, mobile stacks to single column
-- ❌ Combined `file=` + `{1,3-5}` line highlight on the same fence
-- ❌ Diff view via ` ```diff ` (shiki supports natively, just need CSS)
+- ❌ Combined `file=` + `{1,3-5}` line highlight on the same fence — adev parity, ~1h. Tweak the regex in `ngmd-code-import.ts` to also parse the brace list.
+- ❌ Diff view via ` ```diff ` — adev parity, ~1h. Shiki already emits the tokens; just need CSS for green/red lines.
+- ❌ `<ngmd-hero>` image slot via content projection — adev's `docs-decorative-header` has an image slot. ~1-2h to add a named `<ng-content select="[hero-image]">` and lay it out next to the title.
+- ❌ Multi-file code group — extend `group="..."` so different fences inside one group can be `app.ts` + `app.html` + `app.css` style (adev's `docs-code-multifile`). 1-2 days; the marked extension already supports grouping, needs richer tab labels + better visual treatment.
+- ❌ Stackblitz preview embed (`<ngmd-stackblitz project="...">`) — adev's `docs-code preview` does runnable demos. 1-2 days. Big tutorial unlock.
+- ❌ API reference table component — specialised shape for class members (signature / default / description), even before auto-extraction. ~half day.
 
 ## 2. Page chrome (every docs starter has these)
 

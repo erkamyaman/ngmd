@@ -13,13 +13,25 @@
  * fuchsia core appears to pulse through the text. Whole h1 fades up on
  * first paint. Honours prefers-reduced-motion. */
 @keyframes ngmd-hero-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes ngmd-hero-gradient-flow {
-  from { background-position: 200% 50%; }
-  to { background-position: -100% 50%; }
+  from {
+    background-position: 200% 50%;
+  }
+
+  to {
+    background-position: -100% 50%;
+  }
 }
 
 .ngmd-hero-fade {
@@ -47,11 +59,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .ngmd-hero-fade,
   .ngmd-hero-gradient {
     animation: none;
   }
 }
+
 @plugin '@tailwindcss/typography';
 
 @variant dark (&:where(.dark, .dark *));
@@ -97,12 +111,10 @@ ngmd-workflow:not(:defined) {
     --accent: #d946ef;
     --accent-fg: #ffffff;
     --accent-soft: rgba(217, 70, 239, 0.12);
-    --accent-gradient: linear-gradient(
-      to right,
-      #f43f5e 0%,
-      #d946ef 50%,
-      #a855f7 100%
-    );
+    --accent-gradient: linear-gradient(to right,
+        #f43f5e 0%,
+        #d946ef 50%,
+        #a855f7 100%);
 
     /* Geometry */
     --radius-sm: 0.25rem;
@@ -151,6 +163,7 @@ ngmd-workflow:not(:defined) {
 }
 
 @layer components {
+
   analog-markdown,
   analog-markdown-route {
     display: block;
@@ -163,7 +176,7 @@ ngmd-workflow:not(:defined) {
   analog-markdown-route {
     max-width: 48rem;
     margin-inline: auto;
-    padding: 2rem;
+    padding: 0 2rem 0 2rem;
   }
 
   analog-markdown h1,
@@ -285,6 +298,79 @@ ngmd-workflow:not(:defined) {
     padding: 0;
   }
 
+  /* Markdown tables. Mirrors adev's `_table.scss` shape: full-width, thin
+   * row dividers, header underline, vertical-align top so multi-line cells
+   * and inline-code chips don't push their row off-balance. Wrapped in an
+   * `overflow-x: auto` shell so wide tables scroll horizontally on mobile
+   * instead of breaking the layout. */
+  analog-markdown table,
+  analog-markdown-route table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: 1.5rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    display: block;
+    overflow-x: auto;
+  }
+
+  analog-markdown thead,
+  analog-markdown-route thead {
+    border-block-end: 1px solid var(--border);
+  }
+
+  analog-markdown th,
+  analog-markdown-route th {
+    text-align: left;
+    padding: 0.5rem 1rem 0.5rem 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    vertical-align: bottom;
+  }
+
+  analog-markdown tbody tr,
+  analog-markdown-route tbody tr {
+    border-block-end: 1px solid var(--border);
+  }
+
+  analog-markdown tbody tr:last-child,
+  analog-markdown-route tbody tr:last-child {
+    border-block-end: none;
+  }
+
+  analog-markdown td,
+  analog-markdown-route td {
+    padding: 0.85rem 1rem 0.85rem 0;
+    vertical-align: top;
+  }
+
+  analog-markdown td:first-child,
+  analog-markdown-route td:first-child {
+    min-width: 22ch;
+    padding-inline-end: 1.5rem;
+  }
+
+  analog-markdown td:last-child,
+  analog-markdown-route td:last-child {
+    padding-inline-end: 0;
+  }
+
+  /* Small brand icon for package-name table cells. Inline-block with the
+   * baseline so it doesn't bump the row height; sized to 1em so it scales
+   * with the surrounding font automatically. */
+  analog-markdown img.pkg-icon,
+  analog-markdown-route img.pkg-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-inline-end: 0.5em;
+    vertical-align: -0.15em;
+    object-fit: contain;
+  }
+
   analog-markdown blockquote,
   analog-markdown-route blockquote {
     border-inline-start: 3px solid var(--border);
@@ -303,6 +389,7 @@ ngmd-workflow:not(:defined) {
     overflow: hidden;
     background: var(--bg-muted);
   }
+
   .ngmd-video iframe {
     position: absolute;
     inset: 0;
@@ -315,12 +402,14 @@ ngmd-workflow:not(:defined) {
     margin-block: 1.5rem;
     margin-inline: 0;
   }
+
   .ngmd-image img {
     width: 100%;
     height: auto;
     border-radius: var(--radius);
     border: 1px solid var(--border);
   }
+
   .ngmd-image figcaption {
     margin-top: 0.5rem;
     text-align: center;
@@ -335,12 +424,14 @@ ngmd-workflow:not(:defined) {
     overflow: hidden;
     background: var(--bg);
   }
+
   .ngmd-code-group__tabs {
     display: flex;
     flex-wrap: wrap;
     border-bottom: 1px solid var(--border);
     background: var(--bg-muted);
   }
+
   .ngmd-code-group__tab {
     appearance: none;
     background: transparent;
@@ -354,19 +445,24 @@ ngmd-workflow:not(:defined) {
     font-family: var(--font-mono);
     transition: color 0.15s ease, border-color 0.15s ease;
   }
+
   .ngmd-code-group__tab:hover {
     color: var(--fg);
   }
+
   .ngmd-code-group__tab[data-active="true"] {
     color: var(--accent);
     border-bottom-color: var(--accent);
   }
+
   .ngmd-code-group__panel {
     display: none;
   }
+
   .ngmd-code-group__panel[data-active="true"] {
     display: block;
   }
+
   .ngmd-code-group__panel pre {
     margin: 0;
     border-radius: 0;
@@ -384,6 +480,7 @@ ngmd-workflow:not(:defined) {
     color: var(--shiki-light);
     background-color: var(--shiki-light-bg);
   }
+
   .dark .shiki-themes,
   .dark .shiki-themes span {
     color: var(--shiki-dark) !important;
@@ -410,6 +507,7 @@ ngmd-workflow:not(:defined) {
     overflow: hidden;
     background: var(--bg);
   }
+
   .ngmd-code-import__header {
     display: block;
     padding: 0.5rem 1rem;
@@ -421,9 +519,11 @@ ngmd-workflow:not(:defined) {
     text-decoration: none;
     transition: color 0.15s ease;
   }
+
   .ngmd-code-import__header:hover {
     color: var(--accent);
   }
+
   .ngmd-code-import pre {
     margin: 0;
     border: 0;

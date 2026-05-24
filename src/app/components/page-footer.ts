@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
-import { LucideAngularModule, ArrowLeft, ArrowRight, Pencil } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, ArrowRight } from 'lucide-angular';
 import { pageMeta } from 'virtual:ngmd/page-meta';
 import { navItems } from '../../ngmd.config';
 
@@ -16,23 +16,15 @@ import { navItems } from '../../ngmd.config';
   selector: 'app-page-footer',
   imports: [RouterLink, LucideAngularModule],
   template: `
-    <footer class="mt-12 border-t border-zinc-200 dark:border-zinc-800 pt-6 pb-10 text-sm">
-      <div class="flex flex-wrap items-center justify-between gap-3 text-zinc-500 dark:text-zinc-400">
-        @if (editUrl(); as url) {
-          <a
-            [href]="url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <i-lucide [img]="editIcon" class="size-3.5"></i-lucide>
-            Edit this page on GitHub
-          </a>
-        }
-        @if (lastUpdated(); as date) {
-          <span>Last updated: {{ date }}</span>
-        }
-      </div>
+    <footer class="mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-5 pb-10 text-sm">
+      <!-- Last-updated stamp parked for now. Uncomment to re-enable.
+      @if (lastUpdated(); as date) {
+        <div class="text-zinc-500 dark:text-zinc-400">
+          Last updated: {{ date }}
+        </div>
+      }
+      -->
+
 
       @if (prev() || next()) {
         <nav class="mt-6 grid gap-3 sm:grid-cols-2">
@@ -68,7 +60,6 @@ import { navItems } from '../../ngmd.config';
 export class PageFooter {
   private readonly router = inject(Router);
 
-  readonly editIcon = Pencil;
   readonly prevIcon = ArrowLeft;
   readonly nextIcon = ArrowRight;
 

@@ -10,7 +10,7 @@ import { NgmdCodeBlock } from './ui/code-block';
 import { NgmdHero } from './ui/hero';
 import { NgmdImage } from './ui/image';
 import { NgmdPill, NgmdPillRow } from './ui/pill';
-import { NgmdTabs } from './ui/tabs';
+import { NgmdTab, NgmdTabs } from './ui/tabs';
 import { NgmdVideo } from './ui/video';
 import { NgmdStep, NgmdWorkflow } from './ui/workflow';
 
@@ -33,10 +33,6 @@ import { NgmdStep, NgmdWorkflow } from './ui/workflow';
  * SSR pre-rendering. The browser-only path is fine because Custom Elements
  * only matter once the markup is in a real document.
  *
- * `NgmdTab` is intentionally omitted: it is a directive on `<ng-template
- * ngmdTab>`, not a component, so it can't be a custom element. `<ngmd-tabs>`
- * still works inline in markdown if you author it with directly-projected
- * children rather than the `<ng-template>` API.
  */
 const elementMap: Array<[string, Type<unknown>]> = [
   ['ngmd-accordion', NgmdAccordion],
@@ -52,6 +48,7 @@ const elementMap: Array<[string, Type<unknown>]> = [
   ['ngmd-pill', NgmdPill],
   ['ngmd-pill-row', NgmdPillRow],
   ['ngmd-step', NgmdStep],
+  ['ngmd-tab', NgmdTab],
   ['ngmd-tabs', NgmdTabs],
   ['ngmd-video', NgmdVideo],
   ['ngmd-workflow', NgmdWorkflow],

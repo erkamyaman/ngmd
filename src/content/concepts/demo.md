@@ -210,9 +210,23 @@ Status flags work inline. The forms API is <ngmd-badge variant="stable">Stable</
 
 Auto-linked keywords resolve from `ngmd.config.ts`: this guide builds on *Angular and *AnalogJS, with *Tailwind for the form styling and *Shiki for the code blocks you see above.
 
-## What didn't render?
+## Tabs in markdown
 
-`ngmd-tabs` is intentionally absent. Its API uses the `ngmdTab` directive on an `ng-template` child, which can't be expressed as a Custom Element (templates aren't valid children inside upgraded elements). For tabbed content inside markdown, prefer the build-time `group="install"` fenced-code-tabs syntax instead, which produces a tab UI without runtime components.
+Tabs now work inline too, using `<ngmd-tab>` children (real components, not `<ng-template>` directives):
+
+<ngmd-tabs>
+  <ngmd-tab title="JWT">
+    Stateless tokens signed by the server. Read on every request from <code>Authorization: Bearer</code>. Easy to scale horizontally; revocation needs a denylist.
+  </ngmd-tab>
+  <ngmd-tab title="Session cookie">
+    Server stores the session, client carries an opaque ID. Built-in revocation via session delete. Sticky to one origin.
+  </ngmd-tab>
+  <ngmd-tab title="OAuth">
+    Delegate sign-in to a provider (Google, GitHub, Auth0). You get back a token + identity claims. Best for B2C and "sign in with..." flows.
+  </ngmd-tab>
+</ngmd-tabs>
+
+For command tabs that pre-render through Shiki at build time, the fenced-code syntax is still the lightest option:
 
 ```bash group="install" name="pnpm" active
 pnpm create ngmd@latest my-docs
@@ -230,4 +244,4 @@ yarn create ngmd my-docs
 bun create ngmd my-docs
 ```
 
-That's every component the catch-all + Custom Elements path supports. Build pipeline, link guards, sitemap — all of these pages run through the same machinery.
+That's every NgmdUi component working inline in markdown via the catch-all + Custom Elements path. Build pipeline, link guards, sitemap — all of these pages run through the same machinery.

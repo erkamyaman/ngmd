@@ -6,17 +6,31 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## Unreleased <ngmd-badge variant="new">In progress</ngmd-badge>
+## 0.0.5 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Tabs work in markdown.** Rewrote `<ngmd-tabs>` / `<ngmd-tab>` so each tab is a real component (not a `<ng-template ngmdTab>` directive). Survives `@angular/elements` upgrade and renders inline in `.md` body.
+
+**Cards gained icon and image inputs.** Pass `icon="<lucide-name>"` for a Lucide glyph tinted fuchsia, or `image="<url>"` for a full-colour brand SVG. Card backgrounds and grid heights aligned across siblings.
+
+**Alerts redesigned to adev shape.** Severity icon + uppercase tag (`INFO`, `WARNING`, `CRITICAL`, `HELPFUL`, `IMPORTANT`) prefixed inline with the body prose. Same visual as `docs-callout`.
+
+**Site frame additions.** `<app-source-actions>` floats pencil + `<>` icons at top-right of every docs route (edit on GitHub / view source on GitHub). The bottom "Edit this page" link is gone; `last-updated` parked.
+
+**Doc pages reshuffled.** `/support` split into `/help` (get-help) and `/sponsor` (give-help). New `/contribute` page with `CONTRIBUTING.md` at repo root. `/stack/overview` rewritten around architecture. `/stack/installation` tucks Path B inside an accordion. `/stack/technologies` collapsed to 3 cards + tables. Brand SVGs added to all tech rows.
+
+**Spartan UI removed.** `<ngmd-tabs>` rebuilt with hand-rolled ARIA + arrow / Home / End keyboard navigation. One less dep to pin.
+
+<ngmd-callout type="tip" title="Migrating from an earlier scaffold">
+  If you scaffolded with <code>create-ngmd@0.0.1</code> or <code>0.0.2</code> you'll have a thin <code>.page.ts</code> wrapper per markdown route. Delete them and let the catch-all handle every prose page. The named <code>index.page.ts</code> and any TypeScript-driven pages keep their files.
+</ngmd-callout>
+
+## 0.0.4
 
 A new `src/app/pages/[...slug].page.ts` catch-all serves every markdown page. The path under `src/content/` becomes the URL: drop `concepts/theming.md` and `/concepts/theming` resolves to it, no per-file wrapper required. Content reorganised into route-matching subfolders (`concepts/`, `stack/`, `getting-started/`).
 
 The build pipeline followed suit. `link-guard`, `page-meta`, and `sitemap` plugins now walk the content tree directly instead of consulting a hardcoded route map, so adding a new page is one filesystem change.
 
-Three new authoring components shipped: `ngmd-accordion`, `ngmd-card-grid`, and `ngmd-badge`. All NgmdUi components now also render inline in `.md` files via Angular Elements registration, so the catch-all proves it.
-
-<ngmd-callout type="tip" title="Migrating from an earlier scaffold">
-  If you scaffolded with <code>create-ngmd@0.0.1</code> or <code>0.0.2</code> you'll have a thin <code>.page.ts</code> wrapper per markdown route. Delete them and let the catch-all handle every prose page. The named <code>index.page.ts</code> and any TypeScript-driven pages keep their files.
-</ngmd-callout>
+Three new authoring components shipped: `ngmd-accordion`, `ngmd-card-grid`, and `ngmd-badge`. All NgmdUi components also render inline in `.md` files via Angular Elements registration.
 
 Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`), mirroring the format `angular/skills` uses. Inline code inside headings now renders in the brand accent instead of the gray inline-code box.
 
@@ -24,7 +38,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.3</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.0.5</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Fourteen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
@@ -56,4 +70,4 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 ## Stack <ngmd-badge variant="stable">Pinned</ngmd-badge>
 
-AnalogJS 2.5, Vite 8, Angular 21, Tailwind v4, Shiki 1.29.2, Marked.
+AnalogJS 2.5, Vite 8, Angular, Tailwind v4, Shiki 1.29.2, Marked.

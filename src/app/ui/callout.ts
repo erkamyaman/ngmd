@@ -42,7 +42,7 @@ const BOX = 'my-6 px-5 py-4 rounded-lg border-y border-r border-t-zinc-200 borde
 
     <ng-template #body>
       @if (title()) {
-        <p class="font-semibold text-sm mb-2 text-zinc-900 dark:text-zinc-100">{{ title() }}</p>
+        <p class="font-semibold text-sm mt-0 mb-2 text-zinc-900 dark:text-zinc-100">{{ title() }}</p>
       }
       <div class="text-sm text-zinc-700 dark:text-zinc-300 [&>*:last-child]:mb-0 [&>*:first-child]:mt-0">
         <ng-content></ng-content>

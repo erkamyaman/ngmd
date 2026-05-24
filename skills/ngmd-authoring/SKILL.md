@@ -88,22 +88,23 @@ In a **prose page** (`.md`), drop any of the fourteen components inline as raw H
 - `title`, `link`, `cta` are all optional. With `link`, the whole card becomes a router link.
 - Use for: card grids, feature overviews, "next steps" sections.
 
-### `<ngmd-tabs>` and `<ng-template ngmdTab="Label">`
+### `<ngmd-tabs>` and `<ngmd-tab>`
 
 ```html
 <ngmd-tabs>
-  <ng-template ngmdTab="pnpm">
+  <ngmd-tab title="pnpm">
     <pre><code>pnpm add foo</code></pre>
-  </ng-template>
-  <ng-template ngmdTab="npm">
+  </ngmd-tab>
+  <ngmd-tab title="npm">
     <pre><code>npm install foo</code></pre>
-  </ng-template>
+  </ngmd-tab>
 </ngmd-tabs>
 ```
 
-- Each tab is an `<ng-template ngmdTab="Label">`. Order in the template is order in the UI.
-- Hand-rolled signals plus `[attr.aria-selected]` / `[tabindex]` for keyboard navigation and ARIA wiring.
-- For an installation-command tabset specifically, prefer the markdown `group="..."` code-fence affordance (see section 3) since it works in prose pages.
+- Each tab is an `<ngmd-tab title="Label">`. Order in the template is order in the UI.
+- Works inline in `.md` files (children are real Custom Elements, not directives).
+- Hand-rolled signals plus `[attr.aria-selected]` / `[tabindex]` for keyboard navigation and ARIA wiring. Arrow keys, Home, End all jump between triggers with focus.
+- For installation-command tabsets specifically, the markdown `group="..."` code-fence affordance is still the lightest option since it pre-renders through Shiki at build time.
 
 ### `<ngmd-workflow>` and `<ngmd-step>`
 

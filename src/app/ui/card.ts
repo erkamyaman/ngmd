@@ -60,12 +60,25 @@ const ICON_MAP: Record<string, LucideIconData> = {
   },
   template: `
     @if (link()) {
-      <a
-        [routerLink]="link()"
-        class="h-full flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5 text-inherit no-underline transition-colors hover:border-zinc-400 dark:hover:border-zinc-600"
-      >
-        <ng-container *ngTemplateOutlet="body"></ng-container>
-      </a>
+      @if (isExternal()) {
+        <!-- External: plain anchor + target="_blank". routerLink would
+             interpret a full URL as a relative route and 404. -->
+        <a
+          [href]="link()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="h-full flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5 text-inherit no-underline transition-colors hover:border-zinc-400 dark:hover:border-zinc-600"
+        >
+          <ng-container *ngTemplateOutlet="body"></ng-container>
+        </a>
+      } @else {
+        <a
+          [routerLink]="link()"
+          class="h-full flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5 text-inherit no-underline transition-colors hover:border-zinc-400 dark:hover:border-zinc-600"
+        >
+          <ng-container *ngTemplateOutlet="body"></ng-container>
+        </a>
+      }
     } @else {
       <div
         class="h-full flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5"
@@ -109,6 +122,10 @@ export class NgmdCard {
   readonly title = input<string>('');
   readonly link = input<string>('');
   readonly cta = input<string>('');
+
+  // External = anything with a scheme (http, https, mailto, tel). RouterLink
+  // would interpret these as relative routes and fail to navigate.
+  readonly isExternal = computed(() => /^(https?|mailto|tel):/.test(this.link()));
   readonly icon = input<string>('');
   /**
    * Optional image URL (brand logo etc.). Takes priority over `icon` when

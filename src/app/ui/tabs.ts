@@ -1,44 +1,78 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
-  AfterContentInit,
+  AfterViewInit,
   Component,
-  ContentChildren,
-  Directive,
+  DestroyRef,
+  ElementRef,
   inject,
   input,
-  QueryList,
   signal,
-  TemplateRef,
 } from '@angular/core';
 
 /**
- * Author tabs by dropping `<ng-template ngmdTab="Label">...</ng-template>`
- * children inside `<ngmd-tabs>`. The component picks them up via
- * ContentChildren, renders one trigger button per tab, and switches the
- * panel via a signal.
+ * Tabs API designed to survive Custom Element rendering inside markdown.
  *
- * A11y: `role="tablist"` on the trigger row, `role="tab"` on each trigger
- * with `aria-selected` / `aria-controls`, `role="tabpanel"` on each panel
- * with `aria-labelledby`. Arrow keys cycle through triggers, Home / End
- * jump to the ends; only the active trigger is in the tab order
- * (`tabindex` 0 vs -1).
+ * Authoring:
  *
- * Zero external deps. The state machine is small enough that a hand-rolled
- * signal beats a headless library.
+ *   <ngmd-tabs>
+ *     <ngmd-tab title="pnpm">
+ *       <pre><code>pnpm install</code></pre>
+ *     </ngmd-tab>
+ *     <ngmd-tab title="npm">
+ *       <pre><code>npm install</code></pre>
+ *     </ngmd-tab>
+ *   </ngmd-tabs>
+ *
+ * Why this shape (vs. the previous `<ng-template ngmdTab>` directive API):
+ * inside `<analog-markdown [content]>` the body is rendered via `innerHTML`
+ * and Angular's compiler never walks it, so `<ng-template>` children get
+ * stripped by the browser and directives never apply. `<ngmd-tab>` as a
+ * real component upgrades through `@angular/elements` so its content
+ * survives. The parent walks the light DOM, reads each tab's `title`
+ * attribute for the trigger row, and toggles visibility via a
+ * `data-active` attribute the child observes — same pattern used by
+ * `<ngmd-workflow>` for step indexing.
+ *
+ * Visual style mirrors adev's `docs-tab-group`: rounded outer border,
+ * underline on the active trigger, content panel below. A11y: `role="tablist"`,
+ * `role="tab"` + `aria-selected` + `aria-controls`, `role="tabpanel"` +
+ * `aria-labelledby`, arrow / Home / End keyboard navigation with focus moved
+ * to the new active trigger.
  */
 
-@Directive({
-  selector: 'ng-template[ngmdTab]',
-  standalone: true,
+@Component({
+  selector: 'ngmd-tab',
+  template: `
+    <div class="p-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" [hidden]="!active()">
+      <ng-content></ng-content>
+    </div>
+  `,
 })
 export class NgmdTab {
-  readonly title = input.required<string>({ alias: 'ngmdTab' });
-  readonly templateRef = inject(TemplateRef);
+  readonly title = input<string>('');
+  readonly active = signal(false);
+
+  constructor() {
+    if (typeof MutationObserver === 'undefined') {
+      // Server-side: leave inactive; the parent will hydrate state once
+      // the bundle runs on the client.
+      return;
+    }
+    const elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+    const host = elementRef.nativeElement;
+    const sync = () =>
+      this.active.set(host.getAttribute('data-active') === 'true');
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(host, {
+      attributes: true,
+      attributeFilter: ['data-active'],
+    });
+    inject(DestroyRef).onDestroy(() => observer.disconnect());
+  }
 }
 
 @Component({
   selector: 'ngmd-tabs',
-  imports: [NgTemplateOutlet],
   template: `
     <div
       class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
@@ -55,45 +89,51 @@ export class NgmdTab {
             [attr.aria-selected]="active() === tab.key"
             [attr.aria-controls]="'ngmd-tabpanel-' + tab.key"
             [tabindex]="active() === tab.key ? 0 : -1"
-            (click)="active.set(tab.key)"
+            (click)="setActive(tab.key)"
             (keydown)="onKey($event, i)"
-            class="px-4 py-2.5 text-sm font-medium border-b-2 cursor-pointer transition-colors aria-selected:border-zinc-900 dark:aria-selected:border-zinc-100 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-transparent"
+            class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-zinc-900 dark:aria-selected:border-zinc-100 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-transparent"
           >
             {{ tab.label }}
           </button>
         }
       </div>
-
-      @for (tab of tabs(); track tab.key) {
-        <div
-          role="tabpanel"
-          [id]="'ngmd-tabpanel-' + tab.key"
-          [attr.aria-labelledby]="'ngmd-tab-' + tab.key"
-          [hidden]="active() !== tab.key"
-          class="p-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-        >
-          <ng-container *ngTemplateOutlet="tab.template"></ng-container>
-        </div>
-      }
+      <div
+        role="tabpanel"
+        [attr.aria-labelledby]="'ngmd-tab-' + active()"
+        [id]="'ngmd-tabpanel-' + active()"
+      >
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
 })
-export class NgmdTabs implements AfterContentInit {
-  @ContentChildren(NgmdTab) private readonly children!: QueryList<NgmdTab>;
-
-  readonly tabs = signal<
-    { key: string; label: string; template: TemplateRef<unknown> }[]
-  >([]);
+export class NgmdTabs implements AfterViewInit {
+  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  readonly tabs = signal<{ key: string; label: string; el: HTMLElement }[]>([]);
   readonly active = signal('');
 
-  ngAfterContentInit(): void {
-    const list = this.children.toArray().map((c, i) => ({
+  ngAfterViewInit(): void {
+    if (typeof document === 'undefined') return;
+    // `:scope ngmd-tab` because the `<ngmd-tab>` children land in the
+    // light DOM of `<ngmd-tabs>` — they project through `<ng-content>` but
+    // remain queryable via querySelectorAll on the host element.
+    const els = Array.from(
+      this.host.nativeElement.querySelectorAll<HTMLElement>(':scope ngmd-tab'),
+    );
+    const list = els.map((el, i) => ({
       key: `tab-${i}`,
-      label: c.title(),
-      template: c.templateRef,
+      label: el.getAttribute('title') ?? '',
+      el,
     }));
     this.tabs.set(list);
-    if (list[0]) this.active.set(list[0].key);
+    if (list[0]) this.setActive(list[0].key);
+  }
+
+  protected setActive(key: string): void {
+    this.active.set(key);
+    for (const tab of this.tabs()) {
+      tab.el.setAttribute('data-active', tab.key === key ? 'true' : 'false');
+    }
   }
 
   protected onKey(event: KeyboardEvent, index: number): void {
@@ -117,11 +157,10 @@ export class NgmdTabs implements AfterContentInit {
         return;
     }
     event.preventDefault();
-    this.active.set(tabs[next].key);
-    // Move focus to the newly active trigger so screen readers + sighted
-    // keyboard users land in the right place.
-    const triggers = (event.currentTarget as HTMLElement)
-      .parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]');
+    this.setActive(tabs[next].key);
+    const triggers = (
+      event.currentTarget as HTMLElement
+    ).parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]');
     triggers?.[next]?.focus();
   }
 }

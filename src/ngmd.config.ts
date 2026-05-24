@@ -75,7 +75,7 @@ const config: NgmdConfig = {
       label: 'Getting Started',
       items: [
         { label: 'Introduction', href: '/welcome' },
-        { label: 'Changelog', href: '/getting-started/changelog' },
+        // { label: 'Changelog', href: '/getting-started/changelog' }, // parked until 0.1.0
         { label: 'About & Credits', href: '/getting-started/about' },
       ],
     },
@@ -94,7 +94,11 @@ const config: NgmdConfig = {
     },
     {
       label: 'Help',
-      items: [{ label: 'Support', href: '/support' }],
+      items: [
+        { label: 'Get help', href: '/help' },
+        { label: 'Contribute', href: '/contribute' },
+        { label: 'Support us', href: '/sponsor' },
+      ],
     },
     {
       label: 'Stack',

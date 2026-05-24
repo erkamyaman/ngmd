@@ -92,18 +92,18 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         </p>
         <div class="mt-4">
           <ngmd-tabs>
-            <ng-template ngmdTab="pnpm">
+            <ngmd-tab title="pnpm">
               <pre class="text-sm"><code>pnpm create ngmd&#64;latest my-docs</code></pre>
-            </ng-template>
-            <ng-template ngmdTab="npm">
+            </ngmd-tab>
+            <ngmd-tab title="npm">
               <pre class="text-sm"><code>npm create ngmd&#64;latest my-docs</code></pre>
-            </ng-template>
-            <ng-template ngmdTab="yarn">
+            </ngmd-tab>
+            <ngmd-tab title="yarn">
               <pre class="text-sm"><code>yarn create ngmd my-docs</code></pre>
-            </ng-template>
-            <ng-template ngmdTab="bun">
+            </ngmd-tab>
+            <ngmd-tab title="bun">
               <pre class="text-sm"><code>bun create ngmd my-docs</code></pre>
-            </ng-template>
+            </ngmd-tab>
           </ngmd-tabs>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="tabsCode" />
@@ -279,12 +279,12 @@ export default class ComponentsPage {
 
   readonly tabsCode = [
     '<ngmd-tabs>',
-    '  <ng-template ngmdTab="pnpm">',
+    '  <ngmd-tab title="pnpm">',
     '    <pre><code>pnpm create ngmd@latest my-docs</code></pre>',
-    '  </ng-template>',
-    '  <ng-template ngmdTab="npm">',
+    '  </ngmd-tab>',
+    '  <ngmd-tab title="npm">',
     '    <pre><code>npm create ngmd@latest my-docs</code></pre>',
-    '  </ng-template>',
+    '  </ngmd-tab>',
     '</ngmd-tabs>',
   ].join('\n');
 

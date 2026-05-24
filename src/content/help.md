@@ -1,18 +1,18 @@
 ---
-title: Support
+title: Help
 ---
 
-<ngmd-hero title="Support" gradient>
-  Open source first. Paid options on the horizon. Security reports through a different door.
+<ngmd-hero title="Help" gradient>
+  Community channels for questions, bug reports, and contributions. A direct line for security and paid support.
 </ngmd-hero>
 
-# Support
+# Help
 
-Ways to get help and support NgMd.
+How to get answers, report issues, and reach the maintainer.
 
-## Community support <ngmd-badge variant="stable">MIT</ngmd-badge>
+## Community <ngmd-badge variant="stable">MIT</ngmd-badge>
 
-NgMd is MIT-licensed and open source. Start here.
+NgMd is MIT-licensed and open source. Start with one of these:
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="shield" title="Bug reports" link="https://github.com/erkamyaman/ngmd/issues">
@@ -28,24 +28,6 @@ NgMd is MIT-licensed and open source. Start here.
     Contribute fixes, docs, or new features.
   </ngmd-card>
 </ngmd-card-grid>
-
-## Sponsorship
-
-If your team relies on NgMd, consider sponsoring:
-
-<ngmd-card-grid columns="3">
-  <ngmd-card icon="sparkles" title="One-time">
-    GitHub Sponsors single contribution. Buy the maintainer a few hours.
-  </ngmd-card>
-  <ngmd-card icon="zap" title="Recurring">
-    Monthly support to keep the project healthy and the release cadence steady.
-  </ngmd-card>
-  <ngmd-card icon="rocket" title="Logo placement">
-    Logo on the site for sponsoring organisations at qualifying tiers.
-  </ngmd-card>
-</ngmd-card-grid>
-
-Sponsorship funds documentation, releases, and the time to keep the stack working with the latest *Angular and *AnalogJS versions.
 
 ## Paid support <ngmd-badge variant="beta">Coming soon</ngmd-badge>
 
@@ -66,10 +48,14 @@ Private consulting and enterprise support packages are on the horizon for teams 
   </ngmd-accordion-item>
 </ngmd-accordion>
 
-Reach out via GitHub if you'd like to start a conversation.
+Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20paid%20support">erkamyaman35@gmail.com</a> with the shape of what you need and we'll take it from there.
 
 ## Reporting security issues
 
 <ngmd-alert severity="critical">
-  Do <strong>not</strong> open a public GitHub issue for security reports. Email the maintainer directly so the issue can be triaged before disclosure.
+  Do <strong>not</strong> open a public GitHub issue for security reports. Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20security%20report"><code>erkamyaman35&#64;gmail.com</code></a> directly so the issue can be triaged before disclosure. Alternatively, open a <a href="https://github.com/erkamyaman/ngmd/security/advisories/new" target="_blank" rel="noopener noreferrer">private security advisory on GitHub</a>.
 </ngmd-alert>
+
+## Want to support the project?
+
+If you find NgMd useful, [head over to the sponsor page](/sponsor). Starring on GitHub or sponsoring keeps the project moving.
