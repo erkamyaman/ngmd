@@ -1,5 +1,12 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, computed, effect, inject } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnDestroy,
+  computed,
+  effect,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { injectContent, MarkdownComponent } from '@analogjs/content';
@@ -15,6 +22,13 @@ import { LayoutMode } from '../layout-mode.service';
  * page, the components gallery) keep their named `.page.ts` and Angular's
  * router prefers the more specific match.
  *
+ * NgmdUi components render via `@angular/elements`-registered Custom
+ * Elements (see `register-elements.ts`). That bypasses Angular's component
+ * compiler (which doesn't walk `[innerHTML]`) and lets the browser upgrade
+ * `<ngmd-callout>` etc. tags inside the markdown body directly. The schema
+ * below tells the template parser to tolerate the unknown selectors so we
+ * don't have to maintain a duplicate `NgmdUi` imports array.
+ *
  * Doubles as the 404 page: when no markdown matches the requested URL,
  * `injectContent` returns the sentinel below as the body, the docs chrome
  * is hidden, and the 404 UI is rendered instead.
@@ -24,6 +38,7 @@ const NOT_FOUND = '__ngmd-not-found__';
 
 @Component({
   selector: 'app-doc',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [AsyncPipe, MarkdownComponent, RouterLink],
   template: `
     @if (content$ | async; as doc) {

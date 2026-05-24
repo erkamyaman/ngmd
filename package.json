@@ -1,7 +1,7 @@
 {
   "name": "ngmd",
   "version": "0.0.0",
-  "description": "Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind. Drop a markdown file, get a route.",
+  "description": "Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind. Drop a markdown file, get a route.",
   "license": "MIT",
   "author": {
     "name": "Kam",
@@ -17,7 +17,6 @@
   "keywords": [
     "angular",
     "analogjs",
-    "spartan-ui",
     "tailwind",
     "docs",
     "documentation",
@@ -46,11 +45,11 @@
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",
+    "@angular/elements": "^21.2.14",
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/platform-server": "^21.0.0",
     "@angular/router": "^21.0.0",
-    "@spartan-ng/brain": "0.0.1-alpha.694",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.4",
     "front-matter": "^4.0.2",

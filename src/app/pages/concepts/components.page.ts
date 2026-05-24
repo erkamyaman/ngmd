@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
-import { NgmdUi } from '../../ui';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-components',
-  imports: [...NgmdUi],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
     <article class="max-w-3xl mx-auto p-8 space-y-12">
       <header>
@@ -88,7 +87,7 @@ import { NgmdUi } from '../../ui';
       <section>
         <h2 id="tabs" class="text-2xl font-semibold tracking-tight">Tabs</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Spartan brain tabs with keyboard navigation. Bodies can be any
+          Tab UI with keyboard navigation. Bodies can be any
           markup, not just code.
         </p>
         <div class="mt-4">
@@ -196,6 +195,66 @@ import { NgmdUi } from '../../ui';
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="imageCode" />
       </section>
+
+      <section>
+        <h2 id="accordion" class="text-2xl font-semibold tracking-tight">Accordion</h2>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Disclosure list, backed by the native <code>&lt;details&gt;</code>
+          element for keyboard, ARIA, and SSR-friendly default-open for free.
+          Pass <code>open</code> on an item to start it expanded.
+        </p>
+        <ngmd-accordion>
+          <ngmd-accordion-item title="When was NgMd released?" open>
+            Initial public release was May 2026. The starter is at v0 while
+            we collect feedback from first projects.
+          </ngmd-accordion-item>
+          <ngmd-accordion-item title="Does it support i18n?">
+            Not yet. Locale-prefixed routes plus a header switcher are on
+            the v1 roadmap.
+          </ngmd-accordion-item>
+          <ngmd-accordion-item title="Can I use it with my existing Angular app?">
+            NgMd is a standalone starter, not a library to bolt on. Scaffold
+            a new project and migrate content into it, or copy the parts of
+            <code>src/app/</code> you want.
+          </ngmd-accordion-item>
+        </ngmd-accordion>
+        <ngmd-code-block header="page.ts" language="html" [code]="accordionCode" />
+      </section>
+
+      <section>
+        <h2 id="card-grid" class="text-2xl font-semibold tracking-tight">Card grid</h2>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Container around <code>&lt;ngmd-card&gt;</code> for n-up layouts.
+          Two columns by default, pass <code>columns="3"</code> for three.
+          Stacks to single column on mobile.
+        </p>
+        <ngmd-card-grid columns="2">
+          <ngmd-card title="Markdown routes" link="/concepts/markdown-routes" cta="Read">
+            How file-based routing wires content to URLs.
+          </ngmd-card>
+          <ngmd-card title="Theming" link="/concepts/theming" cta="Read">
+            CSS variable tokens and the fuchsia accent wiring.
+          </ngmd-card>
+        </ngmd-card-grid>
+        <ngmd-code-block header="page.ts" language="html" [code]="cardGridCode" />
+      </section>
+
+      <section>
+        <h2 id="badge" class="text-2xl font-semibold tracking-tight">Badge</h2>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Inline status pill. Five variants: <code>alpha</code>,
+          <code>beta</code>, <code>stable</code>, <code>deprecated</code>,
+          <code>new</code>. Pairs well with headings and inline references.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2 items-center">
+          <ngmd-badge variant="alpha">Alpha</ngmd-badge>
+          <ngmd-badge variant="beta">Beta</ngmd-badge>
+          <ngmd-badge variant="stable">Stable</ngmd-badge>
+          <ngmd-badge variant="deprecated">Deprecated</ngmd-badge>
+          <ngmd-badge variant="new">New</ngmd-badge>
+        </div>
+        <ngmd-code-block header="page.ts" language="html" [code]="badgeCode" />
+      </section>
     </article>
   `,
 })
@@ -273,5 +332,32 @@ export default class ComponentsPage {
     '  alt="Sidebar accordion"',
     '  caption="The sidebar reads from ngmd.config.ts."',
     '/>',
+  ].join('\n');
+
+  readonly accordionCode = [
+    '<ngmd-accordion>',
+    '  <ngmd-accordion-item title="When was NgMd released?" open>',
+    '    Initial public release was May 2026.',
+    '  </ngmd-accordion-item>',
+    '  <ngmd-accordion-item title="Does it support i18n?">',
+    '    Not yet, on the v1 roadmap.',
+    '  </ngmd-accordion-item>',
+    '</ngmd-accordion>',
+  ].join('\n');
+
+  readonly cardGridCode = [
+    '<ngmd-card-grid columns="2">',
+    '  <ngmd-card title="Markdown routes" link="/concepts/markdown-routes" cta="Read">',
+    '    How file-based routing wires content to URLs.',
+    '  </ngmd-card>',
+    '  <ngmd-card title="Theming" link="/concepts/theming" cta="Read">',
+    '    CSS variable tokens and the fuchsia accent wiring.',
+    '  </ngmd-card>',
+    '</ngmd-card-grid>',
+  ].join('\n');
+
+  readonly badgeCode = [
+    '<ngmd-badge variant="beta">Beta</ngmd-badge>',
+    '<ngmd-badge variant="deprecated">Deprecated</ngmd-badge>',
   ].join('\n');
 }

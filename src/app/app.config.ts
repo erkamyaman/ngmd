@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http';
 import {
   ApplicationConfig,
+  Injector,
   inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
@@ -18,6 +19,7 @@ import { ViewportScroller } from '@angular/common';
 import { marked } from 'marked';
 import { ngmdRuntimeExtensions } from '../marked-extensions';
 import { NgmdTitleStrategy } from './title-strategy';
+import { registerNgmdElements } from './register-elements';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -54,6 +56,12 @@ export const appConfig: ApplicationConfig = {
       // header, where backdrop-blur visually destroys them.
       const scroller = inject(ViewportScroller);
       scroller.setOffset([0, 88]);
+      // Register NgmdUi components as Custom Elements so they upgrade even
+      // when emitted via `bypassSecurityTrustHtml` inside `<analog-markdown
+      // [content]>`. Without this, `<ngmd-callout>` tags in `.md` files
+      // render as empty unknown HTML — the Angular compiler does not walk
+      // `[innerHTML]`. See `register-elements.ts` for the full mapping.
+      registerNgmdElements(inject(Injector));
     }),
   ],
 };

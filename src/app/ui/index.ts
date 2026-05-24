@@ -1,6 +1,9 @@
+export { NgmdAccordion, NgmdAccordionItem } from './accordion';
 export { NgmdAlert } from './alert';
+export { NgmdBadge } from './badge';
 export { NgmdCallout } from './callout';
 export { NgmdCard } from './card';
+export { NgmdCardGrid } from './card-grid';
 export { NgmdCodeBlock } from './code-block';
 export { NgmdHero } from './hero';
 export { NgmdImage } from './image';
@@ -9,9 +12,12 @@ export { NgmdStep, NgmdWorkflow } from './workflow';
 export { NgmdTab, NgmdTabs } from './tabs';
 export { NgmdVideo } from './video';
 
+import { NgmdAccordion, NgmdAccordionItem } from './accordion';
 import { NgmdAlert } from './alert';
+import { NgmdBadge } from './badge';
 import { NgmdCallout } from './callout';
 import { NgmdCard } from './card';
+import { NgmdCardGrid } from './card-grid';
 import { NgmdCodeBlock } from './code-block';
 import { NgmdHero } from './hero';
 import { NgmdImage } from './image';
@@ -29,9 +35,13 @@ import { NgmdVideo } from './video';
  * bail out and the page silently renders empty.
  */
 export const NgmdUi = [
+  NgmdAccordion,
+  NgmdAccordionItem,
   NgmdAlert,
+  NgmdBadge,
   NgmdCallout,
   NgmdCard,
+  NgmdCardGrid,
   NgmdCodeBlock,
   NgmdHero,
   NgmdImage,

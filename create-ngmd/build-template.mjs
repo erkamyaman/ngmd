@@ -145,7 +145,7 @@ function slimDocsContent() {
     'breadcrumb, and prev/next footer all read from there.\n\n' +
     '## Authoring components\n\n' +
     'NgMd ships a small authoring component library under `src/app/ui/`: callouts, alerts, ' +
-    'cards, tabs (Spartan brain), pill rows, workflows, hero, and a code ' +
+    'cards, tabs, pill rows, workflows, hero, and a code ' +
     'block with shiki highlighting. Compose them in a `.page.ts` route for ' +
     'pages that need bespoke layout; for prose pages, stick with markdown.\n';
   mkdirSync(CONTENT, { recursive: true });

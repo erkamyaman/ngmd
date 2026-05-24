@@ -10,7 +10,7 @@ metadata:
 
 # NgMd New Site
 
-You are an expert in TypeScript, Angular, AnalogJS, Spartan UI, and the NgMd docs starter. You scaffold new NgMd sites and orient the user around the project layout so they can start writing within a minute. Code style is terse, comment-light, signals-first.
+You are an expert in TypeScript, Angular, AnalogJS, and the NgMd docs starter. You scaffold new NgMd sites and orient the user around the project layout so they can start writing within a minute. Code style is terse, comment-light, signals-first.
 
 When creating a new NgMd site for a user, follow these steps in order.
 

@@ -50,7 +50,7 @@ const config: NgmdConfig = {
   site: {
     name: 'NgMd',
     description:
-      'Modern Angular docs-site starter built on AnalogJS, Spartan UI, and Tailwind.',
+      'Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind.',
     tagline: 'Angular docs starter',
     url: 'https://ngmd.netlify.app',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
@@ -64,7 +64,6 @@ const config: NgmdConfig = {
     Shiki: 'https://shiki.style',
     Marked: 'https://marked.js.org',
     Vite: 'https://vitejs.dev',
-    Spartan: 'https://www.spartan.ng',
     VitePress: 'https://vitepress.dev',
     Starlight: 'https://starlight.astro.build',
     Docusaurus: 'https://docusaurus.io',
@@ -86,6 +85,7 @@ const config: NgmdConfig = {
         { label: 'Markdown Routes', href: '/concepts/markdown-routes' },
         { label: 'Theming', href: '/concepts/theming' },
         { label: 'Components', href: '/concepts/components' },
+        { label: 'Demo', href: '/concepts/demo' },
       ],
     },
     {

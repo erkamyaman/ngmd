@@ -15,7 +15,7 @@ Shipped as Angular components under `src/app/ui/`:
 - ✅ `<ngmd-callout type="info|tip|success|warning|danger" title="...">` — bordered box with coloured stripe
 - ✅ `<ngmd-alert severity="info|warning|critical|helpful|important">` — single-line banner
 - ✅ `<ngmd-card title="..." link="..." cta="...">` — bordered card, optional router link
-- ✅ `<ngmd-tabs>` + `<ng-template ngmdTab="...">` — Spartan brain tabs with a11y
+- ✅ `<ngmd-tabs>` + `<ng-template ngmdTab="...">` — hand-rolled tabs with ARIA roles, arrow-key navigation, and Home/End shortcuts
 - ✅ `<ngmd-pill-row>` + `<ngmd-pill href="..." title="...">` — horizontal pill links
 - ✅ `<ngmd-workflow>` + `<ngmd-step title="...">` — numbered step list
 - ✅ `<ngmd-hero title="..." gradient>` — page hero
@@ -25,6 +25,8 @@ Shipped as marked extensions (usable inline in `.md`):
 
 - ✅ `<ngmd-video src="..." title="..."/>` — YouTube / Vimeo URL normalisation
 - ✅ `<ngmd-image src="..." alt="..." caption="..."/>` — figure with caption + lazy load
+- ✅ `<ngmd-accordion>` + `<ngmd-accordion-item title="..." open>` — disclosure list backed by native `<details>` for keyboard + a11y for free
+- ✅ `<ngmd-badge variant="alpha|beta|stable|deprecated|new">` — inline status pill
 - ✅ `*Keyword` inline auto-linking — declare in `ngmd.config.ts > keywords`, `*AnalogJS` etc. become links
 
 Code-fence affordances (build-time marked extensions):
@@ -35,7 +37,7 @@ Code-fence affordances (build-time marked extensions):
 
 Open follow-ups:
 
-- ❌ `<ngmd-card-container>` for n-up card grids
+- ✅ `<ngmd-card-grid columns="2|3">` — n-up card grid, mobile stacks to single column
 - ❌ Combined `file=` + `{1,3-5}` line highlight on the same fence
 - ❌ Diff view via ` ```diff ` (shiki supports natively, just need CSS)
 
@@ -137,7 +139,6 @@ Foundation:
 - ✅ Shiki syntax highlighting pinned to `1.29.2` (`bash`, `md`, `json`, `ts`, `html`, `css`)
 - ✅ Tailwind v4 + class-based dark mode (`@variant dark`)
 - ✅ Light / dark / auto theme cycle with no-flash inline boot script
-- ✅ Spartan brain installed (`@spartan-ng/brain` `0.0.1-alpha.694`)
 
 Chrome:
 
@@ -157,7 +158,7 @@ Chrome:
 
 Authoring:
 
-- ✅ Authoring component suite under `src/app/ui/`: callout, alert, card, tabs (Spartan brain), pill row, workflow, hero, code-block (lazy-shiki + dual theme), video, image
+- ✅ Authoring component suite under `src/app/ui/`: callout, alert, card, card-grid, tabs (hand-rolled ARIA + keyboard nav), pill row, workflow, hero, code-block (lazy-shiki + dual theme), accordion, badge, video, image
 - ✅ `<ngmd-video>` + `<ngmd-image>` marked extensions for inline media in `.md`
 - ✅ `*Keyword` inline auto-linking (12 default keywords in `ngmd.config.ts`)
 - ✅ Code-fence file imports with GitHub-linked header bar

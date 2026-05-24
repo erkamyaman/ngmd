@@ -24,7 +24,7 @@
 
 ---
 
-Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki, Spartan UI brain), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
+Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 
 ## Try it
 
@@ -39,7 +39,7 @@ pnpm run dev
 
 ## Authoring model
 
-Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's authoring suite (callouts, alerts, cards, tabs on Spartan brain, pill rows, workflows, hero, code blocks, video, image).
+Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's authoring suite (callouts, alerts, cards, tabs, pill rows, workflows, hero, code blocks, accordion, badge, video, image).
 
 The fork: prose in markdown, authoring components in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
 
@@ -55,7 +55,6 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 |---|---|
 | <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v21) | Framework |
 | <a href="https://analogjs.org" target="_blank" rel="noopener noreferrer">AnalogJS</a> | File-based routing, SSR/SSG, content collections |
-| <a href="https://www.spartan.ng" target="_blank" rel="noopener noreferrer">Spartan UI brain</a> | Headless primitives (tabs a11y) |
 | <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind v4</a> | Styling |
 | <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a> | Code highlighting |
 | <a href="https://marked.js.org" target="_blank" rel="noopener noreferrer">Marked</a> | Markdown parsing |

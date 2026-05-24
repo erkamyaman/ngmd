@@ -2,9 +2,13 @@
 title: Markdown Routes
 ---
 
+<ngmd-hero title="Markdown Routes" gradient>
+  Drop a markdown file at the right path and the catch-all handles routing, rendering, sidebar, TOC, prev/next, and edit-on-github. No per-page wrapper to write.
+</ngmd-hero>
+
 # Markdown Routes
 
-NgMd turns markdown files into routes automatically via AnalogJS content collections.
+NgMd turns markdown files into routes automatically via *AnalogJS content collections.
 
 ## File-based routing
 
@@ -79,7 +83,11 @@ YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus 
 
 ## Link integrity
 
-The build pipeline fails on broken anchors. External links inside raw HTML must carry `target="_blank"`. Internal `#fragment` and `/route#fragment` markdown links must resolve to real headings in the target file. Broken links error at build time rather than reaching production.
+<ngmd-alert severity="critical">
+  The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code> and <code>/route#fragment</code> markdown links must resolve to real headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
+</ngmd-alert>
+
+This is enforced by two Vite plugins: `internal-link-guard.plugin.ts` and the `externalLinkGuard` inside `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404.
 
 ## Importing code from real files
 
@@ -128,6 +136,48 @@ export class Hello {}
 
 Define keywords in `ngmd.config.ts > keywords`. Prefix any name with `*` in markdown prose to turn it into a link without writing the URL each time.
 
-For example, *NgMd is built on *AnalogJS with *Tailwind v4, *Shiki for code highlighting, and *Spartan brain primitives. Compare against *VitePress, *Starlight, *Nextra, and *Docusaurus to see where the bar sits.
+For example, *NgMd is built on *AnalogJS with *Tailwind v4 and *Shiki for code highlighting. Compare against *VitePress, *Starlight, *Nextra, and *Docusaurus to see where the bar sits.
 
 Unknown keywords (`*WrongName`) log a warning at build time and fall back to literal text so the build never fails on a typo.
+
+## Authoring components inside markdown
+
+The catch-all (`src/app/pages/[...slug].page.ts`) imports `NgmdUi`, so every authoring component compiles inside `<analog-markdown>`. Drop them straight into prose:
+
+<ngmd-callout type="tip" title="This callout lives inside markdown-routes.md">
+  No <code>.page.ts</code> wrapper, no special pipeline. The catch-all imports <code>NgmdUi</code> and analog-markdown picks the selectors up.
+</ngmd-callout>
+
+<ngmd-alert severity="helpful">
+  Mixed prose + components scale on the same page. Use components for the structured bits, markdown for the rest.
+</ngmd-alert>
+
+<ngmd-card-grid columns="2">
+  <ngmd-card icon="box" title="Components" link="/concepts/components" cta="See all">
+    Live demos of every NgmdUi component.
+  </ngmd-card>
+  <ngmd-card icon="palette" title="Theming" link="/concepts/theming" cta="Tokens">
+    CSS variables and the fuchsia accent wiring.
+  </ngmd-card>
+</ngmd-card-grid>
+
+<ngmd-accordion>
+  <ngmd-accordion-item title="What about per-page wrappers?">
+    Drop a <code>.md</code> at the right path and the catch-all routes it. Write a named <code>.page.ts</code> only when the page needs a bespoke layout.
+  </ngmd-accordion-item>
+  <ngmd-accordion-item title="Does this hurt the bundle?">
+    NgmdUi adds roughly 10KB gzipped to the markdown-route chunk. Every prose page pays that once, in exchange for the full component vocabulary.
+  </ngmd-accordion-item>
+</ngmd-accordion>
+
+Status badges work inline: API stability tags like <ngmd-badge variant="beta">Beta</ngmd-badge> or <ngmd-badge variant="deprecated">Deprecated</ngmd-badge> sit next to text without breaking the line.
+
+`ngmd-video` and `ngmd-image` are wired separately as marked extensions (build-time HTML rewrites), so they work in markdown regardless of what the catch-all imports.
+
+## Where to next
+
+<ngmd-pill-row>
+  <ngmd-pill href="/concepts/demo" title="Live demo" />
+  <ngmd-pill href="/concepts/components" title="All components" />
+  <ngmd-pill href="/concepts/theming" title="Theming" />
+</ngmd-pill-row>

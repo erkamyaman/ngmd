@@ -1,6 +1,6 @@
 ---
 name: ngmd-authoring
-description: Writes and edits pages in an NgMd Angular docs site. Use this skill whenever a user is adding, editing, or refactoring documentation content in an NgMd project. Covers the prose-vs-component page model, the eleven authoring components, markdown affordances (`*Keyword` autolinks, file-imported code blocks, group tabs, line highlighting), the build-time link guards, and the prose voice the project favours.
+description: Writes and edits pages in an NgMd Angular docs site. Use this skill whenever a user is adding, editing, or refactoring documentation content in an NgMd project. Covers the prose-vs-component page model, the fourteen authoring components, markdown affordances (`*Keyword` autolinks, file-imported code blocks, group tabs, line highlighting), the build-time link guards, and the prose voice the project favours.
 license: MIT
 compatibility: Requires an existing NgMd site. To scaffold one first, use the `ngmd-new-site` skill.
 metadata:
@@ -10,7 +10,7 @@ metadata:
 
 # NgMd Authoring
 
-You are an expert in TypeScript, Angular, AnalogJS, Spartan UI, and the NgMd docs starter. You write documentation pages using NgMd's two-pattern authoring model: prose pages in markdown, component pages in TypeScript composing NgMd's authoring components. Your prose is direct, terse, and free of marketing fluff.
+You are an expert in TypeScript, Angular, AnalogJS, and the NgMd docs starter. You write documentation pages using NgMd's two-pattern authoring model: prose pages in markdown, component pages in TypeScript composing NgMd's authoring components. Your prose is direct, terse, and free of marketing fluff.
 
 When asked to write or edit an NgMd page, follow this skill.
 
@@ -35,7 +35,7 @@ NgMd supports two patterns. Pick one per page.
 
 ## 2. Authoring components (the `NgmdUi` set)
 
-All eleven components are barrelled from `src/app/ui/index.ts`. In a component page, import the bundle:
+All fourteen components are barrelled from `src/app/ui/index.ts`. The catch-all (`src/app/pages/[...slug].page.ts`) already spreads `...NgmdUi` into its imports, so every component works inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
 
 ```ts
 import { Component } from '@angular/core';
@@ -51,7 +51,7 @@ export default class MyPage {}
 
 For lighter pages, import only what you use (`import { NgmdCallout } from '../ui';`).
 
-In a **prose page** (`.md`), most authoring components can be dropped inline as raw HTML because `<analog-markdown>` renders them as Angular elements. The two markdown-friendly ones that are wired through marked extensions and always work in `.md` are `<ngmd-video>` and `<ngmd-image>`. The others render correctly when the page is a component page or when `.md` content is rendered inside a component page that imports `NgmdUi`.
+In a **prose page** (`.md`), drop any of the fourteen components inline as raw HTML. The catch-all spreads `NgmdUi` into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering. `<ngmd-video>` and `<ngmd-image>` are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom `.page.ts` route).
 
 ### `<ngmd-callout>` — bordered notice with coloured side stripe
 
@@ -102,7 +102,7 @@ In a **prose page** (`.md`), most authoring components can be dropped inline as 
 ```
 
 - Each tab is an `<ng-template ngmdTab="Label">`. Order in the template is order in the UI.
-- Built on Spartan UI brain primitives for keyboard nav and ARIA.
+- Hand-rolled signals plus `[attr.aria-selected]` / `[tabindex]` for keyboard navigation and ARIA wiring.
 - For an installation-command tabset specifically, prefer the markdown `group="..."` code-fence affordance (see section 3) since it works in prose pages.
 
 ### `<ngmd-workflow>` and `<ngmd-step>`
@@ -183,6 +183,44 @@ In a **prose page** (`.md`), most authoring components can be dropped inline as 
 
 - Works in markdown and component pages.
 - `alt` required for a11y. `caption` and `width` optional.
+
+### `<ngmd-accordion>` + `<ngmd-accordion-item>` — disclosure list
+
+```html
+<ngmd-accordion>
+  <ngmd-accordion-item title="What is NgMd?" open>
+    A docs starter built on AnalogJS.
+  </ngmd-accordion-item>
+  <ngmd-accordion-item title="Why this stack?">
+    AnalogJS plus Vite plus Tailwind plus Shiki.
+  </ngmd-accordion-item>
+</ngmd-accordion>
+```
+
+- Backed by native `<details>` element. Keyboard nav and a11y for free.
+- `title` required on each item. `open` (boolean) starts that item expanded.
+- Use for: FAQ pages, "show details" sections, anything disclosable.
+
+### `<ngmd-card-grid>` — n-up card layout
+
+```html
+<ngmd-card-grid columns="2">
+  <ngmd-card title="Routing" link="/concepts/markdown-routes">...</ngmd-card>
+  <ngmd-card title="Theming" link="/concepts/theming">...</ngmd-card>
+</ngmd-card-grid>
+```
+
+- `columns`: `2` (default) or `3`. Stacks to single column on mobile.
+- Wraps any block children; mostly used to pair with `<ngmd-card>`.
+
+### `<ngmd-badge>` — inline status pill
+
+```html
+<ngmd-badge variant="beta">Beta</ngmd-badge>
+```
+
+- `variant`: `alpha` (red), `beta` (amber), `stable` (emerald), `deprecated` (zinc, strikethrough), `new` (fuchsia, default).
+- Sits inline next to headings, in cards, or in prose. Doesn't break the text line.
 
 ## 3. Markdown affordances
 

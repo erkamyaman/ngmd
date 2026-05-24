@@ -47,6 +47,7 @@ export class Toc implements AfterViewInit {
   readonly headings = signal<Heading[]>([]);
   readonly active = signal<string>('');
   private observer?: IntersectionObserver;
+  private contentObserver?: MutationObserver;
 
   isActive(id: string): boolean {
     return this.showActive() && this.active() === id;
@@ -63,6 +64,7 @@ export class Toc implements AfterViewInit {
         this.headings.set([]);
         this.scanWithRetry();
       });
+    this.destroyRef.onDestroy(() => this.contentObserver?.disconnect());
   }
 
   scrollToHeading(id: string, event: MouseEvent): void {
@@ -86,8 +88,35 @@ export class Toc implements AfterViewInit {
     }
   }
 
-  private scanWithRetry(attempt = 0): void {
-    if (typeof document === 'undefined' || attempt > 20) return;
+  private scanWithRetry(): void {
+    if (typeof document === 'undefined') return;
+    // Reset any prior observer before scanning. Navigation churn would
+    // otherwise leave a stale observer firing on the wrong route's <main>.
+    this.contentObserver?.disconnect();
+
+    // TS-driven pages render synchronously: the headings are in the DOM
+    // by the time AfterViewInit fires. Try once, succeed immediately.
+    if (this.tryScan()) return;
+
+    // Markdown routes resolve asynchronously through the catch-all:
+    // route → injectContent observable → fetch + parse → analog-markdown
+    // renders. The old 20×50ms polling window timed out on slow first loads.
+    // MutationObserver instead waits for the actual content insertion, then
+    // disconnects itself once h2/h3 nodes appear.
+    const main = document.querySelector('main');
+    if (!main) {
+      // <main> not in DOM yet (very early in the lifecycle). One micro-delay
+      // and we'll find it.
+      setTimeout(() => this.scanWithRetry(), 50);
+      return;
+    }
+    this.contentObserver = new MutationObserver(() => {
+      if (this.tryScan()) this.contentObserver?.disconnect();
+    });
+    this.contentObserver.observe(main, { childList: true, subtree: true });
+  }
+
+  private tryScan(): boolean {
     // Prefer the markdown wrappers for content-driven pages; fall back to
     // `main article` for TS-driven pages (components.page.ts, etc.) that
     // render Angular templates directly without analog-markdown.
@@ -96,10 +125,10 @@ export class Toc implements AfterViewInit {
       document.querySelector('main analog-markdown-route') ??
       document.querySelector('main article');
     if (!content || content.querySelectorAll('h2, h3').length === 0) {
-      setTimeout(() => this.scanWithRetry(attempt + 1), 50);
-      return;
+      return false;
     }
     this.scan(content);
+    return true;
   }
 
   private scan(content: Element): void {

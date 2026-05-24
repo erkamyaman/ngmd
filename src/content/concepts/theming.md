@@ -2,13 +2,32 @@
 title: Theming
 ---
 
+<ngmd-hero title="Theming" gradient>
+  Rebrand NgMd in one file. CSS variables on Tailwind v4 mean a new accent, font, or radius is a token swap, not a refactor.
+</ngmd-hero>
+
 # Theming
 
-NgMd is built on Tailwind v4 with CSS variables for theme tokens. Rebrand in one file: `src/styles.css`.
+NgMd is built on *Tailwind v4 with CSS variables for theme tokens. Rebrand in one file: `src/styles.css`.
 
 ## Token groups
 
 The token block lives under `@layer base` in `src/styles.css`. Four groups, declared twice (once under `:root` for light, once under `.dark` for dark mode):
+
+<ngmd-card-grid columns="2">
+  <ngmd-card icon="layers" title="Surface">
+    <code>--bg</code>, <code>--bg-muted</code>, <code>--fg</code>, <code>--muted</code>, <code>--border</code>, <code>--border-strong</code>.
+  </ngmd-card>
+  <ngmd-card icon="palette" title="Brand">
+    <code>--primary</code>, <code>--accent</code>, <code>--accent-soft</code>, <code>--accent-gradient</code>.
+  </ngmd-card>
+  <ngmd-card icon="box" title="Geometry">
+    <code>--radius-sm</code>, <code>--radius</code>, <code>--radius-lg</code>, <code>--radius-xl</code>.
+  </ngmd-card>
+  <ngmd-card icon="file" title="Typography">
+    <code>--font-sans</code>, <code>--font-display</code>, <code>--font-mono</code>.
+  </ngmd-card>
+</ngmd-card-grid>
 
 ### Surface
 
@@ -74,6 +93,10 @@ User preference is persisted in localStorage and falls back to `prefers-color-sc
 
 ## Picking a brand colour
 
+<ngmd-callout type="tip" title="One accent, two declarations">
+  Set the accent in both <code>:root</code> and <code>.dark</code> with a slightly lighter shade for dark mode so contrast stays readable.
+</ngmd-callout>
+
 Pick one accent and set it in both `:root` and `.dark`:
 
 ```css
@@ -113,3 +136,11 @@ For one-off styling beyond the token system, use Tailwind utilities directly. An
 ## Typography plugin
 
 Long-form markdown content uses `@tailwindcss/typography`'s `prose` class. Override prose tokens with CSS variables under `.prose` to tune your reading experience.
+
+## Where to next
+
+<ngmd-pill-row>
+  <ngmd-pill href="/concepts/components" title="See components" />
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing" />
+  <ngmd-pill href="/concepts/demo" title="Live demo" />
+</ngmd-pill-row>

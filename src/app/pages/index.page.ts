@@ -1,6 +1,16 @@
 import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, ArrowRight, Github } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ArrowRight,
+  Github,
+  FileText,
+  Palette,
+  Code,
+  Box,
+  Search,
+  Zap,
+} from 'lucide-angular';
 import { animate, stagger } from 'motion';
 import siteConfig from '../../ngmd.config';
 
@@ -43,7 +53,7 @@ import siteConfig from '../../ngmd.config';
 
         <p class="mt-6 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Drop a markdown file. Get a route. Beautifully branded out of the box,
-          powered by AnalogJS, Spartan UI, and Tailwind.
+          powered by AnalogJS, Angular, and Tailwind.
         </p>
 
         <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -114,21 +124,6 @@ import siteConfig from '../../ngmd.config';
               class="h-5 w-auto"
             />
             AnalogJS
-          </a>
-          <a
-            href="https://www.spartan.ng"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <svg class="h-4 w-auto" viewBox="0 0 630 268" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M191.5 244.5L560 135L191.5 23.5L126.5 98.5L69.5 62L24 137.5L64.5 211L131 174.5L191.5 244.5Z" fill="#DD0031"/>
-              <path d="M562.848 144.586L594.816 135.087L562.896 125.429L194.396 13.9285L188.19 12.0506L183.943 16.9507L124.586 85.4401L74.3593 53.5573L65.7181 48.0721L60.4351 56.8383L14.9351 132.338L11.9592 137.276L14.7416 142.326L55.2416 215.826L60.0445 224.542L68.7839 219.781L128.705 187.138L183.934 251.039L188.157 255.925L194.348 254.086L562.848 144.586Z" stroke="#36000D" stroke-width="20"/>
-              <path d="M23.5 137.5L64 211L131 174.5L191.5 244.5L560.891 135L23.5 137.5Z" fill="#75011D"/>
-              <path d="M260.533 136L260.533 170.86L199 187.374L199 218L474 136.141L473.527 136L384.145 136L384.651 136.141L298.463 160.134L298.463 136L260.533 136Z" fill="#DD0031"/>
-              <path d="M260.533 136L260.533 101.14L199 84.6265L199 54L474 135.859L473.527 136L384.145 136L384.651 135.859L298.463 111.866L298.463 136L260.533 136Z" fill="#75011D"/>
-            </svg>
-            Spartan UI
           </a>
           <a
             href="https://tailwindcss.com"
@@ -249,15 +244,15 @@ import siteConfig from '../../ngmd.config';
           <div
             class="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
           >
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">{{ feature.emoji }}</span>
-              <code
-                class="rounded-md bg-zinc-100 dark:bg-zinc-900 px-2 py-1 text-sm font-mono font-semibold"
-              >
-                {{ feature.title }}
-              </code>
-            </div>
-            <p class="mt-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <i-lucide
+              [img]="feature.icon"
+              class="size-6 mb-4 text-fuchsia-500 dark:text-fuchsia-400"
+              aria-hidden="true"
+            ></i-lucide>
+            <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+              {{ feature.title }}
+            </p>
+            <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               {{ feature.description }}
             </p>
           </div>
@@ -317,32 +312,32 @@ export default class Home implements AfterViewInit {
 
   readonly features = [
     {
-      emoji: '📝',
+      icon: FileText,
       title: 'Markdown routes',
       description: 'Drop a .md file in src/content, get a route. Powered by AnalogJS content collections.',
     },
     {
-      emoji: '🎨',
+      icon: Palette,
       title: 'Branding-first',
       description: 'Tailwind tokens and CSS variables make a complete rebrand a one-file change.',
     },
     {
-      emoji: '✨',
+      icon: Code,
       title: 'Shiki highlighting',
       description: 'Beautiful syntax highlighting for code blocks. Same engine as VS Code.',
     },
     {
-      emoji: '⚔️',
-      title: 'Spartan UI',
-      description: 'shadcn-style copy/paste Angular components. Own the source, theme freely.',
+      icon: Box,
+      title: 'Own your components',
+      description: 'shadcn-style ownership. Authoring components live in your repo, theme freely.',
     },
     {
-      emoji: '🔍',
+      icon: Search,
       title: 'Cmd+K search',
       description: 'Built-in command palette with keyboard navigation. Press ⌘K to try it.',
     },
     {
-      emoji: '⚡',
+      icon: Zap,
       title: 'AnalogJS-native',
       description: 'File-based routing, SSR/SSG, Vite dev server. The fast Angular stack.',
     },

@@ -56,6 +56,31 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/* Hide NgmdUi Custom Elements until @angular/elements has registered them.
+ * Without this, raw children (often plain <code> spans projected via
+ * ng-content) render with default inline-code styling for a few ms during
+ * the bundle load + provideAppInitializer step — looks like the title sits
+ * inside a code pill until the element upgrades. `:not(:defined)` ceases
+ * matching the moment customElements.define() runs. */
+ngmd-accordion:not(:defined),
+ngmd-accordion-item:not(:defined),
+ngmd-alert:not(:defined),
+ngmd-badge:not(:defined),
+ngmd-callout:not(:defined),
+ngmd-card:not(:defined),
+ngmd-card-grid:not(:defined),
+ngmd-code-block:not(:defined),
+ngmd-hero:not(:defined),
+ngmd-image:not(:defined),
+ngmd-pill:not(:defined),
+ngmd-pill-row:not(:defined),
+ngmd-step:not(:defined),
+ngmd-tabs:not(:defined),
+ngmd-video:not(:defined),
+ngmd-workflow:not(:defined) {
+  visibility: hidden;
+}
+
 @layer base {
   :root {
     /* Surface */
