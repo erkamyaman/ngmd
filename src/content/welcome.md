@@ -15,13 +15,15 @@ A modern docs starter for Angular: markdown content collections, authoring compo
 NgMd uses a two-layer authoring model that separates **content** from **chrome**.
 
 <ngmd-card-grid columns="2">
-  <ngmd-card title="Content as markdown">
+  <ngmd-card icon="file" title="Content as markdown">
     Your docs live as <code>.md</code> files under <code>src/content/</code>. The path becomes the URL. Frontmatter handles metadata, marked handles rendering, Shiki handles code highlighting.
   </ngmd-card>
-  <ngmd-card title="UI as Angular components">
+  <ngmd-card icon="code" title="UI as Angular components">
     Site frame and authoring components both live in your codebase under <code>src/app/</code>. Tailwind v4 throughout, signals and ARIA wired by hand. Edit Tailwind classes directly and ship.
   </ngmd-card>
 </ngmd-card-grid>
+
+<div class="h-2"></div>
 
 <ngmd-callout type="tip" title="You own the source">
   Both layers are files in your repo, not imports from a library. Customise without fighting a theming API, no version conflicts, no waiting on maintainers for a feature you need today.

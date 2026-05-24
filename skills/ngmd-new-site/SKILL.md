@@ -68,7 +68,7 @@ After scaffolding, point the user at these files in this order:
 | `src/content/welcome.md` | First prose page. Its path under `src/content/` becomes the URL: `welcome.md` resolves at `/welcome`. |
 | `src/app/pages/[...slug].page.ts` | The one catch-all that renders every prose route. Reads the URL, fetches the matching markdown, renders it. Mirror of adev's `docs.component.ts`. |
 | `src/app/pages/index.page.ts` | Home route. TypeScript-driven, composes `NgmdUi` authoring components. |
-| `src/styles.css` | Tailwind v4 entry. Theme tokens (`--bg`, `--accent`, etc.) live in `:root` and `.dark`. |
+| `src/styles.css` | Tailwind v4 entry. Theme tokens (`--bg`, `--accent`, `--accent-strong`, `--accent-soft`, `--accent-gradient`, `--accent-gradient-soft`, font + radius tokens) live in `:root` and `.dark`. No component hardcodes a Tailwind colour like `text-fuchsia-500` — they read `var(--accent)` via `text-[color:var(--accent)]` or inline style, so swapping one token re-skins the site. |
 | `vite.config.ts` | AnalogJS config plus the four NgMd build plugins (page-meta, internal/external link guards, sitemap). |
 
 **Two-pattern authoring model**: prose pages are `.md` files under `src/content/`, no wrapper required. Pages that need authoring components (callouts, tabs, cards) live in `src/app/pages/` as `.page.ts` and compose `NgmdUi` directly. The user picks per page. See the `ngmd-authoring` skill for which pattern fits which page.
@@ -126,6 +126,14 @@ For a prose page at `/install`:
 2. Add `{ label: 'Install', href: '/install' }` to the nav in `src/ngmd.config.ts`.
 
 That's it. The catch-all `[...slug].page.ts` resolves `/install` to `src/content/install.md` automatically. For nested routes like `/guides/auth`, drop the file at `src/content/guides/auth.md`. The dev server picks up both changes live.
+
+For a section with a parent and children, place the parent at root and children in a same-named folder:
+
+- `src/content/guides.md` → `/guides`
+- `src/content/guides/auth.md` → `/guides/auth`
+- `src/content/guides/api.md` → `/guides/api`
+
+The parent and children are independent routes; no `index.md` convention is in play.
 
 If a page needs a bespoke layout or wants to compose authoring components directly, create a named `.page.ts` in `src/app/pages/` instead (e.g., `src/app/pages/install.page.ts`); Angular's router prefers the more specific match over the catch-all.
 

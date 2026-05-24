@@ -18,6 +18,14 @@ Drop a `.md` file under `src/content/`, get a route at the matching path. No per
 - `src/content/getting-started/about.md` → `/getting-started/about`
 - `src/content/concepts/theming.md` → `/concepts/theming`
 
+A common pattern is a section parent at root plus children in a same-named folder:
+
+- `src/content/help.md` → `/help`
+- `src/content/help/contribute.md` → `/help/contribute`
+- `src/content/help/sponsor.md` → `/help/sponsor`
+
+The parent and its children are independent routes — no `index.md` convention needed.
+
 One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `&lt;analog-markdown [content]&gt;`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
 
 For pages that need bespoke layouts or want to compose authoring components directly (callouts, tabs, cards, workflows, hero), write a named `.page.ts` in `src/app/pages/` instead. Angular's router prefers the more specific match, so a named route wins over the catch-all.

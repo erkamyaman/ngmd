@@ -6,10 +6,12 @@ import { Component, computed, input } from '@angular/core';
     <header
       class="my-8 rounded-2xl px-6 py-10 sm:px-10 sm:py-14"
       [class]="bgClass()"
+      [style.background-image]="gradient() ? 'var(--accent-gradient-soft)' : null"
     >
       <h1
         class="text-3xl sm:text-4xl font-bold tracking-tight m-0 mb-3"
         [class]="titleClass()"
+        [style.background-image]="gradient() ? 'var(--accent-gradient)' : null"
       >
         {{ title() }}
       </h1>
@@ -28,13 +30,13 @@ export class NgmdHero {
 
   readonly bgClass = computed(() =>
     this.gradient()
-      ? 'bg-gradient-to-br from-rose-500/10 via-fuchsia-500/10 to-purple-500/10 border border-zinc-200 dark:border-zinc-800'
+      ? 'border border-zinc-200 dark:border-zinc-800'
       : 'bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800',
   );
 
   readonly titleClass = computed(() =>
     this.gradient()
-      ? 'bg-gradient-to-r from-rose-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent'
+      ? 'bg-clip-text text-transparent'
       : 'text-zinc-900 dark:text-zinc-100',
   );
 

@@ -99,7 +99,7 @@ const ICON_MAP: Record<string, LucideIconData> = {
       } @else if (iconImg(); as img) {
         <i-lucide
           [img]="img"
-          class="size-6 mb-4 text-fuchsia-500 dark:text-fuchsia-400"
+          class="size-6 mb-4 text-[color:var(--accent)]"
           aria-hidden="true"
         ></i-lucide>
       }
@@ -113,7 +113,7 @@ const ICON_MAP: Record<string, LucideIconData> = {
         <ng-content></ng-content>
       </div>
       @if (cta()) {
-        <span class="mt-3 inline-block text-sm font-medium text-zinc-500 dark:text-zinc-400">{{ cta() }} →</span>
+        <span class="mt-3 inline-block text-sm font-medium text-[color:var(--accent)]">{{ cta() }} →</span>
       }
     </ng-template>
   `,

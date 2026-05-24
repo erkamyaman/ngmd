@@ -152,8 +152,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
         <h2 id="hero" class="text-2xl font-semibold tracking-tight">Hero</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Page header with optional gradient background. Pass
-          <code>gradient</code> for the rose-fuchsia-purple wash, omit for the
-          quiet variant.
+          <code>gradient</code> for the brand-accent wash (driven by the
+          <code>--accent-gradient</code> token), omit for the quiet variant.
         </p>
         <div class="mt-4">
           <ngmd-hero title="Welcome" gradient>

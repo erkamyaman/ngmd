@@ -18,7 +18,7 @@ import { LucideAngularModule, ArrowRight, ArrowUpRight } from 'lucide-angular';
         [href]="href()"
         target="_blank"
         rel="noopener noreferrer"
-        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-fuchsia-300 dark:hover:border-fuchsia-700 hover:text-fuchsia-600 dark:hover:text-fuchsia-400"
+        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
       >
         <span>{{ title() }}</span>
         <i-lucide
@@ -30,7 +30,7 @@ import { LucideAngularModule, ArrowRight, ArrowUpRight } from 'lucide-angular';
     } @else {
       <a
         [routerLink]="href()"
-        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-fuchsia-300 dark:hover:border-fuchsia-700 hover:text-fuchsia-600 dark:hover:text-fuchsia-400"
+        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
       >
         <span>{{ title() }}</span>
         <i-lucide

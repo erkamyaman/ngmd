@@ -25,7 +25,8 @@ import siteConfig from '../../ngmd.config';
       aria-hidden="true"
     >
       <div
-        class="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-24 size-[60rem] rounded-full bg-gradient-to-br from-rose-500/20 via-purple-500/10 to-transparent blur-3xl"
+        class="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-24 size-[60rem] rounded-full opacity-20 blur-3xl"
+        style="background-image: var(--accent-gradient)"
       ></div>
     </div>
 
@@ -46,7 +47,8 @@ import siteConfig from '../../ngmd.config';
         <h1 #hero class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
           <span class="ngmd-hero-anim inline-block">The</span>&nbsp;<span class="ngmd-hero-anim inline-block">Angular</span>&nbsp;<span class="ngmd-hero-anim inline-block">docs</span>
           <span
-            class="ngmd-hero-anim block bg-gradient-to-r from-rose-500 via-fuchsia-500 to-purple-500 bg-clip-text text-transparent ngmd-hero-gradient pb-1"
+            class="ngmd-hero-anim block bg-clip-text text-transparent ngmd-hero-gradient pb-1"
+            style="background-image: var(--accent-gradient)"
           >
             starter you've been missing
           </span>
@@ -126,11 +128,11 @@ import siteConfig from '../../ngmd.config';
             </div>
             <pre
               class="p-4 text-sm overflow-x-auto text-zinc-700 dark:text-zinc-300 leading-relaxed"
-            ><code><span class="text-fuchsia-600 dark:text-fuchsia-400 font-semibold"># Welcome</span>
+            ><code><span class="text-[color:var(--accent)] font-semibold"># Welcome</span>
 
 NgMd is a modern Angular docs starter.
 
-<span class="text-fuchsia-600 dark:text-fuchsia-400 font-semibold">## Quick start</span>
+<span class="text-[color:var(--accent)] font-semibold">## Quick start</span>
 
 <span class="text-zinc-400">-</span> Drop a .md file
 <span class="text-zinc-400">-</span> Get a route
@@ -143,7 +145,7 @@ NgMd is a modern Angular docs starter.
               class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500"
             >
               <span>Browser → /welcome</span>
-              <span class="text-fuchsia-500">live</span>
+              <span class="text-[color:var(--accent)]">live</span>
             </div>
             <div class="p-6">
               <h3 class="text-2xl font-bold mb-3">Welcome</h3>
@@ -177,7 +179,7 @@ NgMd is a modern Angular docs starter.
           >
             <i-lucide
               [img]="feature.icon"
-              class="size-6 mb-4 text-fuchsia-500 dark:text-fuchsia-400"
+              class="size-6 mb-4 text-[color:var(--accent)]"
               aria-hidden="true"
             ></i-lucide>
             <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
@@ -208,7 +210,7 @@ NgMd is a modern Angular docs starter.
         <div class="mt-8">
           <a
             routerLink="/welcome"
-            class="inline-flex items-center gap-2 text-base font-medium text-fuchsia-500 hover:text-fuchsia-600"
+            class="inline-flex items-center gap-2 text-base font-medium text-[color:var(--accent)] hover:opacity-80"
           >
             Read the docs
             <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>

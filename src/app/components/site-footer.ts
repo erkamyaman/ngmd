@@ -17,7 +17,7 @@ import { LucideAngularModule, Github } from 'lucide-angular';
             href="https://github.com/erkamyaman"
             target="_blank"
             rel="noopener noreferrer"
-            class="font-medium text-zinc-700 dark:text-zinc-300 hover:text-fuchsia-600 dark:hover:text-fuchsia-400"
+            class="font-medium text-zinc-700 dark:text-zinc-300 hover:text-[color:var(--accent)]"
           >Erkam Yaman</a>.
           Released under the MIT License.
         </span>

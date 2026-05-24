@@ -64,6 +64,6 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
 
 <ngmd-pill-row>
   <ngmd-pill href="/help" title="Get help"></ngmd-pill>
-  <ngmd-pill href="/sponsor" title="Support us"></ngmd-pill>
+  <ngmd-pill href="/help/sponsor" title="Support us"></ngmd-pill>
   <ngmd-pill href="https://github.com/erkamyaman/ngmd" title="View on GitHub"></ngmd-pill>
 </ngmd-pill-row>

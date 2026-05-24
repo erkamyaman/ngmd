@@ -6,7 +6,25 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.0.6 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.0.7 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Token-driven theming everywhere.** Every accent-aware class in core components (sidebar, TOC, palette, page footer, pill, card, heading anchors, hero, home page) now reads `var(--accent)`, `var(--accent-strong)`, `var(--accent-soft)`, `var(--accent-gradient)`, or `var(--accent-gradient-soft)` instead of hardcoded `fuchsia-*` Tailwind utilities. Swap one token in `src/styles.css` and the whole site re-skins. Per-variant components (`callout`, `alert`, `badge`) keep their literal severity colours by design.
+
+**Two new tokens.** `--accent-strong` (deeper shade for active text on light surfaces) and `--accent-gradient-soft` (low-opacity gradient for hero washes and the home spotlight). Both declared in `:root` and `.dark`.
+
+**Help folder reorganised.** Section parent stays at root, children move under a same-named folder: `src/content/help.md` → `/help`, `src/content/help/contribute.md` → `/help/contribute`, `src/content/help/sponsor.md` → `/help/sponsor`. URL pattern now matches the nav grouping. README community links and cross-page links updated.
+
+**Marked parsing fix.** Backtick-wrapped custom-element references like `` `<ngmd-callout>` `` in prose were leaking out as real DOM elements through marked's parser, breaking page layouts. Angle brackets inside backticks now escape to `&lt;` / `&gt;` across the changelog, demo, markdown-routes, and technologies pages.
+
+**Code-copy scoped to markdown.** The `app-code-copy` DOM walker now targets `analog-markdown` / `analog-markdown-route` pres only, so it doesn't duplicate the copy button that `NgmdCodeBlock` ships internally on TS-page instances.
+
+**Code-block visibility fix.** The `:not(:defined)` flash-prevention CSS rule that hides custom elements until they upgrade was still listing `ngmd-code-block` after it was removed from `@angular/elements` registration in 0.0.6 — which left every code-block invisible forever. Rule entry removed.
+
+**Theming doc rewritten.** [/concepts/theming](/concepts/theming) now lists all six accent tokens with what each is for, shows the `text-[color:var(--accent)]` / `bg-[color:var(--accent-soft)]` consumption pattern, calls out the inline-style fallback for gradient images, and explains the `!` important modifier needed when an active state has to beat a static base utility.
+
+**Skills updated.** `ngmd-new-site` and `ngmd-authoring` skills now reflect the seventeen-component count, the section + folder routing pattern, the closing-tag requirement for custom elements in markdown, and the full accent token set.
+
+## 0.0.6
 
 **Site footer.** `&lt;app-site-footer&gt;` renders on every route: `© {year} Erkam Yaman. Released under the MIT License.` on the left, `erkamyaman/ngmd` GitHub link on the right.
 
@@ -52,7 +70,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.6</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.0.7</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.

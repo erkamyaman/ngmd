@@ -108,12 +108,17 @@ ngmd-workflow:not(:defined) {
     --primary: #18181b;
     --primary-fg: #fafafa;
     --accent: #d946ef;
+    --accent-strong: #a21caf;
     --accent-fg: #ffffff;
     --accent-soft: rgba(217, 70, 239, 0.12);
     --accent-gradient: linear-gradient(to right,
         #f43f5e 0%,
         #d946ef 50%,
         #a855f7 100%);
+    --accent-gradient-soft: linear-gradient(to bottom right,
+        rgba(244, 63, 94, 0.10) 0%,
+        rgba(217, 70, 239, 0.10) 50%,
+        rgba(168, 85, 247, 0.10) 100%);
 
     /* Geometry */
     --radius-sm: 0.25rem;
@@ -142,8 +147,13 @@ ngmd-workflow:not(:defined) {
     --primary: #fafafa;
     --primary-fg: #18181b;
     --accent: #e879f9;
+    --accent-strong: #f0abfc;
     --accent-fg: #18181b;
-    --accent-soft: rgba(232, 121, 249, 0.15);
+    --accent-soft: rgba(217, 70, 239, 0.15);
+    --accent-gradient-soft: linear-gradient(to bottom right,
+        rgba(244, 63, 94, 0.10) 0%,
+        rgba(217, 70, 239, 0.10) 50%,
+        rgba(168, 85, 247, 0.10) 100%);
 
     color-scheme: dark;
   }
@@ -274,11 +284,13 @@ ngmd-workflow:not(:defined) {
 
   analog-markdown code:not(pre code),
   analog-markdown-route code:not(pre code) {
-    background: color-mix(in srgb, var(--border) 60%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg-muted));
+    color: var(--accent);
     padding: 0.15em 0.4em;
     border-radius: 0.25rem;
     font-size: 0.875em;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
   }
 
   analog-markdown pre,

@@ -58,4 +58,4 @@ Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20paid%20support">erka
 
 ## Want to support the project?
 
-If you find NgMd useful, [head over to the sponsor page](/sponsor). Starring on GitHub or sponsoring keeps the project moving.
+If you find NgMd useful, [head over to the sponsor page](/help/sponsor). Starring on GitHub or sponsoring keeps the project moving.

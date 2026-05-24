@@ -1,6 +1,6 @@
 ---
 name: ngmd-authoring
-description: Writes and edits pages in an NgMd Angular docs site. Use this skill whenever a user is adding, editing, or refactoring documentation content in an NgMd project. Covers the prose-vs-component page model, the fourteen authoring components, markdown affordances (`*Keyword` autolinks, file-imported code blocks, group tabs, line highlighting), the build-time link guards, and the prose voice the project favours.
+description: Writes and edits pages in an NgMd Angular docs site. Use this skill whenever a user is adding, editing, or refactoring documentation content in an NgMd project. Covers the prose-vs-component page model, the seventeen authoring components (sixteen inline-in-markdown via Custom Elements, plus code-block which uses fenced ``` blocks), markdown affordances (`*Keyword` autolinks, file-imported code blocks, group tabs, line highlighting), the build-time link guards, and the prose voice the project favours.
 license: MIT
 compatibility: Requires an existing NgMd site. To scaffold one first, use the `ngmd-new-site` skill.
 metadata:
@@ -35,7 +35,7 @@ NgMd supports two patterns. Pick one per page.
 
 ## 2. Authoring components (the `NgmdUi` set)
 
-All fourteen components are barrelled from `src/app/ui/index.ts`. The catch-all (`src/app/pages/[...slug].page.ts`) already spreads `...NgmdUi` into its imports, so every component works inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
+All seventeen components are barrelled from `src/app/ui/index.ts`. The catch-all (`src/app/pages/[...slug].page.ts`) already spreads `...NgmdUi` into its imports, so every component works inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
 
 ```ts
 import { Component } from '@angular/core';
@@ -51,7 +51,7 @@ export default class MyPage {}
 
 For lighter pages, import only what you use (`import { NgmdCallout } from '../ui';`).
 
-In a **prose page** (`.md`), drop any of the fourteen components inline as raw HTML. The catch-all spreads `NgmdUi` into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering. `<ngmd-video>` and `<ngmd-image>` are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom `.page.ts` route).
+In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered components inline as raw HTML. (Code-block isn't one of them — use fenced ``` instead for code in prose.) The catch-all spreads `NgmdUi` into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering. `<ngmd-video>` and `<ngmd-image>` are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom `.page.ts` route).
 
 ### `<ngmd-callout>` — bordered notice with coloured side stripe
 
@@ -129,13 +129,14 @@ In a **prose page** (`.md`), drop any of the fourteen components inline as raw H
 
 ```html
 <ngmd-pill-row>
-  <ngmd-pill href="/welcome" title="Get started" />
-  <ngmd-pill href="https://github.com/you/repo" title="GitHub" />
+  <ngmd-pill href="/welcome" title="Get started"></ngmd-pill>
+  <ngmd-pill href="https://github.com/you/repo" title="GitHub"></ngmd-pill>
 </ngmd-pill-row>
 ```
 
 - Pills auto-detect external vs internal (anything starting with `http(s)://` is external).
 - Use for: link chips above the fold, related-reading rows.
+- **In markdown, always use explicit closing tags** (`</ngmd-pill>`). HTML parsers do NOT honour self-closing syntax (`<ngmd-pill ... />`) on custom-element tags; the next sibling silently nests inside the previous one and the layout breaks. Self-closing only works inside Angular `.page.ts` templates.
 
 ### `<ngmd-hero>` — large intro block with optional gradient title
 
@@ -165,11 +166,12 @@ In a **prose page** (`.md`), drop any of the fourteen components inline as raw H
 ### `<ngmd-video>` — YouTube / Vimeo embed
 
 ```html
-<ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo" />
+<ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo"></ngmd-video>
 ```
 
 - Works in markdown and component pages.
 - Accepts `youtube.com/watch?v=...`, `youtu.be/...`, `vimeo.com/...`, or a pre-baked embed URL.
+- In markdown, use explicit closing tag as shown (HTML parsers don't honour self-closing on custom elements). Self-closing is fine inside `.page.ts` Angular templates.
 
 ### `<ngmd-image>` — figure with optional caption
 
@@ -179,11 +181,12 @@ In a **prose page** (`.md`), drop any of the fourteen components inline as raw H
   alt="Sidebar accordion"
   caption="The sidebar reads from ngmd.config.ts"
   width="600px"
-/>
+></ngmd-image>
 ```
 
 - Works in markdown and component pages.
 - `alt` required for a11y. `caption` and `width` optional.
+- In markdown, use explicit closing tag (self-closing breaks HTML parsing on custom elements).
 
 ### `<ngmd-accordion>` + `<ngmd-accordion-item>` — disclosure list
 
