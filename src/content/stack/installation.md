@@ -52,7 +52,7 @@ Open `http://localhost:5173`. Done.
   <ngmd-card icon="palette" title="Rebrand the theme" link="/concepts/theming" cta="Tokens">
     All colours, radii, and fonts live as CSS variables in <code>src/styles.css</code>. Swap one token, the whole site follows.
   </ngmd-card>
-  <ngmd-card icon="box" title="Try the components" link="/concepts/demo" cta="Live demo">
+  <ngmd-card icon="box" title="Try the components" link="/concepts/demo" cta="Showcase">
     See every authoring component rendered inline from markdown.
   </ngmd-card>
 </ngmd-card-grid>
@@ -165,8 +165,8 @@ Drop a `netlify.toml` at the repo root with `publish = "dist/analog/public"` and
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/welcome" title="Introduction" />
-  <ngmd-pill href="/concepts/markdown-routes" title="Routing" />
-  <ngmd-pill href="/concepts/theming" title="Theming" />
-  <ngmd-pill href="/concepts/demo" title="Live demo" />
+  <ngmd-pill href="/welcome" title="Introduction"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
+  <ngmd-pill href="/concepts/theming" title="Theming"></ngmd-pill>
+  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
 </ngmd-pill-row>

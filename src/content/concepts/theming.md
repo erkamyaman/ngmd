@@ -14,21 +14,6 @@ NgMd is built on *Tailwind v4 with CSS variables for theme tokens. Rebrand in on
 
 The token block lives under `@layer base` in `src/styles.css`. Four groups, declared twice (once under `:root` for light, once under `.dark` for dark mode):
 
-<ngmd-card-grid columns="2">
-  <ngmd-card icon="layers" title="Surface">
-    <code>--bg</code>, <code>--bg-muted</code>, <code>--fg</code>, <code>--muted</code>, <code>--border</code>, <code>--border-strong</code>.
-  </ngmd-card>
-  <ngmd-card icon="palette" title="Brand">
-    <code>--primary</code>, <code>--accent</code>, <code>--accent-soft</code>, <code>--accent-gradient</code>.
-  </ngmd-card>
-  <ngmd-card icon="box" title="Geometry">
-    <code>--radius-sm</code>, <code>--radius</code>, <code>--radius-lg</code>, <code>--radius-xl</code>.
-  </ngmd-card>
-  <ngmd-card icon="file" title="Typography">
-    <code>--font-sans</code>, <code>--font-display</code>, <code>--font-mono</code>.
-  </ngmd-card>
-</ngmd-card-grid>
-
 ### Surface
 
 ```css
@@ -79,7 +64,7 @@ The token block lives under `@layer base` in `src/styles.css`. Four groups, decl
 --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 ```
 
-`--font-display` powers the wordmark in the header; `--font-sans` is the default body face; `--font-mono` is for inline code and code blocks.
+`--font-display` powers the wordmark in the header, `--font-sans` is the default body face, `--font-mono` is for inline code and code blocks.
 
 ## Light / dark mode
 
@@ -140,7 +125,7 @@ Long-form markdown content uses `@tailwindcss/typography`'s `prose` class. Overr
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/concepts/components" title="See components" />
-  <ngmd-pill href="/concepts/markdown-routes" title="Routing" />
-  <ngmd-pill href="/concepts/demo" title="Live demo" />
+  <ngmd-pill href="/concepts/components" title="See components"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
+  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
 </ngmd-pill-row>

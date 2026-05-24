@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
   ArrowRight,
+  Eye,
   Github,
   FileText,
   Palette,
@@ -53,7 +54,7 @@ import siteConfig from '../../ngmd.config';
 
         <p class="mt-6 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Drop a markdown file. Get a route. Beautifully branded out of the box,
-          powered by AnalogJS, Angular, and Tailwind.
+          powered by AnalogJS, Angular, Vite, Tailwind, and Shiki.
         </p>
 
         <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -61,8 +62,15 @@ import siteConfig from '../../ngmd.config';
             routerLink="/welcome"
             class="inline-flex items-center gap-2 rounded-md bg-zinc-900 dark:bg-zinc-50 px-6 py-3 text-base font-medium text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors"
           >
-            Get Started
+            Get started
             <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
+          </a>
+          <a
+            routerLink="/concepts/demo"
+            class="inline-flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-6 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <i-lucide [img]="eyeIcon" class="size-4"></i-lucide>
+            Showcase
           </a>
           <a
             [href]="githubUrl"
@@ -81,96 +89,17 @@ import siteConfig from '../../ngmd.config';
             BUILT ON
           </p>
           <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          <a
-            href="https://angular.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <svg class="size-5" viewBox="0 0 223 236" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clip-path="url(#ng-a)">
-                <path fill="url(#ng-b)" d="m222.077 39.192-8.019 125.923L137.387 0l84.69 39.192Zm-53.105 162.825-57.933 33.056-57.934-33.056 11.783-28.556h92.301l11.783 28.556ZM111.039 62.675l30.357 73.803H80.681l30.358-73.803ZM7.937 165.115 0 39.192 84.69 0 7.937 165.115Z"/>
-                <path fill="url(#ng-c)" d="m222.077 39.192-8.019 125.923L137.387 0l84.69 39.192Zm-53.105 162.825-57.933 33.056-57.934-33.056 11.783-28.556h92.301l11.783 28.556ZM111.039 62.675l30.357 73.803H80.681l30.358-73.803ZM7.937 165.115 0 39.192 84.69 0 7.937 165.115Z"/>
-              </g>
-              <defs>
-                <linearGradient id="ng-b" x1="49.009" x2="225.829" y1="213.75" y2="129.722" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#E40035"/>
-                  <stop offset=".24" stop-color="#F60A48"/>
-                  <stop offset=".352" stop-color="#F20755"/>
-                  <stop offset=".494" stop-color="#DC087D"/>
-                  <stop offset=".745" stop-color="#9717E7"/>
-                  <stop offset="1" stop-color="#6C00F5"/>
-                </linearGradient>
-                <linearGradient id="ng-c" x1="41.025" x2="156.741" y1="28.344" y2="160.344" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#FF31D9"/>
-                  <stop offset="1" stop-color="#FF5BE1" stop-opacity="0"/>
-                </linearGradient>
-                <clipPath id="ng-a">
-                  <path fill="#fff" d="M0 0h223v236H0z"/>
-                </clipPath>
-              </defs>
-            </svg>
-            Angular
-          </a>
-          <a
-            href="https://analogjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <img
-              src="https://analogjs.org/img/logos/analog-logo.svg"
-              alt="AnalogJS"
-              class="h-5 w-auto"
-            />
-            AnalogJS
-          </a>
-          <a
-            href="https://tailwindcss.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <svg class="size-5" viewBox="0 0 24 24" fill="#38BDF8" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 6C9.33 6 7.67 7.33 7 10c1-1.33 2.17-1.83 3.5-1.5.76.19 1.31.74 1.91 1.35.98.99 2.12 2.15 4.59 2.15 2.67 0 4.33-1.33 5-4-1 1.33-2.17 1.83-3.5 1.5-.76-.19-1.3-.74-1.91-1.35C15.61 7.15 14.47 6 12 6zM7 12c-2.67 0-4.33 1.33-5 4 1-1.33 2.17-1.83 3.5-1.5.76.19 1.3.74 1.91 1.35.98.99 2.12 2.15 4.59 2.15 2.67 0 4.33-1.33 5-4-1 1.33-2.17 1.83-3.5 1.5-.76-.19-1.3-.74-1.91-1.35C10.61 13.15 9.47 12 7 12z"/>
-            </svg>
-            Tailwind
-          </a>
-          <a
-            href="https://shiki.style"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="m9 11-6 6v3h9l3-3"/>
-              <path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/>
-            </svg>
-            Shiki
-          </a>
-          <a
-            href="https://vitejs.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-          >
-            <svg class="size-5" viewBox="0 0 410 404" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M399.641 59.5246L215.643 388.545C211.844 395.338 202.084 395.378 198.228 388.618L10.5817 59.5563C6.38087 52.1896 12.6802 43.2665 21.0281 44.7586L205.223 77.6824C206.398 77.8924 207.601 77.8904 208.776 77.6763L389.119 44.8058C397.439 43.2894 403.768 52.1434 399.641 59.5246Z" fill="url(#vite-a)"/>
-              <path d="M292.965 1.5744L156.801 28.2552C154.563 28.6937 152.906 30.5903 152.771 32.8664L144.395 175.668C144.198 179.014 147.258 181.62 150.539 180.876L188.461 172.107C192.039 171.299 195.272 174.479 194.512 178.10L183.255 233.422C182.467 237.183 185.964 240.398 189.694 239.428L213.092 232.41C216.832 231.43 220.342 234.728 219.518 238.532L201.62 322.95C200.398 328.679 207.821 331.81 210.97 326.926L213.024 323.715L324.886 79.7223C326.792 75.5562 323.31 70.8951 318.864 71.7551L279.821 79.2861C275.811 80.0641 272.388 76.2151 273.408 72.2241L298.892 0.4451C299.916 -3.5709 296.443 -7.4259 292.965 1.5744Z" fill="url(#vite-b)"/>
-              <defs>
-                <linearGradient id="vite-a" x1="6" y1="32.945" x2="235" y2="344" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#41D1FF"/>
-                  <stop offset="1" stop-color="#BD34FE"/>
-                </linearGradient>
-                <linearGradient id="vite-b" x1="194.651" y1="8.818" x2="236.076" y2="292.989" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#FFEA83"/>
-                  <stop offset="0.083" stop-color="#FFDD35"/>
-                  <stop offset="1" stop-color="#FFA800"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            Vite
-          </a>
+          @for (tech of stack; track tech.name) {
+            <a
+              [href]="tech.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
+            >
+              <img [src]="tech.logo" [alt]="tech.name" class="size-5 object-contain" />
+              {{ tech.name }}
+            </a>
+          }
           </div>
         </div>
       </div>
@@ -196,14 +125,16 @@ import siteConfig from '../../ngmd.config';
               <span class="text-zinc-400">markdown</span>
             </div>
             <pre
-              class="p-4 text-sm overflow-x-auto"
-            ><code><span class="text-zinc-400"># Welcome</span>
-<span class="text-zinc-400">NgMd is a modern Angular</span>
-<span class="text-zinc-400">docs starter.</span>
-<span class="text-zinc-400">## Quick start</span>
-<span class="text-zinc-400">- Drop a .md file</span>
-<span class="text-zinc-400">- Get a route</span>
-<span class="text-zinc-400">- Done.</span></code></pre>
+              class="p-4 text-sm overflow-x-auto text-zinc-700 dark:text-zinc-300 leading-relaxed"
+            ><code><span class="text-fuchsia-600 dark:text-fuchsia-400 font-semibold"># Welcome</span>
+
+NgMd is a modern Angular docs starter.
+
+<span class="text-fuchsia-600 dark:text-fuchsia-400 font-semibold">## Quick start</span>
+
+<span class="text-zinc-400">-</span> Drop a .md file
+<span class="text-zinc-400">-</span> Get a route
+<span class="text-zinc-400">-</span> Done.</code></pre>
           </div>
           <div
             class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden"
@@ -271,6 +202,9 @@ import siteConfig from '../../ngmd.config';
           <span class="text-zinc-400">$</span>
           <span>pnpm create ngmd&#64;latest my-docs</span>
         </div>
+        <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+          or <code>npm create ngmd</code>, <code>yarn create ngmd</code>, <code>bun create ngmd</code>
+        </p>
         <div class="mt-8">
           <a
             routerLink="/welcome"
@@ -288,6 +222,7 @@ export default class Home implements AfterViewInit {
   readonly hero = viewChild<ElementRef<HTMLElement>>('hero');
 
   readonly arrowIcon = ArrowRight;
+  readonly eyeIcon = Eye;
   readonly githubIcon = Github;
   readonly githubUrl = siteConfig.site.githubUrl;
 
@@ -309,6 +244,14 @@ export default class Home implements AfterViewInit {
       { duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1] },
     );
   }
+
+  readonly stack = [
+    { name: 'Angular', url: 'https://angular.dev', logo: '/logos/angular.svg' },
+    { name: 'AnalogJS', url: 'https://analogjs.org', logo: 'https://analogjs.org/img/logos/analog-logo.svg' },
+    { name: 'Vite', url: 'https://vite.dev', logo: '/logos/vite.svg' },
+    { name: 'Tailwind', url: 'https://tailwindcss.com', logo: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
+    { name: 'Shiki', url: 'https://shiki.style', logo: 'https://shiki.style/logo.svg' },
+  ];
 
   readonly features = [
     {

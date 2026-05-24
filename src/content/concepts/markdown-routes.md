@@ -18,7 +18,7 @@ Drop a `.md` file under `src/content/`, get a route at the matching path. No per
 - `src/content/getting-started/about.md` → `/getting-started/about`
 - `src/content/concepts/theming.md` → `/concepts/theming`
 
-One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `<analog-markdown [content]>`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
+One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `&lt;analog-markdown [content]&gt;`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
 
 For pages that need bespoke layouts or want to compose authoring components directly (callouts, tabs, cards, workflows, hero), write a named `.page.ts` in `src/app/pages/` instead. Angular's router prefers the more specific match, so a named route wins over the catch-all.
 
@@ -42,19 +42,20 @@ const welcome$ = injectContent<{ title: string; order: number }>('slug');
 
 The `'slug'` argument names the route param that the catch-all populates with the URL path. For a named `.page.ts` that handles a specific file, pass `{ customFilename: 'welcome' }` instead.
 
-## Dynamic routes
+## Dynamic and catch-all routes
 
-Use bracket syntax for parameterised paths:
+Two kinds of bracket syntax in AnalogJS file routing:
 
-```
-src/app/pages/blog/[slug].page.ts
-```
+| Pattern | File path | Matches |
+|---|---|---|
+| Single segment | `src/app/pages/blog/[slug].page.ts` | `/blog/anything` (one segment) |
+| Catch-all | `src/app/pages/[...slug].page.ts` | `/anything/at/any/depth` |
 
-The `slug` segment becomes available via `injectActivatedRoute` or by parsing the URL inside `injectContent`.
+NgMd ships only the catch-all (`[...slug].page.ts`) to serve every prose route. Single-segment dynamic routes work the same way if you need them for a specific section. The `slug` param becomes available via `injectActivatedRoute` or by passing `'slug'` as the first arg to `injectContent`.
 
 ## Layouts and nested routes
 
-Layouts are just Angular components rendered around the `<router-outlet>`. NgMd ships a default docs layout (sidebar + breadcrumb + TOC) which you can replace or extend.
+Layouts are just Angular components rendered around the `<router-outlet>`. NgMd's [`app.ts`](https://github.com/erkamyaman/ngmd/blob/main/src/app/app.ts) is the default docs layout: header, sidebar accordion, breadcrumb, scroll-spy TOC, page footer. Replace or extend it like any other Angular component. The catch-all and component pages render inside its `<router-outlet>`.
 
 ## Code highlighting
 
@@ -74,9 +75,9 @@ analog({
 Two marked extensions ship runtime-side so you can drop media into prose without writing TypeScript.
 
 ```html
-<ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo" />
+<ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo"></ngmd-video>
 
-<ngmd-image src="/screenshot.png" alt="Sidebar accordion" caption="The sidebar reads from ngmd.config.ts" />
+<ngmd-image src="/screenshot.png" alt="Sidebar accordion" caption="The sidebar reads from ngmd.config.ts"></ngmd-image>
 ```
 
 YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus caption plus lazy-load by default.
@@ -142,10 +143,10 @@ Unknown keywords (`*WrongName`) log a warning at build time and fall back to lit
 
 ## Authoring components inside markdown
 
-The catch-all (`src/app/pages/[...slug].page.ts`) imports `NgmdUi`, so every authoring component compiles inside `<analog-markdown>`. Drop them straight into prose:
+`&lt;analog-markdown&gt;` renders the body via `[innerHTML]` after `bypassSecurityTrustHtml`. Angular doesn't compile component selectors inside `innerHTML`, so a naive `&lt;ngmd-callout&gt;` in `.md` would render as an empty unknown element. NgMd registers 16 NgmdUi components as **Custom Elements** via `@angular/elements` at app init (code-block is the exception, since fenced ` ``` ` covers that use case), and the browser upgrades them whenever they appear in the DOM, including inside the markdown body. Drop them straight into prose:
 
 <ngmd-callout type="tip" title="This callout lives inside markdown-routes.md">
-  No <code>.page.ts</code> wrapper, no special pipeline. The catch-all imports <code>NgmdUi</code> and analog-markdown picks the selectors up.
+  No <code>.page.ts</code> wrapper, no special pipeline. The Custom Element registration in <code>src/app/register-elements.ts</code> is what makes this render.
 </ngmd-callout>
 
 <ngmd-alert severity="helpful">
@@ -154,7 +155,7 @@ The catch-all (`src/app/pages/[...slug].page.ts`) imports `NgmdUi`, so every aut
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="box" title="Components" link="/concepts/components" cta="See all">
-    Live demos of every NgmdUi component.
+    Every NgmdUi component rendered in context.
   </ngmd-card>
   <ngmd-card icon="palette" title="Theming" link="/concepts/theming" cta="Tokens">
     CSS variables and the fuchsia accent wiring.
@@ -166,7 +167,7 @@ The catch-all (`src/app/pages/[...slug].page.ts`) imports `NgmdUi`, so every aut
     Drop a <code>.md</code> at the right path and the catch-all routes it. Write a named <code>.page.ts</code> only when the page needs a bespoke layout.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Does this hurt the bundle?">
-    NgmdUi adds roughly 10KB gzipped to the markdown-route chunk. Every prose page pays that once, in exchange for the full component vocabulary.
+    The 16 inline-in-markdown components plus <code>&#64;angular/elements</code> add around 15-20KB gzipped to the markdown-route chunk. Every prose page pays that once, in exchange for the full component vocabulary inline in <code>.md</code>.
   </ngmd-accordion-item>
 </ngmd-accordion>
 
@@ -177,7 +178,7 @@ Status badges work inline: API stability tags like <ngmd-badge variant="beta">Be
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/concepts/demo" title="Live demo" />
-  <ngmd-pill href="/concepts/components" title="All components" />
-  <ngmd-pill href="/concepts/theming" title="Theming" />
+  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/components" title="All components"></ngmd-pill>
+  <ngmd-pill href="/concepts/theming" title="Theming"></ngmd-pill>
 </ngmd-pill-row>

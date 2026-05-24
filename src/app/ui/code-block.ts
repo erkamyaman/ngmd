@@ -16,13 +16,38 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'ngmd-code-block',
   template: `
-    <div class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950">
+    <div class="group relative my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950">
       @if (header()) {
         <div
-          class="px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-xs text-zinc-500 dark:text-zinc-400"
+          class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-xs text-zinc-500 dark:text-zinc-400"
         >
-          {{ header() }}
+          <span>{{ header() }}</span>
+          <button
+            type="button"
+            (click)="copy()"
+            [attr.aria-label]="copied() ? 'Copied' : 'Copy code'"
+            class="inline-flex items-center justify-center size-6 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+          >
+            @if (copied()) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            }
+          </button>
         </div>
+      } @else {
+        <button
+          type="button"
+          (click)="copy()"
+          [attr.aria-label]="copied() ? 'Copied' : 'Copy code'"
+          class="absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10"
+        >
+          @if (copied()) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          }
+        </button>
       }
       @if (highlighted(); as html) {
         <div
@@ -44,6 +69,18 @@ export class NgmdCodeBlock {
   readonly code = input<string>('');
 
   protected readonly highlighted = signal<SafeHtml | null>(null);
+  protected readonly copied = signal(false);
+
+  protected async copy(): Promise<void> {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) return;
+    try {
+      await navigator.clipboard.writeText(this.code());
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 1500);
+    } catch {
+      // clipboard unavailable, silent fail
+    }
+  }
 
   protected readonly codeClass = () =>
     this.language() ? `language-${this.language()}` : '';

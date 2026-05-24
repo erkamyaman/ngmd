@@ -10,19 +10,15 @@ title: About & Credits
 
 **NgMd** is a project by Kam ([@erkamyaman](https://github.com/erkamyaman)).
 
-Angular has no equivalent to what *VitePress, *Starlight, *Nextra, and *Docusaurus give Vue, Astro, Next, and React: drop a markdown file, get a brandable docs site. NgMd fills that gap.
-
-<ngmd-callout type="info" title="Why this exists">
-  Every other major frontend framework has a canonical docs starter the community reaches for. Angular didn't. The work below is what was needed to build one.
-</ngmd-callout>
+A markdown-first docs starter for Angular, built on AnalogJS. Drop a `.md` file under `src/content/`, get a routed page with a site frame, theming, and authoring components.
 
 ## Credits
 
 <ngmd-card-grid columns="2">
-  <ngmd-card icon="shield" title="Angular" link="https://angular.dev">
+  <ngmd-card image="/logos/angular.svg" title="Angular" link="https://angular.dev">
     None of this exists without it. The framework is the floor everything else stands on.
   </ngmd-card>
-  <ngmd-card icon="zap" title="AnalogJS" link="https://analogjs.org">
+  <ngmd-card image="https://analogjs.org/img/logos/analog-logo.svg" title="AnalogJS" link="https://analogjs.org">
     By <a href="https://github.com/brandonroberts" target="_blank" rel="noopener noreferrer">Brandon Roberts</a> and contributors. The meta-framework powering every piece of NgMd's runtime: file-based routing, SSR, markdown content collections, the build pipeline.
   </ngmd-card>
   <ngmd-card icon="lightbulb" title="Santosh Yadav" link="https://github.com/santoshyadavdev">
@@ -33,22 +29,22 @@ Angular has no equivalent to what *VitePress, *Starlight, *Nextra, and *Docusaur
 ### Also building blocks
 
 <ngmd-card-grid columns="3">
-  <ngmd-card icon="rocket" title="Vite">
+  <ngmd-card image="/logos/vite.svg" title="Vite" link="https://vite.dev">
     Dev server and build tool.
   </ngmd-card>
-  <ngmd-card icon="palette" title="Tailwind CSS">
+  <ngmd-card image="https://cdn.simpleicons.org/tailwindcss/06B6D4" title="Tailwind CSS" link="https://tailwindcss.com">
     Styling system every component uses.
   </ngmd-card>
-  <ngmd-card icon="code" title="Shiki">
+  <ngmd-card image="https://shiki.style/logo.svg" title="Shiki" link="https://shiki.style">
     VS Code-grade syntax highlighting in markdown code blocks.
   </ngmd-card>
-  <ngmd-card icon="file" title="Marked">
+  <ngmd-card image="https://cdn.simpleicons.org/markdown/FAFAFA" title="Marked" link="https://marked.js.org">
     Markdown rendering pipeline.
   </ngmd-card>
-  <ngmd-card icon="sparkles" title="Lucide">
+  <ngmd-card image="https://cdn.simpleicons.org/lucide/F56565" title="Lucide" link="https://lucide.dev">
     Icon set used in the site frame.
   </ngmd-card>
-  <ngmd-card icon="box" title="shadcn/ui">
+  <ngmd-card image="https://cdn.simpleicons.org/shadcnui/FAFAFA" title="shadcn/ui" link="https://ui.shadcn.com">
     Popularised the "own your components" idea that NgMd adopts.
   </ngmd-card>
 </ngmd-card-grid>

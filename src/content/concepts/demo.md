@@ -1,5 +1,5 @@
 ---
-title: Demo
+title: Showcase
 description: Every NgmdUi component rendered inline from markdown, with realistic context.
 ---
 
@@ -9,7 +9,7 @@ description: Every NgmdUi component rendered inline from markdown, with realisti
 
 # Setting up authentication
 
-This guide walks through wiring an email + password authentication flow into a fresh Angular app, then verifying it end-to-end. It exists primarily to **demo every NgmdUi component inline from markdown** — restart your dev server if you scaffolded ngmd before 2026-05.
+This guide walks through wiring an email + password authentication flow into a fresh Angular app, then verifying it end-to-end. It exists primarily to **demo every NgmdUi component inline from markdown**. Restart your dev server if you scaffolded ngmd before 2026-05.
 
 <ngmd-callout type="info" title="Why this page exists">
   Every component below is rendered from a plain <code>.md</code> file, not a hand-coded <code>.page.ts</code>. The catch-all route + Angular Elements wiring lets authoring components compile inside markdown bodies. Read the source at <code>src/content/concepts/demo.md</code>.
@@ -186,15 +186,15 @@ export const authGuard: CanActivateFn = () => {
 ## Reference
 
 <ngmd-pill-row>
-  <ngmd-pill href="https://angular.dev/guide/forms" title="Reactive forms" />
-  <ngmd-pill href="https://angular.dev/guide/http" title="HttpClient" />
-  <ngmd-pill href="https://angular.dev/guide/routing/route-guards" title="Route guards" />
-  <ngmd-pill href="/concepts/markdown-routes" title="How routing works in NgMd" />
+  <ngmd-pill href="https://angular.dev/guide/forms" title="Reactive forms"></ngmd-pill>
+  <ngmd-pill href="https://angular.dev/guide/http" title="HttpClient"></ngmd-pill>
+  <ngmd-pill href="https://angular.dev/guide/routing/route-guards" title="Route guards"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="How routing works in NgMd"></ngmd-pill>
 </ngmd-pill-row>
 
 ## A video to round it off
 
-<ngmd-video src="https://www.youtube.com/watch?v=_ZcHwv91Rmo" title="Angular intro" />
+<ngmd-video src="https://www.youtube.com/watch?v=_ZcHwv91Rmo" title="Angular intro"></ngmd-video>
 
 ## And an image, because docs
 
@@ -202,7 +202,7 @@ export const authGuard: CanActivateFn = () => {
   src="https://angular.dev/assets/images/ng-image.jpg"
   alt="Angular open-graph banner"
   caption="Banner pulled from angular.dev to round out the showcase."
-/>
+></ngmd-image>
 
 ## Inline pieces
 
@@ -212,7 +212,7 @@ Auto-linked keywords resolve from `ngmd.config.ts`: this guide builds on *Angula
 
 ## Tabs in markdown
 
-Tabs now work inline too, using `<ngmd-tab>` children (real components, not `<ng-template>` directives):
+Tabs now work inline too, using `&lt;ngmd-tab&gt;` children (real components, not `&lt;ng-template&gt;` directives):
 
 <ngmd-tabs>
   <ngmd-tab title="JWT">
@@ -244,4 +244,4 @@ yarn create ngmd my-docs
 bun create ngmd my-docs
 ```
 
-That's every NgmdUi component working inline in markdown via the catch-all + Custom Elements path. Build pipeline, link guards, sitemap — all of these pages run through the same machinery.
+That's every NgmdUi component working inline in markdown via the catch-all + Custom Elements path. Build pipeline, link guards, sitemap. All of these pages run through the same machinery.

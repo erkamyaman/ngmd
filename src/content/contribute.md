@@ -63,7 +63,7 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/help" title="Get help" />
-  <ngmd-pill href="/sponsor" title="Support us" />
-  <ngmd-pill href="https://github.com/erkamyaman/ngmd" title="View on GitHub" />
+  <ngmd-pill href="/help" title="Get help"></ngmd-pill>
+  <ngmd-pill href="/sponsor" title="Support us"></ngmd-pill>
+  <ngmd-pill href="https://github.com/erkamyaman/ngmd" title="View on GitHub"></ngmd-pill>
 </ngmd-pill-row>

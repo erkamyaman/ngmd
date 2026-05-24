@@ -26,6 +26,7 @@ import { CodeGroup } from './components/code-group';
 import { PageFooter } from './components/page-footer';
 import { SourceActions } from './components/source-actions';
 import { MediaEnhancer } from './components/media-enhancer';
+import { SiteFooter } from './components/site-footer';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +45,7 @@ import { MediaEnhancer } from './components/media-enhancer';
     MediaEnhancer,
     PageFooter,
     SourceActions,
+    SiteFooter,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -207,6 +209,8 @@ import { MediaEnhancer } from './components/media-enhancer';
           </aside>
         }
       </div>
+
+      <app-site-footer />
     </div>
 
     <app-command-palette #palette />

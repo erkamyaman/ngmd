@@ -35,7 +35,7 @@ NgMd is built on three headline pieces (*Angular, *AnalogJS, *Vite) and a curate
 
 | Package | Role |
 |---|---|
-| <img class="pkg-icon" src="/logos/angular.svg" alt="" /> [@angular/elements](https://angular.dev/guide/elements) | Bridges NgmdUi components to Custom Elements so they upgrade inside `<analog-markdown [innerHTML]>`. Dynamic-imported on the client for SSR safety. |
+| <img class="pkg-icon" src="/logos/angular.svg" alt="" /> [@angular/elements](https://angular.dev/guide/elements) | Bridges NgmdUi components to Custom Elements so they upgrade inside `&lt;analog-markdown [innerHTML]&gt;`. Dynamic-imported on the client for SSR safety. |
 | <img class="pkg-icon" src="https://cdn.simpleicons.org/lucide/F56565" alt="" /> [lucide-angular](https://lucide.dev) | Icon set used throughout the site frame and card icons. |
 
 ## Content pipeline
@@ -76,15 +76,15 @@ Vite plugins committed alongside `vite.config.ts`:
 
 | Package | Role |
 |---|---|
-| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.0.5`. |
+| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.0.6`. |
 
 ## Package management
 
 <ngmd-pill-row>
-  <ngmd-pill href="https://pnpm.io" title="pnpm" />
-  <ngmd-pill href="https://www.npmjs.com" title="npm" />
-  <ngmd-pill href="https://yarnpkg.com" title="yarn" />
-  <ngmd-pill href="https://bun.sh" title="bun" />
+  <ngmd-pill href="https://pnpm.io" title="pnpm"></ngmd-pill>
+  <ngmd-pill href="https://www.npmjs.com" title="npm"></ngmd-pill>
+  <ngmd-pill href="https://yarnpkg.com" title="yarn"></ngmd-pill>
+  <ngmd-pill href="https://bun.sh" title="bun"></ngmd-pill>
 </ngmd-pill-row>
 
 All four package managers work. The scaffolder auto-detects which one you ran it with.
@@ -92,7 +92,7 @@ All four package managers work. The scaffolder auto-detects which one you ran it
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/stack/installation" title="Installation" />
-  <ngmd-pill href="/stack/overview" title="Overview" />
-  <ngmd-pill href="/concepts/markdown-routes" title="Routing" />
+  <ngmd-pill href="/stack/installation" title="Installation"></ngmd-pill>
+  <ngmd-pill href="/stack/overview" title="Overview"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
 </ngmd-pill-row>

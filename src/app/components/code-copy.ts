@@ -35,7 +35,9 @@ export class CodeCopy implements AfterViewInit {
 
   private enhanceWithRetry(attempt = 0): void {
     if (typeof document === 'undefined' || attempt > 20) return;
-    const pres = document.querySelectorAll('main pre:not([data-copy-enhanced])');
+    const pres = document.querySelectorAll(
+      'analog-markdown-route pre:not([data-copy-enhanced]), analog-markdown pre:not([data-copy-enhanced])',
+    );
     if (pres.length === 0) {
       setTimeout(() => this.enhanceWithRetry(attempt + 1), 50);
       return;

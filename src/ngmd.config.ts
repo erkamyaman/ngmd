@@ -85,7 +85,7 @@ const config: NgmdConfig = {
         { label: 'Markdown Routes', href: '/concepts/markdown-routes' },
         { label: 'Theming', href: '/concepts/theming' },
         { label: 'Components', href: '/concepts/components' },
-        { label: 'Demo', href: '/concepts/demo' },
+        { label: 'Showcase', href: '/concepts/demo' },
       ],
     },
     {

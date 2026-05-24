@@ -8,7 +8,7 @@ title: Introduction
 
 # Introduction
 
-NgMd is a modern docs starter for Angular. Markdown content collections, authoring components, build-time link guards, and a site frame that doesn't fight you.
+A modern docs starter for Angular: markdown content collections, authoring components that work inline in prose, build-time link guards, and a site frame that stays out of your way.
 
 ## How it works
 
@@ -51,19 +51,19 @@ pnpm install
 pnpm run dev
 ```
 
-Open `http://localhost:5173` and you are running.
+Open `http://localhost:5173`. You're running.
 
 ## What's in the box
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="layers" title="Site frame">
-    Translucent sticky header, sidebar accordion driven by <code>ngmd.config.ts</code>, breadcrumb, scroll-spy TOC, Cmd+K palette over pages plus headings plus body snippets, page footer with prev/next, edit-on-github, and last-updated.
+    Translucent sticky header, sidebar accordion driven by <code>ngmd.config.ts</code>, breadcrumb, scroll-spy TOC, Cmd+K palette over pages plus headings plus body snippets, prev/next footer, and top-right edit + view-source actions per route.
   </ngmd-card>
   <ngmd-card icon="palette" title="Theming">
     Light, dark, and auto theme cycle with no-flash inline boot script. Fuchsia accent wired through sidebar, TOC, palette, prev/next, and link hover. Route crossfades via the browser's View Transitions API.
   </ngmd-card>
-  <ngmd-card icon="box" title="Authoring components">
-    Callout, alert, card, card-grid, tabs, pill row, workflow, hero, code-block, accordion, badge, video, image. All shipped as <code>NgmdUi</code> in <code>src/app/ui/</code>, all usable inline in markdown.
+  <ngmd-card icon="box" title="17 authoring components">
+    Callout, alert, card, card-grid, tabs, pill row, workflow, hero, code-block, accordion, badge, video, image (plus 4 children). Shipped as <code>NgmdUi</code> in <code>src/app/ui/</code>. Sixteen render inline in markdown via Custom Elements; code-block uses fenced <code>```</code> blocks instead.
   </ngmd-card>
   <ngmd-card icon="code" title="Code-fence affordances">
     <code>file="src/foo.ts#L5-L20"</code> imports kept in sync with source, <code>group="install"</code> tabs that pre-render through Shiki, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> inline auto-linking from <code>ngmd.config.ts</code>.
@@ -92,7 +92,7 @@ Open `http://localhost:5173` and you are running.
     Same philosophy as shadcn/ui. Owning the source means no theming API to learn, no version conflicts, no waiting for maintainers to add a feature you need. Edit Tailwind classes directly and ship.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Is NgMd inspired by VitePress or Starlight?">
-    Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts the pattern for Angular, where no canonical equivalent exists.
+    Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts the pattern for Angular on AnalogJS.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Is this production-ready?">
     NgMd is in active early development <ngmd-badge variant="beta">Beta</ngmd-badge>. The core (markdown rendering, theming, navigation, build pipeline) is stable. Versioning, i18n, library-style API reference, and search adapters are on the roadmap.
@@ -102,9 +102,8 @@ Open `http://localhost:5173` and you are running.
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/concepts/markdown-routes" title="Markdown Routes" />
-  <ngmd-pill href="/concepts/theming" title="Theming" />
-  <ngmd-pill href="/concepts/components" title="Components" />
-  <ngmd-pill href="/concepts/demo" title="Live demo" />
-  <ngmd-pill href="/stack/installation" title="Install" />
+  <ngmd-pill href="/stack/installation" title="Install"></ngmd-pill>
+  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
+  <ngmd-pill href="/concepts/components" title="Components"></ngmd-pill>
 </ngmd-pill-row>

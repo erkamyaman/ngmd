@@ -19,7 +19,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     One <code>src/app/pages/[...slug].page.ts</code> serves every prose route. Drop a <code>.md</code> at any path under <code>src/content/</code> and it shows up at the matching URL. Same shape adev uses.
   </ngmd-card>
   <ngmd-card icon="box" title="Custom Elements bridge">
-    All 17 NgmdUi components are registered via <code>@angular/elements</code>, so they upgrade inside <code>&lt;analog-markdown [innerHTML]&gt;</code>. Drop <code>&lt;ngmd-callout&gt;</code> straight into prose and it renders.
+    Sixteen NgmdUi components are registered via <code>@angular/elements</code>, so they upgrade inside <code>&lt;analog-markdown [innerHTML]&gt;</code>. Drop <code>&lt;ngmd-callout&gt;</code> straight into prose and it renders. Code-block is the exception — fenced <code>```</code> covers that.
   </ngmd-card>
   <ngmd-card icon="shield" title="Build-time link guards">
     Broken internal anchors fail the build instead of reaching production. External raw-HTML anchors without <code>target="_blank"</code> also fail. Catches what runtime tests don't.
@@ -36,7 +36,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     CSS-variable tokens, light / dark / auto with no-flash boot script, fuchsia accent throughout. Native View Transitions API for crossfades.
   </ngmd-card>
   <ngmd-card icon="box" title="17 authoring components">
-    Callout, alert, card, card-grid, tabs, workflow, hero, code-block, accordion, badge, video, image, pill, pill-row, plus 4 children. All work inline in <code>.md</code>.
+    Callout, alert, card, card-grid, tabs, workflow, hero, code-block, accordion, badge, video, image, pill, pill-row, plus 4 children. Sixteen of them render inline in <code>.md</code> via Custom Elements; code-block uses fenced <code>```</code>.
   </ngmd-card>
   <ngmd-card icon="sparkles" title="Agent skills" link="/ai/agent-skills" cta="Read">
     <code>ngmd-new-site</code> and <code>ngmd-authoring</code> ship for Claude Code, Gemini CLI, Antigravity. Format mirrors <code>angular/skills</code>.
@@ -66,8 +66,8 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/stack/technologies" title="Technologies" />
-  <ngmd-pill href="/stack/installation" title="Installation" />
-  <ngmd-pill href="/concepts/markdown-routes" title="Routing model" />
-  <ngmd-pill href="/concepts/components" title="Component reference" />
+  <ngmd-pill href="/stack/technologies" title="Technologies"></ngmd-pill>
+  <ngmd-pill href="/stack/installation" title="Installation"></ngmd-pill>
+  <ngmd-pill href="/concepts/markdown-routes" title="Routing model"></ngmd-pill>
+  <ngmd-pill href="/concepts/components" title="Component reference"></ngmd-pill>
 </ngmd-pill-row>

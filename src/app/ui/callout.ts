@@ -14,7 +14,7 @@ const BOX = 'my-6 px-5 py-4 rounded-lg border-y border-r border-t-zinc-200 borde
   template: `
     @switch (type()) {
       @case ('tip') {
-        <div [class]="box + ' border-l-teal-500'">
+        <div [class]="box + ' border-l-fuchsia-500'">
           <ng-container *ngTemplateOutlet="body"></ng-container>
         </div>
       }

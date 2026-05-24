@@ -42,7 +42,6 @@ const elementMap: Array<[string, Type<unknown>]> = [
   ['ngmd-callout', NgmdCallout],
   ['ngmd-card', NgmdCard],
   ['ngmd-card-grid', NgmdCardGrid],
-  ['ngmd-code-block', NgmdCodeBlock],
   ['ngmd-hero', NgmdHero],
   ['ngmd-image', NgmdImage],
   ['ngmd-pill', NgmdPill],

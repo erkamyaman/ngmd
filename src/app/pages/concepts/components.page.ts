@@ -1,7 +1,11 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { NgmdCodeBlock } from '../../ui/code-block';
 
 @Component({
   selector: 'app-components',
+  imports: [RouterLink, NgmdCodeBlock],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
     <article class="max-w-3xl mx-auto p-8 space-y-12">
@@ -9,7 +13,11 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         <h1 class="text-4xl font-bold tracking-tight">Components</h1>
         <p class="mt-3 text-zinc-600 dark:text-zinc-400">
           The authoring components NgMd ships in <code>src/app/ui/</code>.
-          Compose them in any <code>.page.ts</code> around your markdown.
+          Compose them in any <code>.page.ts</code> via the
+          <code>NgmdUi</code> barrel, or drop them inline in any
+          <code>.md</code> file via the Custom Elements bridge.
+          See <a routerLink="/concepts/demo">the showcase</a> for the
+          markdown-side view.
         </p>
       </header>
 
@@ -27,10 +35,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
           <ngmd-callout type="tip" title="Tip">
             A soft recommendation. Pair with a code snippet.
           </ngmd-callout>
-          <ngmd-callout type="success" title="You're set">
+          <ngmd-callout type="success" title="Done">
             Confirmation that a step worked.
           </ngmd-callout>
-          <ngmd-callout type="warning" title="Heads up">
+          <ngmd-callout type="warning" title="Warning">
             Non-blocking caution.
           </ngmd-callout>
           <ngmd-callout type="danger" title="Critical">
