@@ -39,7 +39,7 @@ pnpm run dev
 
 ## Authoring model
 
-Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's authoring suite (callouts, alerts, cards, tabs, pill rows, workflows, hero, code blocks, accordion, badge, video, image).
+Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's seventeen authoring components (callout, alert, card, card-grid, tabs, tab, pill-row, pill, workflow, step, hero, code-block, accordion, accordion-item, badge, video, image). Sixteen of them also render inline in markdown via Custom Elements; code-block uses fenced ` ``` ` blocks instead.
 
 The fork: prose in markdown, authoring components in TypeScript. The dual-pipeline approach where you write `<docs-callout>` inside `.md` was explored and rejected (see [PLAN.md](./PLAN.md)).
 
@@ -66,6 +66,12 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 ## Status
 
 v0. Core (markdown rendering, theming, navigation, site frame, authoring components, build pipeline) is in place. Versioning, i18n, library-style API reference, and search adapters are on the roadmap. See [BACKLOG.md](./BACKLOG.md).
+
+## Community
+
+- [Get help](https://ngmd.netlify.app/help) — issues, discussions, paid support
+- [Contribute](https://ngmd.netlify.app/contribute) — guidelines and where to start, full notes in [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [Sponsor](https://ngmd.netlify.app/sponsor) — back the project on GitHub Sponsors
 
 ## License
 
