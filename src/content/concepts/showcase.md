@@ -12,7 +12,7 @@ description: Every NgmdUi component rendered inline from markdown, with realisti
 This guide walks through wiring an email + password authentication flow into a fresh Angular app, then verifying it end-to-end. It exists primarily to **demo every NgmdUi component inline from markdown**. Restart your dev server if you scaffolded ngmd before 2026-05.
 
 <ngmd-callout type="info" title="Why this page exists">
-  Every component below is rendered from a plain <code>.md</code> file, not a hand-coded <code>.page.ts</code>. The catch-all route + Angular Elements wiring lets authoring components compile inside markdown bodies. Read the source at <code>src/content/concepts/demo.md</code>.
+  Every component below is rendered from a plain <code>.md</code> file, not a hand-coded <code>.page.ts</code>. The catch-all route + Angular Elements wiring lets authoring components compile inside markdown bodies. Read the source at <code>src/content/concepts/showcase.md</code>.
 </ngmd-callout>
 
 ## Prerequisites <ngmd-badge variant="stable">Stable</ngmd-badge>
@@ -228,19 +228,19 @@ Tabs now work inline too, using `&lt;ngmd-tab&gt;` children (real components, no
 
 For command tabs that pre-render through Shiki at build time, the fenced-code syntax is still the lightest option:
 
-```bash group="install" name="pnpm" active
+```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="npm"
+```bash group="install" name="npm" image="https://cdn.simpleicons.org/npm/CB3837"
 npm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="yarn"
+```bash group="install" name="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB"
 yarn create ngmd my-docs
 ```
 
-```bash group="install" name="bun"
+```bash group="install" name="bun" image="https://cdn.simpleicons.org/bun/FBF0DF"
 bun create ngmd my-docs
 ```
 

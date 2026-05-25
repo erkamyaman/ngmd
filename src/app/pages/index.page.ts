@@ -68,7 +68,7 @@ import siteConfig from '../../ngmd.config';
             <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
           </a>
           <a
-            routerLink="/concepts/demo"
+            routerLink="/concepts/showcase"
             class="inline-flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-6 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
             <i-lucide [img]="eyeIcon" class="size-4"></i-lucide>

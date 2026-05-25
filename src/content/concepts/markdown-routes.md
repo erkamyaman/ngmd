@@ -111,19 +111,19 @@ Lines tagged with `// ngmd-ignore-line` are stripped from the imported snippet, 
 
 Tag adjacent fences with `group="..."` (and an optional `name="..."` for the tab label) to merge them into a tabbed UI. The `active` flag picks the initial tab.
 
-```bash group="install" name="pnpm" active
+```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="npm"
+```bash group="install" name="npm" image="https://cdn.simpleicons.org/npm/CB3837"
 npm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="yarn"
+```bash group="install" name="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB"
 yarn create ngmd my-docs
 ```
 
-```bash group="install" name="bun"
+```bash group="install" name="bun" image="https://cdn.simpleicons.org/bun/FBF0DF"
 bun create ngmd my-docs
 ```
 
@@ -186,7 +186,7 @@ Status badges work inline: API stability tags like <ngmd-badge variant="beta">Be
 ## Where to next
 
 <ngmd-pill-row>
-  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/showcase" title="Showcase"></ngmd-pill>
   <ngmd-pill href="/concepts/components" title="All components"></ngmd-pill>
   <ngmd-pill href="/concepts/theming" title="Theming"></ngmd-pill>
 </ngmd-pill-row>

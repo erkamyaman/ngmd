@@ -92,19 +92,24 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 
 ```html
 <ngmd-tabs>
-  <ngmd-tab title="pnpm">
+  <ngmd-tab title="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220">
     <pre><code>pnpm add foo</code></pre>
   </ngmd-tab>
-  <ngmd-tab title="npm">
+  <ngmd-tab title="npm" image="https://cdn.simpleicons.org/npm/CB3837">
     <pre><code>npm install foo</code></pre>
+  </ngmd-tab>
+  <ngmd-tab title="CLI" icon="terminal">
+    <pre><code>ng add foo</code></pre>
   </ngmd-tab>
 </ngmd-tabs>
 ```
 
 - Each tab is an `<ngmd-tab title="Label">`. Order in the template is order in the UI.
+- `image="<url>"` — brand SVG / logo (full color, e.g. simpleicons CDN). Takes priority if both `image` and `icon` are set.
+- `icon="<name>"` — Lucide glyph in the brand accent. Same set as `<ngmd-card>`: `book`, `box`, `code`, `compass`, `file`, `layers`, `lightbulb`, `palette`, `rocket`, `search`, `settings`, `shield`, `sparkles`, `terminal`, `wrench`, `zap`.
 - Works inline in `.md` files (children are real Custom Elements, not directives).
 - Hand-rolled signals plus `[attr.aria-selected]` / `[tabindex]` for keyboard navigation and ARIA wiring. Arrow keys, Home, End all jump between triggers with focus.
-- For installation-command tabsets specifically, the markdown `group="..."` code-fence affordance is still the lightest option since it pre-renders through Shiki at build time.
+- For installation-command tabsets specifically, the markdown `group="..."` code-fence affordance is still the lightest option since it pre-renders through Shiki at build time — and it accepts `image="<url>"` too (see section 3).
 
 ### `<ngmd-workflow>` and `<ngmd-step>`
 
@@ -268,16 +273,17 @@ Import code from a real file so doc examples stay in sync with source:
 Tag adjacent fences with the same `group` to merge them into a tabbed UI:
 
 ````md
-```bash group="install" name="pnpm" active
+```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="npm"
+```bash group="install" name="npm" image="https://cdn.simpleicons.org/npm/CB3837"
 npm create ngmd@latest my-docs
 ```
 ````
 
 - `name` is the tab label. `active` picks the initial tab.
+- `image="<url>"` is optional — a brand icon shown before the tab label (e.g. simpleicons CDN works well).
 - All fences with the same `group` value collapse into one tabset, in document order.
 
 ### Line highlighting with `{1,3-5}`

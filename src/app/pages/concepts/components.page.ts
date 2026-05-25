@@ -16,7 +16,7 @@ import { NgmdCodeBlock } from '../../ui/code-block';
           Compose them in any <code>.page.ts</code> via the
           <code>NgmdUi</code> barrel, or drop them inline in any
           <code>.md</code> file via the Custom Elements bridge.
-          See <a routerLink="/concepts/demo">the showcase</a> for the
+          See <a routerLink="/concepts/showcase">the showcase</a> for the
           markdown-side view.
         </p>
       </header>
@@ -100,16 +100,16 @@ import { NgmdCodeBlock } from '../../ui/code-block';
         </p>
         <div class="mt-4">
           <ngmd-tabs>
-            <ngmd-tab title="pnpm">
+            <ngmd-tab title="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220">
               <pre class="text-sm"><code>pnpm create ngmd&#64;latest my-docs</code></pre>
             </ngmd-tab>
-            <ngmd-tab title="npm">
+            <ngmd-tab title="npm" image="https://cdn.simpleicons.org/npm/CB3837">
               <pre class="text-sm"><code>npm create ngmd&#64;latest my-docs</code></pre>
             </ngmd-tab>
-            <ngmd-tab title="yarn">
+            <ngmd-tab title="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB">
               <pre class="text-sm"><code>yarn create ngmd my-docs</code></pre>
             </ngmd-tab>
-            <ngmd-tab title="bun">
+            <ngmd-tab title="bun" image="https://cdn.simpleicons.org/bun/FBF0DF">
               <pre class="text-sm"><code>bun create ngmd my-docs</code></pre>
             </ngmd-tab>
           </ngmd-tabs>
@@ -287,12 +287,13 @@ export default class ComponentsPage {
 
   readonly tabsCode = [
     '<ngmd-tabs>',
-    '  <ngmd-tab title="pnpm">',
+    '  <ngmd-tab title="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220">',
     '    <pre><code>pnpm create ngmd@latest my-docs</code></pre>',
     '  </ngmd-tab>',
-    '  <ngmd-tab title="npm">',
+    '  <ngmd-tab title="npm" image="https://cdn.simpleicons.org/npm/CB3837">',
     '    <pre><code>npm create ngmd@latest my-docs</code></pre>',
     '  </ngmd-tab>',
+    '  <!-- icon="..." also works (Lucide set) -->',
     '</ngmd-tabs>',
   ].join('\n');
 

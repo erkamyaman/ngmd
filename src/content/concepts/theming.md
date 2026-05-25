@@ -179,5 +179,5 @@ Long-form markdown content uses `@tailwindcss/typography`'s `prose` class. Overr
 <ngmd-pill-row>
   <ngmd-pill href="/concepts/components" title="See components"></ngmd-pill>
   <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
-  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/showcase" title="Showcase"></ngmd-pill>
 </ngmd-pill-row>

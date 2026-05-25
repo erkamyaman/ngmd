@@ -31,19 +31,19 @@ NgMd uses a two-layer authoring model that separates **content** from **chrome**
 
 ## Get started
 
-```bash group="install" name="pnpm" active
+```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="npm"
+```bash group="install" name="npm" image="https://cdn.simpleicons.org/npm/CB3837"
 npm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="yarn"
+```bash group="install" name="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB"
 yarn create ngmd my-docs
 ```
 
-```bash group="install" name="bun"
+```bash group="install" name="bun" image="https://cdn.simpleicons.org/bun/FBF0DF"
 bun create ngmd my-docs
 ```
 
@@ -105,7 +105,7 @@ Open `http://localhost:5173`. You're running.
 
 <ngmd-pill-row>
   <ngmd-pill href="/stack/installation" title="Install"></ngmd-pill>
-  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/showcase" title="Showcase"></ngmd-pill>
   <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
   <ngmd-pill href="/concepts/components" title="Components"></ngmd-pill>
 </ngmd-pill-row>

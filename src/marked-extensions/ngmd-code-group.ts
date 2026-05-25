@@ -101,7 +101,11 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
         const tabs = c
           .map((f, idx) => {
             const name = getAttr(f.attrs, 'name') ?? (f.lang || `tab ${idx + 1}`);
-            return `<button type="button" class="ngmd-code-group__tab" data-target="${groupId}-${idx}" data-active="${idx === activeIdx}">${escapeHtml(name)}</button>`;
+            const image = getAttr(f.attrs, 'image');
+            const imgHtml = image
+              ? `<img src="${escapeHtml(image)}" alt="" aria-hidden="true" class="ngmd-code-group__icon" loading="lazy" />`
+              : '';
+            return `<button type="button" class="ngmd-code-group__tab" data-target="${groupId}-${idx}" data-active="${idx === activeIdx}">${imgHtml}${escapeHtml(name)}</button>`;
           })
           .join('');
 

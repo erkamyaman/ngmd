@@ -12,19 +12,19 @@ title: Installation
 
 The published `create-ngmd` package handles everything: scaffolds AnalogJS, installs deps, copies the NgMd site frame and authoring components, sets up the build pipeline.
 
-```bash group="install" name="pnpm" active
+```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="npm"
+```bash group="install" name="npm" image="https://cdn.simpleicons.org/npm/CB3837"
 npm create ngmd@latest my-docs
 ```
 
-```bash group="install" name="yarn"
+```bash group="install" name="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB"
 yarn create ngmd my-docs
 ```
 
-```bash group="install" name="bun"
+```bash group="install" name="bun" image="https://cdn.simpleicons.org/bun/FBF0DF"
 bun create ngmd my-docs
 ```
 
@@ -52,7 +52,7 @@ Open `http://localhost:5173`. Done.
   <ngmd-card icon="palette" title="Rebrand the theme" link="/concepts/theming" cta="Tokens">
     All colours, radii, and fonts live as CSS variables in <code>src/styles.css</code>. Swap one token, the whole site follows.
   </ngmd-card>
-  <ngmd-card icon="box" title="Try the components" link="/concepts/demo" cta="Showcase">
+  <ngmd-card icon="box" title="Try the components" link="/concepts/showcase" cta="Showcase">
     See every authoring component rendered inline from markdown.
   </ngmd-card>
 </ngmd-card-grid>
@@ -168,5 +168,5 @@ Drop a `netlify.toml` at the repo root with `publish = "dist/analog/public"` and
   <ngmd-pill href="/welcome" title="Introduction"></ngmd-pill>
   <ngmd-pill href="/concepts/markdown-routes" title="Routing"></ngmd-pill>
   <ngmd-pill href="/concepts/theming" title="Theming"></ngmd-pill>
-  <ngmd-pill href="/concepts/demo" title="Showcase"></ngmd-pill>
+  <ngmd-pill href="/concepts/showcase" title="Showcase"></ngmd-pill>
 </ngmd-pill-row>

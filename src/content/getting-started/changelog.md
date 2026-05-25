@@ -6,7 +6,19 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.0.7 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.0.8 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Tabs gained `icon=` and `image=` inputs.** `<ngmd-tab>` now accepts the same `image="<url>"` brand-logo pattern as `<ngmd-card>`, plus `icon="<lucide-name>"` for the Lucide set (`book`, `box`, `code`, `compass`, `file`, `layers`, `lightbulb`, `palette`, `rocket`, `search`, `settings`, `shield`, `sparkles`, `terminal`, `wrench`, `zap`). Icon renders left of the tab label; image takes priority if both are set.
+
+**Build-time code-group tabs gained `image=` too.** Fenced code blocks tagged with `group="install" name="pnpm" image="..."` now render a brand icon next to the tab label, no `<ngmd-tabs>` component needed. Used across welcome, showcase, markdown-routes, installation. Powered by `simpleicons.org/<slug>/<hex>` CDN URLs.
+
+**Demo page renamed to Showcase.** `src/content/concepts/demo.md` → `src/content/concepts/showcase.md`, URL `/concepts/demo` → `/concepts/showcase`. Nav label and every cross-link follow. URL path now matches the doc title.
+
+**Inline code visual.** Inline `` `code` `` chips in markdown use `--bg-muted` background, `--fg` text, `--border-strong` outline, and `font-weight: 500` for clearer pop without the previous accent-tinted look. Sidebar / TOC active-row `--accent-soft` settled at `rgba(217, 70, 239, 0.15)` in both light and dark for visual parity with the prior `bg-fuchsia-500/10` baseline.
+
+**Skills updated.** `ngmd-authoring` now documents tab `icon=` / `image=` inputs and the matching `image=` attribute on fenced `group=` code tabs.
+
+## 0.0.7
 
 **Token-driven theming everywhere.** Every accent-aware class in core components (sidebar, TOC, palette, page footer, pill, card, heading anchors, hero, home page) now reads `var(--accent)`, `var(--accent-strong)`, `var(--accent-soft)`, `var(--accent-gradient)`, or `var(--accent-gradient-soft)` instead of hardcoded `fuchsia-*` Tailwind utilities. Swap one token in `src/styles.css` and the whole site re-skins. Per-variant components (`callout`, `alert`, `badge`) keep their literal severity colours by design.
 
@@ -34,7 +46,7 @@ Release notes and version history for NgMd.
 
 **Code-block freed from Custom Element registration.** `ngmd-code-block` is imported directly in TS pages and removed from `@angular/elements` to let multi-line `[code]` signal-input bindings propagate reliably. Fenced ` ``` ` blocks remain the recommended path for markdown.
 
-**Showcase rename.** `/concepts/demo` renamed to "Showcase" in the sidebar, home CTA, and every cross-link. URL path unchanged.
+**Showcase rename.** `/concepts/showcase` renamed to "Showcase" in the sidebar, home CTA, and every cross-link. URL path unchanged.
 
 **Doc fact-check.** Removed six hallucinated claims about component counts and Custom Element coverage. The honest number is 17 NgmdUi components, 16 of which render inline in markdown.
 
@@ -70,7 +82,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.7</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.0.8</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.

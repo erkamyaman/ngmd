@@ -7,6 +7,45 @@ import {
   input,
   signal,
 } from '@angular/core';
+import {
+  LucideAngularModule,
+  type LucideIconData,
+  Book,
+  Box,
+  Code2,
+  Compass,
+  FileText,
+  Layers,
+  Lightbulb,
+  Palette,
+  Rocket,
+  Search,
+  Settings,
+  Shield,
+  Sparkles,
+  Terminal,
+  Wrench,
+  Zap,
+} from 'lucide-angular';
+
+const ICON_MAP: Record<string, LucideIconData> = {
+  book: Book,
+  box: Box,
+  code: Code2,
+  compass: Compass,
+  file: FileText,
+  layers: Layers,
+  lightbulb: Lightbulb,
+  palette: Palette,
+  rocket: Rocket,
+  search: Search,
+  settings: Settings,
+  shield: Shield,
+  sparkles: Sparkles,
+  terminal: Terminal,
+  wrench: Wrench,
+  zap: Zap,
+};
 
 /**
  * Tabs API designed to survive Custom Element rendering inside markdown.
@@ -49,6 +88,8 @@ import {
 })
 export class NgmdTab {
   readonly title = input<string>('');
+  readonly icon = input<string>('');
+  readonly image = input<string>('');
   readonly active = signal(false);
 
   constructor() {
@@ -73,6 +114,7 @@ export class NgmdTab {
 
 @Component({
   selector: 'ngmd-tabs',
+  imports: [LucideAngularModule],
   template: `
     <div
       class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
@@ -91,8 +133,19 @@ export class NgmdTab {
             [tabindex]="active() === tab.key ? 0 : -1"
             (click)="setActive(tab.key)"
             (keydown)="onKey($event, i)"
-            class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-zinc-900 dark:aria-selected:border-zinc-100 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-transparent"
+            class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-zinc-900 dark:aria-selected:border-zinc-100 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-transparent"
           >
+            @if (tab.image) {
+              <img
+                [src]="tab.image"
+                alt=""
+                aria-hidden="true"
+                class="size-4 object-contain"
+                loading="lazy"
+              />
+            } @else if (tab.iconImg; as img) {
+              <i-lucide [img]="img" class="size-4" aria-hidden="true"></i-lucide>
+            }
             {{ tab.label }}
           </button>
         }
@@ -109,7 +162,15 @@ export class NgmdTab {
 })
 export class NgmdTabs implements AfterViewInit {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
-  readonly tabs = signal<{ key: string; label: string; el: HTMLElement }[]>([]);
+  readonly tabs = signal<
+    {
+      key: string;
+      label: string;
+      image: string;
+      iconImg: LucideIconData | null;
+      el: HTMLElement;
+    }[]
+  >([]);
   readonly active = signal('');
 
   ngAfterViewInit(): void {
@@ -123,6 +184,8 @@ export class NgmdTabs implements AfterViewInit {
     const list = els.map((el, i) => ({
       key: `tab-${i}`,
       label: el.getAttribute('title') ?? '',
+      image: el.getAttribute('image') ?? '',
+      iconImg: ICON_MAP[el.getAttribute('icon') ?? ''] ?? null,
       el,
     }));
     this.tabs.set(list);
