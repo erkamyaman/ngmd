@@ -6,7 +6,19 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.0.8 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.0.9 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Inline code chips redesigned.** Body inline code (`` `like this` ``) now wears a thin fuchsia gradient border (`#f0abfc → #d946ef → #a21caf`, three stops in the fuchsia hue family) over a clean `--bg` inner fill that matches the page surface exactly. Light mode uses a 1.5px border for clarity against white; dark mode stays at 1px.
+
+**Home install picker.** The CTA section now has a tabbed install command box: npm (default) / pnpm / yarn / bun, each with its simpleicons brand logo. One command renders below at a time. Copy button on the right with a 1.5s "copied" check confirmation. Tab strip width is fixed so it doesn't reflow as you switch between commands.
+
+**Tab active state uses the accent.** Both the new home install picker and the existing `<ngmd-tabs>` component now color the active tab's label and underline with `var(--accent)` (fuchsia in the default theme). Hover-zinc is scoped to inactive tabs only so the active state isn't washed out when the cursor passes over.
+
+**Card icons go neutral.** Swapped Lucide icon color in `<ngmd-card>` and home features grid from `var(--accent)` to `var(--fg)`. Icons read as quiet anchors instead of competing with the brand accent that lives on text and active states.
+
+**Alert visibility in light mode.** Added a thin `zinc-200` border on the top, right, and bottom of `<ngmd-alert>` plus bumped the surface from `bg-zinc-50` to `bg-zinc-100`. Alerts now read as distinct surfaces against a white page instead of nearly-blending into it.
+
+## 0.0.8
 
 **Tabs gained `icon=` and `image=` inputs.** `<ngmd-tab>` now accepts the same `image="<url>"` brand-logo pattern as `<ngmd-card>`, plus `icon="<lucide-name>"` for the Lucide set (`book`, `box`, `code`, `compass`, `file`, `layers`, `lightbulb`, `palette`, `rocket`, `search`, `settings`, `shield`, `sparkles`, `terminal`, `wrench`, `zap`). Icon renders left of the tab label; image takes priority if both are set.
 
@@ -82,7 +94,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.8</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.0.9</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
