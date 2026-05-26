@@ -284,14 +284,21 @@ ngmd-workflow:not(:defined) {
 
   analog-markdown code:not(pre code),
   analog-markdown-route code:not(pre code) {
-    background: var(--bg-muted);
+    background:
+      linear-gradient(var(--bg), var(--bg)) padding-box,
+      linear-gradient(135deg, #f0abfc, #d946ef, #a21caf) border-box;
     color: var(--fg);
     padding: 0.15em 0.45em;
     border-radius: 0.3rem;
     font-size: 0.875em;
     font-weight: 500;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    border: 1px solid var(--border-strong);
+    border: 1.5px solid transparent;
+  }
+
+  .dark analog-markdown code:not(pre code),
+  .dark analog-markdown-route code:not(pre code) {
+    border-width: 1px;
   }
 
   analog-markdown pre,
@@ -302,6 +309,7 @@ ngmd-workflow:not(:defined) {
     overflow-x: auto;
     font-size: 0.875rem;
     line-height: 1.6;
+    border: 1px solid var(--border);
   }
 
   analog-markdown pre code,

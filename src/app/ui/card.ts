@@ -99,7 +99,7 @@ const ICON_MAP: Record<string, LucideIconData> = {
       } @else if (iconImg(); as img) {
         <i-lucide
           [img]="img"
-          class="size-6 mb-4 text-[color:var(--accent)]"
+          class="size-6 mb-4 text-[color:var(--fg)]"
           aria-hidden="true"
         ></i-lucide>
       }

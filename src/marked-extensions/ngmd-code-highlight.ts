@@ -85,7 +85,8 @@ export const ngmdCodeHighlightExtension: MarkedExtension = {
           const safeLang = LANGS.includes(mt.lang) ? mt.lang : 'text';
           const raw = highlighter.codeToHtml(mt.body, {
             lang: safeLang,
-            theme: 'github-dark',
+            themes: { light: 'github-light', dark: 'github-dark' },
+            defaultColor: false,
           });
           return applyHighlights(raw, parseRanges(mt.spec));
         }),

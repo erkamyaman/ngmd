@@ -60,6 +60,10 @@ export default defineConfig(async () => ({
           extensions: await getBuildExtensions(),
         },
         shikiOptions: {
+          highlight: {
+            themes: { light: 'github-light', dark: 'github-dark' },
+            defaultColor: false,
+          },
           highlighter: {
             additionalLangs: ['bash', 'md', 'json'],
           },
