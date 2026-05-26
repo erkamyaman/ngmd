@@ -133,7 +133,7 @@ export class NgmdTab {
             [tabindex]="active() === tab.key ? 0 : -1"
             (click)="setActive(tab.key)"
             (keydown)="onKey($event, i)"
-            class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-zinc-900 dark:aria-selected:border-zinc-100 aria-selected:text-zinc-900 dark:aria-selected:text-zinc-100 [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-transparent"
+            class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100 bg-transparent"
           >
             @if (tab.image) {
               <img

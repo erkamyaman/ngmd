@@ -36,7 +36,7 @@ const ACCENT: Record<AlertSeverity, string> = {
 };
 
 const BOX =
-  'my-5 px-4 py-3 rounded-r-md border-l-[3px] bg-zinc-50 dark:bg-zinc-900 text-sm text-zinc-700 dark:text-zinc-300 flex items-start gap-3';
+  'my-5 px-4 py-3 rounded-r-md border-l-[3px] border-y border-r border-y-zinc-200 border-r-zinc-200 dark:border-y-zinc-800 dark:border-r-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-sm text-zinc-700 dark:text-zinc-300 flex items-start gap-3';
 
 /**
  * Single-line banner with a coloured side stripe, a severity icon, and an

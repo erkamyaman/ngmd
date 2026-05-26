@@ -101,7 +101,8 @@ export const ngmdCodeImportExtension: MarkedExtension = {
         const safeLang = LANGS.includes(mt.lang) ? mt.lang : 'text';
         const codeHtml = highlighter.codeToHtml(mt.code, {
           lang: safeLang,
-          theme: 'github-dark',
+          themes: { light: 'github-light', dark: 'github-dark' },
+          defaultColor: false,
         });
         const headerLabel = mt.filePath + (mt.rangeFragment || '');
         const headerHtml = `<a class="ngmd-code-import__header" href="${escapeHtml(githubBlobUrl(mt.filePath, mt.rangeFragment))}" target="_blank" rel="noopener noreferrer">${escapeHtml(headerLabel)}</a>`;

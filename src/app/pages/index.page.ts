@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
   ArrowRight,
+  Check,
+  Copy,
   Eye,
   Github,
   FileText,
@@ -179,7 +181,7 @@ NgMd is a modern Angular docs starter.
           >
             <i-lucide
               [img]="feature.icon"
-              class="size-6 mb-4 text-[color:var(--accent)]"
+              class="size-6 mb-4 text-[color:var(--fg)]"
               aria-hidden="true"
             ></i-lucide>
             <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
@@ -200,13 +202,34 @@ NgMd is a modern Angular docs starter.
         <p class="mt-3 text-zinc-600 dark:text-zinc-400">
           One command, a few markdown files, and you've got a beautiful docs site.
         </p>
-        <div class="mt-8 inline-flex items-center gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-5 py-3 font-mono text-sm">
-          <span class="text-zinc-400">$</span>
-          <span>pnpm create ngmd&#64;latest my-docs</span>
+        <div class="mt-8 inline-block w-[23rem] max-w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 overflow-hidden text-left">
+          <div role="tablist" class="flex border-b border-zinc-200 dark:border-zinc-800">
+            @for (cmd of installCommands; track cmd.pm) {
+              <button
+                type="button"
+                role="tab"
+                [attr.aria-selected]="activePM() === cmd.pm"
+                (click)="activePM.set(cmd.pm)"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100"
+              >
+                <img [src]="cmd.logo" alt="" aria-hidden="true" class="size-4 object-contain" />
+                {{ cmd.pm }}
+              </button>
+            }
+          </div>
+          <div class="flex items-center gap-3 pl-4 pr-2 py-2.5 font-mono text-sm">
+            <span class="text-zinc-400">$</span>
+            <span>{{ activeCmd() }}</span>
+            <button
+              type="button"
+              (click)="copyCmd(activeCmd())"
+              [attr.aria-label]="copied() === activeCmd() ? 'Copied' : 'Copy'"
+              class="ml-auto inline-flex items-center justify-center size-7 rounded-md text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            >
+              <i-lucide [img]="copied() === activeCmd() ? checkIcon : copyIcon" class="size-3.5"></i-lucide>
+            </button>
+          </div>
         </div>
-        <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
-          or <code>npm create ngmd</code>, <code>yarn create ngmd</code>, <code>bun create ngmd</code>
-        </p>
         <div class="mt-8">
           <a
             routerLink="/welcome"
@@ -226,7 +249,34 @@ export default class Home implements AfterViewInit {
   readonly arrowIcon = ArrowRight;
   readonly eyeIcon = Eye;
   readonly githubIcon = Github;
+  readonly copyIcon = Copy;
+  readonly checkIcon = Check;
   readonly githubUrl = siteConfig.site.githubUrl;
+
+  readonly copied = signal('');
+
+  readonly installCommands = [
+    { pm: 'npm', cmd: 'npm create ngmd@latest my-docs', logo: 'https://cdn.simpleicons.org/npm/CB3837' },
+    { pm: 'pnpm', cmd: 'pnpm create ngmd@latest my-docs', logo: 'https://cdn.simpleicons.org/pnpm/F69220' },
+    { pm: 'yarn', cmd: 'yarn create ngmd my-docs', logo: 'https://cdn.simpleicons.org/yarn/2C8EBB' },
+    { pm: 'bun', cmd: 'bun create ngmd my-docs', logo: 'https://cdn.simpleicons.org/bun/FBF0DF' },
+  ];
+
+  readonly activePM = signal('npm');
+  readonly activeCmd = computed(
+    () => this.installCommands.find((c) => c.pm === this.activePM())?.cmd ?? '',
+  );
+
+  async copyCmd(cmd: string): Promise<void> {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) return;
+    try {
+      await navigator.clipboard.writeText(cmd);
+      this.copied.set(cmd);
+      setTimeout(() => this.copied.set(''), 1500);
+    } catch {
+      // clipboard unavailable, silent fail
+    }
+  }
 
   ngAfterViewInit(): void {
     // Browser-only. Motion touches window; SSR would crash. Skipping here

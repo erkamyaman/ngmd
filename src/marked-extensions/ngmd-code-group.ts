@@ -47,7 +47,11 @@ function hasFlag(attrs: string, name: string): boolean {
 async function renderCode(body: string, lang: string): Promise<string> {
   const safeLang = LANGS.includes(lang) ? lang : 'text';
   const highlighter = await getHighlighter();
-  return highlighter.codeToHtml(body, { lang: safeLang, theme: 'github-dark' });
+  return highlighter.codeToHtml(body, {
+    lang: safeLang,
+    themes: { light: 'github-light', dark: 'github-dark' },
+    defaultColor: false,
+  });
 }
 
 export const ngmdCodeGroupExtension: MarkedExtension = {
