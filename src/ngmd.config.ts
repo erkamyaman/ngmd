@@ -95,7 +95,7 @@ const config: NgmdConfig = {
     {
       label: 'Help',
       items: [
-        { label: 'Get help', href: '/help' },
+        { label: 'Get help', href: '/help/get-help' },
         { label: 'Contribute', href: '/help/contribute' },
         { label: 'Support us', href: '/help/sponsor' },
       ],

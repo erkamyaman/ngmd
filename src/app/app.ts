@@ -81,7 +81,7 @@ import { SiteFooter } from './components/site-footer';
             Docs
           </a>
           <a
-            routerLink="/help"
+            routerLink="/help/get-help"
             class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
           >
             Help
@@ -198,6 +198,7 @@ import { SiteFooter } from './components/site-footer';
               <app-page-footer />
             </div>
           }
+          <app-site-footer />
         </main>
 
         @if (showToc()) {
@@ -209,8 +210,6 @@ import { SiteFooter } from './components/site-footer';
           </aside>
         }
       </div>
-
-      <app-site-footer />
     </div>
 
     <app-command-palette #palette />

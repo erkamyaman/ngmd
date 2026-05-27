@@ -6,7 +6,23 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.0.9 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.0.10 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Accordion rewrite.** `<ngmd-accordion-item>` no longer uses native `<details>/<summary>` — the browser's control over content visibility kept fighting CSS transitions. New shape is a signal-driven `<button>` + region `<div>` wired by hand: `aria-expanded` on the trigger, `aria-controls` pointing to the panel, `role="region"` + `aria-labelledby` on the panel. Pure CSS animations, no animation library.
+
+**Symmetric open / close.** Body reveal uses `grid-template-rows: minmax(0, 0fr) → minmax(0, 1fr)` paired with an opacity fade. Both directions move at the same rate because the row fr basis interpolates to the inner wrapper's actual height, not an arbitrary max-height ceiling. 300ms ease-out.
+
+**Chevron cross-fade.** Two stacked Lucide icons (`ChevronDown` closed, `ChevronUp` open) cross-fade via 200ms opacity. Replaces an earlier rotation attempt that occasionally took the long way around between states.
+
+**Focus rings suppressed** on the accordion trigger button so clicking doesn't paint a stray browser-default outline through the animation.
+
+**Help section route layout.** `src/content/help.md` moved to `src/content/help/get-help.md`; root `/help` route is gone. All three help links now live under `/help/get-help`, `/help/contribute`, `/help/sponsor` as siblings — no parent-child URL ambiguity that previously caused the sidebar's `/help` link to highlight when viewing any subpage.
+
+**Sidebar exact-match active state.** `[routerLinkActiveOptions]="{ exact: true }"` on every sidebar link so a link only highlights when the URL exactly matches its `href`, not when the URL merely starts with it.
+
+**`prefers-reduced-motion`** zeroes the accordion transitions.
+
+## 0.0.9
 
 **Inline code chips redesigned.** Body inline code (`` `like this` ``) now wears a thin fuchsia gradient border (`#f0abfc → #d946ef → #a21caf`, three stops in the fuchsia hue family) over a clean `--bg` inner fill that matches the page surface exactly. Light mode uses a 1.5px border for clarity against white; dark mode stays at 1px.
 
@@ -94,7 +110,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.9</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.0.10</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
