@@ -64,6 +64,8 @@ let idCounter = 0;
         [id]="regionId"
         role="region"
         [attr.aria-labelledby]="buttonId"
+        [attr.aria-hidden]="!expanded()"
+        [attr.inert]="expanded() ? null : ''"
         class="ngmd-accordion-body"
       >
         <div

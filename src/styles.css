@@ -173,25 +173,27 @@ ngmd-workflow:not(:defined) {
 
 @layer components {
 
-  /* Suppress browser-default focus rings on <details>/<summary> across the app.
-   * The native focus indicator can paint a coloured ring on the parent details
-   * box that we don't want for accordion items. */
-  details:focus,
-  details:focus-within,
-  summary:focus,
-  summary:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
+  /* Suppress pointer-driven focus rings on <details>/<summary> (the cyan
+   * flash on click is the browser default outline). Keyboard focus is left
+   * untouched — `:focus-visible` only fires for keyboard / tab navigation
+   * and gets a proper accent outline below. */
+  details:focus:not(:focus-visible),
+  summary:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 
-  /* Same treatment for the accordion-item button: kill every focus indicator
-   * the browser might paint. */
-  .ngmd-accordion-item > button:focus,
-  .ngmd-accordion-item > button:focus-visible,
-  .ngmd-accordion-item > button:focus-within {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: transparent !important;
+  /* Same treatment for the accordion-item button. */
+  .ngmd-accordion-item > button:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
+  /* Visible keyboard focus for accordion buttons. Accent ring so the focused
+   * row reads at a glance during keyboard navigation. */
+  .ngmd-accordion-item > button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
 
 
