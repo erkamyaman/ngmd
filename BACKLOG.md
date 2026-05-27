@@ -183,3 +183,13 @@ Distribution:
 - ✅ Hexagon logo with rose → fuchsia → purple gradient stroke, Geist Mono wordmark
 - ✅ Open Graph + meta tags, SVG favicon
 - ✅ License, README, package.json metadata
+
+---
+
+## Up next
+
+Three candidates picked from a wider feature review. Pick from the top.
+
+- ❌ **JSDoc-driven API reference.** Opt-in `ngmd.api.ts`-style scope file globs TS sources, parses JSDoc (via `ts-morph` or the Angular compiler API), emits virtual `.page.ts` routes. Render `@deprecated` / `@experimental` / `@beta` as inline status badges. Heaviest lift on this list; the single biggest missing feature for library docs use cases.
+- ❌ **Sidebar status badges.** `@status: beta` / `new` / `deprecated` in page frontmatter → small chip next to the nav label. Tiny change, real-world signal for marking lifecycle without burying it in prose.
+- ❌ **Search relevance pass.** Cmd+K palette is keyword-substring today. Add Orama (or a small custom stemmer) and a `{% no-index %}` style block so authors can exclude scaffolding text from the index. Half-day lift, noticeably better recall.
