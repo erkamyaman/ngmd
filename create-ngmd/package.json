@@ -1,6 +1,6 @@
 {
   "name": "create-ngmd",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Scaffold a NgMd Angular docs site. Run via `pnpm create ngmd@latest` / `npm create ngmd@latest` / `yarn create ngmd` / `bun create ngmd`.",
   "license": "MIT",
   "author": {

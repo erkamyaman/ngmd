@@ -36,4 +36,4 @@ Sponsorship funds documentation, releases, and the time to keep the stack workin
 
 ## Need help instead?
 
-If you're here because something broke or you have a question, [the help page](/help) covers community channels, paid support, and security disclosure.
+If you're here because something broke or you have a question, [the help page](/help/get-help) covers community channels, paid support, and security disclosure.

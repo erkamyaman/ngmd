@@ -116,7 +116,7 @@ Pick one accent and update its companion tokens in both `:root` and `.dark`. The
 
 For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft` with the colours you want in the hero wash.
 
-Components that lean on the accent (sidebar active item, TOC active heading, command palette row, page footer hover, heading anchor hover, card CTA arrow, pill hover, hero gradient, code-preview headings, install-picker tabs) all pick the new colour up automatically. Card icons use `var(--fg)` deliberately — keeps the brand thread on text and active states; icons stay quiet anchors.
+Components that lean on the accent (sidebar active item, TOC active heading, command palette row, page footer hover, heading anchor hover, card icon, card CTA arrow, pill hover, hero gradient, code-preview headings, install-picker tabs) all pick the new colour up automatically.
 
 <ngmd-callout type="info" title="Inline code chips are hardcoded">
   Body inline code uses a three-stop fuchsia gradient border (<code>#f0abfc → #d946ef → #a21caf</code>) hardcoded in <code>src/styles.css</code> under the <code>analog-markdown code:not(pre code)</code> rule. Rebranding to a non-fuchsia accent? Update those three hex values there too — they're not driven by the brand tokens.

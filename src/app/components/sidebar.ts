@@ -30,6 +30,7 @@ import config from '../../ngmd.config';
                   <a
                     [routerLink]="item.href"
                     routerLinkActive="bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium"
+                    [routerLinkActiveOptions]="{ exact: true }"
                     class="block rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-none"
                   >
                     {{ item.label }}

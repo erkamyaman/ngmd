@@ -181,7 +181,7 @@ NgMd is a modern Angular docs starter.
           >
             <i-lucide
               [img]="feature.icon"
-              class="size-6 mb-4 text-[color:var(--fg)]"
+              class="size-6 mb-4 text-[color:var(--accent)]"
               aria-hidden="true"
             ></i-lucide>
             <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">

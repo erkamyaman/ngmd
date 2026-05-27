@@ -236,14 +236,16 @@ import { NgmdCodeBlock } from '../../ui/code-block';
           Two columns by default, pass <code>columns="3"</code> for three.
           Stacks to single column on mobile.
         </p>
-        <ngmd-card-grid columns="2">
-          <ngmd-card title="Markdown routes" link="/concepts/markdown-routes" cta="Read">
-            How file-based routing wires content to URLs.
-          </ngmd-card>
-          <ngmd-card title="Theming" link="/concepts/theming" cta="Read">
-            CSS variable tokens and the fuchsia accent wiring.
-          </ngmd-card>
-        </ngmd-card-grid>
+        <div class="mb-8">
+          <ngmd-card-grid columns="2">
+            <ngmd-card title="Markdown routes" link="/concepts/markdown-routes" cta="Read">
+              How file-based routing wires content to URLs.
+            </ngmd-card>
+            <ngmd-card title="Theming" link="/concepts/theming" cta="Read">
+              CSS variable tokens and the fuchsia accent wiring.
+            </ngmd-card>
+          </ngmd-card-grid>
+        </div>
         <ngmd-code-block header="page.ts" language="html" [code]="cardGridCode" />
       </section>
 

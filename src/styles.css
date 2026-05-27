@@ -173,6 +173,28 @@ ngmd-workflow:not(:defined) {
 
 @layer components {
 
+  /* Suppress browser-default focus rings on <details>/<summary> across the app.
+   * The native focus indicator can paint a coloured ring on the parent details
+   * box that we don't want for accordion items. */
+  details:focus,
+  details:focus-within,
+  summary:focus,
+  summary:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Same treatment for the accordion-item button: kill every focus indicator
+   * the browser might paint. */
+  .ngmd-accordion-item > button:focus,
+  .ngmd-accordion-item > button:focus-visible,
+  .ngmd-accordion-item > button:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+  }
+
+
   analog-markdown,
   analog-markdown-route {
     display: block;
@@ -526,6 +548,74 @@ ngmd-workflow:not(:defined) {
     width: 100%;
     background-color: rgba(217, 70, 239, 0.12);
     box-shadow: inset 2px 0 var(--accent);
+  }
+
+  /* Accordion item (NgmdAccordionItem) animations.
+   *
+   * Two pieces:
+   * 1. Chevron rotates from -180deg (closed, points up) to 0deg (open, points
+   *    down). Single endpoint pair so the browser cannot take the long way
+   *    around — what tripped the earlier `rotate-180` attempt.
+   * 2. Body collapses via CSS grid-rows: the outer `.ngmd-accordion-body`
+   *    animates `grid-template-rows` between 0fr and 1fr; the inner wrapper
+   *    has `overflow: hidden` and `min-height: 0` so the row fr basis is the
+   *    real animation driver. This trick has the widest evergreen support
+   *    right now — Chrome 117+, Edge 117+, Safari 17.4+, Firefox 121+ — and
+   *    avoids `interpolate-size: allow-keywords` which is still landing
+   *    (Firefox shipped only in 145, late 2025). See:
+   *    https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows
+   */
+  /* Cross-fade two stacked chevron icons. Closed shows the down arrow
+   * (inviting click to open), open shows the up arrow (inviting collapse). */
+  .ngmd-accordion-chevron .ngmd-accordion-chevron-down {
+    opacity: 1;
+  }
+  .ngmd-accordion-chevron .ngmd-accordion-chevron-up {
+    opacity: 0;
+  }
+  .ngmd-accordion-item.is-open .ngmd-accordion-chevron-down {
+    opacity: 0;
+  }
+  .ngmd-accordion-item.is-open .ngmd-accordion-chevron-up {
+    opacity: 1;
+  }
+
+  /* Open-state button background. Token-driven so it follows the surface
+   * palette in both modes (zinc-100 in light, zinc-900 in dark). */
+  .ngmd-accordion-item.is-open > button {
+    background: var(--bg-muted);
+  }
+
+  /* Body reveal: grid-template-rows from minmax(0,0fr) to minmax(0,1fr).
+   * Symmetric in both directions and crucially clamps the row to 0 when
+   * closed regardless of the inner wrapper's intrinsic size. */
+  .ngmd-accordion-body {
+    display: grid;
+    grid-template-rows: minmax(0, 0fr);
+    min-height: 0;
+    opacity: 0;
+    transition:
+      grid-template-rows 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease-out;
+  }
+
+  .ngmd-accordion-item.is-open .ngmd-accordion-body {
+    grid-template-rows: minmax(0, 1fr);
+    opacity: 1;
+  }
+
+  .ngmd-accordion-body-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .ngmd-accordion-chevron-down,
+    .ngmd-accordion-chevron-up,
+    .ngmd-accordion-body {
+      transition: none;
+    }
   }
 
   /* `<div class="ngmd-code-import">` wraps a file= imported code block with

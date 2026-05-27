@@ -69,7 +69,7 @@ v0. Core (markdown rendering, theming, navigation, site frame, authoring compone
 
 ## Community
 
-- [Get help](https://ngmd.netlify.app/help) — issues, discussions, paid support
+- [Get help](https://ngmd.netlify.app/help/get-help) — issues, discussions, paid support
 - [Contribute](https://ngmd.netlify.app/help/contribute) — guidelines and where to start, full notes in [CONTRIBUTING.md](./CONTRIBUTING.md)
 - [Sponsor](https://ngmd.netlify.app/help/sponsor) — back the project on GitHub Sponsors
 
