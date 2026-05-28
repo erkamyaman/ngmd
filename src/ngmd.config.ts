@@ -5,9 +5,15 @@
  * Sidebar, command palette, breadcrumb, and header all read from here.
  */
 
+import type {BadgeVariant} from './types/badge';
+
 export interface NavItem {
   label: string;
   href: string;
+  /** Optional lifecycle marker rendered as a coloured chip beside the
+   * sidebar label. Same five variants as `<ngmd-badge>` plus `updated`.
+   * Pattern mirrors adev's `NavigationItem.status`. */
+  status?: BadgeVariant;
 }
 
 export interface NavSection {
@@ -30,6 +36,17 @@ export interface SiteConfig {
   links?: {
     twitter?: string;
     discord?: string;
+  };
+  /**
+   * Optional Algolia DocSearch credentials. When all three are set, the
+   * command palette queries Algolia instead of the bundled Orama index.
+   * Requires `algoliasearch` as a runtime dep: `pnpm add algoliasearch`.
+   * Leave undefined to keep the default local search.
+   */
+  algolia?: {
+    appId: string;
+    apiKey: string;
+    indexName: string;
   };
 }
 
@@ -74,7 +91,7 @@ const config: NgmdConfig = {
       label: 'Getting Started',
       items: [
         {label: 'Introduction', href: '/welcome'},
-        // { label: 'Changelog', href: '/getting-started/changelog' }, // parked until 0.1.0
+        {label: 'Changelog', href: '/getting-started/changelog', status: 'updated'},
         {label: 'About & Credits', href: '/getting-started/about'},
       ],
     },
@@ -84,12 +101,13 @@ const config: NgmdConfig = {
         {label: 'Markdown Routes', href: '/concepts/markdown-routes'},
         {label: 'Theming', href: '/concepts/theming'},
         {label: 'Components', href: '/concepts/components'},
+        {label: 'Search', href: '/concepts/search', status: 'new'},
         {label: 'Showcase', href: '/concepts/showcase'},
       ],
     },
     {
       label: 'AI',
-      items: [{label: 'Agent Skills', href: '/ai/agent-skills'}],
+      items: [{label: 'Agent Skills', href: '/ai/agent-skills', status: 'new'}],
     },
     {
       label: 'Help',

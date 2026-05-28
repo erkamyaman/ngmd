@@ -69,11 +69,11 @@ Open follow-ups:
 
 ## 4. Search / discovery
 
-- 🟡 Cmd+K palette — works, but lacks fuzzy matching, weighted ranking, result snippet highlighting
-- ❌ Algolia DocSearch integration (alternative search adapter)
-- ❌ Pagefind / Orama offline search index built at build time
-- ❌ Search result keyboard navigation (arrows + enter)
-- ❌ Recent searches / favorites
+- ✅ Cmd+K palette — Orama BM25 + fuzzy (length-scaled) + heading/title/body boosts + `<mark>` highlighting (0.1.2)
+- ✅ Algolia DocSearch integration (opt-in via `site.algolia` keys + `pnpm add algoliasearch`, 0.1.2)
+- ✅ Orama offline search index built at build time (`search-index.plugin.ts` → `virtual:ngmd/search-index`, 0.1.2)
+- ❌ Search result keyboard navigation (arrows + enter). Reverted in 0.1.2 pending a proper focus / scroll polish pass.
+- ✅ Recent searches (cap 10, `localStorage`, 0.1.2). Favorites still ❌.
 
 ## 5. Library-author features (where ng-doc beats us)
 
@@ -191,5 +191,5 @@ Distribution:
 Three candidates picked from a wider feature review. Pick from the top.
 
 - ❌ **JSDoc-driven API reference.** Opt-in `ngmd.api.ts`-style scope file globs TS sources, parses JSDoc (via `ts-morph` or the Angular compiler API), emits virtual `.page.ts` routes. Render `@deprecated` / `@experimental` / `@beta` as inline status badges. Heaviest lift on this list; the single biggest missing feature for library docs use cases.
-- ❌ **Sidebar status badges.** `@status: beta` / `new` / `deprecated` in page frontmatter → small chip next to the nav label. Tiny change, real-world signal for marking lifecycle without burying it in prose.
-- ❌ **Search relevance pass.** Cmd+K palette is keyword-substring today. Add Orama (or a small custom stemmer) and a `{% no-index %}` style block so authors can exclude scaffolding text from the index. Half-day lift, noticeably better recall.
+- ✅ **Sidebar status badges.** Shipped in 0.1.1 (frontmatter), migrated to nav config in 0.1.2 matching adev's `NavigationItem.status` pattern. `{label, href, status: 'beta'}` on a `NavItem` renders a coloured chip next to the sidebar label. Six variants (`new`, `updated`, `alpha`, `beta`, `stable`, `deprecated`) sourced from the single `BADGE_VARIANTS` map in `src/types/badge.ts`. See [/concepts/markdown-routes#sidebar-status-badges](/concepts/markdown-routes#sidebar-status-badges).
+- ✅ **Search relevance pass.** Replaced the keyword-substring filter with Orama (BM25 + fuzzy + heading/title/body boost). Build-time index plugin emits `virtual:ngmd/search-index`; `SearchService` picks Orama by default or Algolia DocSearch when `site.algolia` is set. Adds `noIndex: true` frontmatter, search history in `localStorage`, and `<mark>` match highlighting. See [/concepts/search](/concepts/search).

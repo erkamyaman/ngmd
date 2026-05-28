@@ -1,7 +1,6 @@
 ---
 title: Agent Skills
 description: Two skills ship with NgMd so coding agents know how to scaffold and author docs sites without re-deriving the conventions every time.
-status: new
 ---
 
 <ngmd-hero title="Agent Skills" gradient>

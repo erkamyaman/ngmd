@@ -2,8 +2,7 @@ import {Component, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {LucideAngularModule, ChevronDown} from 'lucide-angular';
 import config from '../../ngmd.config';
-import {pageMeta} from 'virtual:ngmd/page-meta';
-import {BADGE_VARIANTS, type PageStatus} from '../../types/badge';
+import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
 
 @Component({
   selector: 'app-sidebar',
@@ -36,7 +35,7 @@ import {BADGE_VARIANTS, type PageStatus} from '../../types/badge';
                     class="flex items-center justify-between gap-2 rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-2 focus-visible:outline focus-visible:outline-offset-[-2px] focus-visible:outline-[color:var(--accent)]"
                   >
                     <span class="min-w-0 truncate">{{ item.label }}</span>
-                    @if (statusFor(item.href); as status) {
+                    @if (item.status; as status) {
                       <span
                         class="inline-flex items-center rounded-full px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wider"
                         [class]="statusClass(status)"
@@ -71,14 +70,7 @@ export class Sidebar {
     });
   }
 
-  /** Pulls the lifecycle status from the page's frontmatter via the
-   * build-time `virtual:ngmd/page-meta` map. Returns undefined when the
-   * page either has no entry or doesn't declare a status. */
-  statusFor(href: string): PageStatus | undefined {
-    return pageMeta[href]?.status;
-  }
-
-  statusClass(status: PageStatus): string {
+  statusClass(status: BadgeVariant): string {
     return BADGE_VARIANTS[status];
   }
 }

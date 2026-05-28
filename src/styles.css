@@ -200,6 +200,16 @@ ngmd-workflow:not(:defined) {
     text-decoration: inherit;
   }
 
+  /* `<mark>` is emitted by both search providers around the matched
+   * substring. Match-on-accent so users see why each row hit without the
+   * default browser yellow flash. */
+  mark {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-radius: 0.2rem;
+    padding: 0 0.1em;
+  }
+
   /* Scrollbar styling, ported from angular.dev (shared-docs
    * `_scroll-track.scss`). Opt in by adding the class to a scrollable
    * element. Global / native scrollbars stay browser-default.
@@ -321,6 +331,17 @@ ngmd-workflow:not(:defined) {
     font-weight: 600;
     margin-block: 2rem 0.75rem;
     scroll-margin-top: 6rem;
+  }
+
+  /* When a badge chip sits inline next to a heading (`## 0.1.2 <ngmd-badge ...>`)
+   * the chip's default `vertical-align: middle` aligns to the x-height
+   * baseline, which sits low against uppercase / numeric heading glyphs that
+   * have no x-height. Nudge the chip up so it reads as visually centred. */
+  analog-markdown :where(h1, h2, h3, h4) ngmd-badge,
+  analog-markdown-route :where(h1, h2, h3, h4) ngmd-badge,
+  .ngmd-prose :where(h1, h2, h3, h4) ngmd-badge {
+    position: relative;
+    top: -0.05em;
   }
 
   /* Inline code inside headings: strip the heavy code-span box and lean on

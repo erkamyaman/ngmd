@@ -1,10 +1,7 @@
 import {execSync} from 'node:child_process';
-import {readdirSync, readFileSync, statSync} from 'node:fs';
+import {readdirSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import type {Plugin} from 'vite';
-import {PAGE_STATUS_VALUES, type PageStatus} from './src/types/badge';
-
-export type {PageStatus};
 
 /**
  * Build-time map of page URL → { editUrl, lastUpdated }.
@@ -22,28 +19,6 @@ export type {PageStatus};
 export interface PageMeta {
   editUrl: string;
   lastUpdated: string;
-  /** Optional lifecycle status from frontmatter (`status: beta` etc.).
-   * Rendered as a chip next to the sidebar entry. */
-  status?: PageStatus;
-}
-
-/** Parses just the `status:` field out of a YAML frontmatter block.
- * Skips the heavy YAML dependency — we only need this one key, and the
- * frontmatter parser AnalogJS uses (`front-matter`) is not available in the
- * vite plugin context without pulling it into the build graph. */
-function readStatus(path: string): PageStatus | undefined {
-  let text: string;
-  try {
-    text = readFileSync(path, 'utf8');
-  } catch {
-    return undefined;
-  }
-  const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!fm) return undefined;
-  const line = fm[1].match(/^\s*status\s*:\s*['"]?([a-z]+)['"]?\s*$/m);
-  if (!line) return undefined;
-  const value = line[1].toLowerCase() as PageStatus;
-  return PAGE_STATUS_VALUES.includes(value) ? value : undefined;
 }
 
 const VIRTUAL_ID = 'virtual:ngmd/page-meta';
@@ -122,8 +97,7 @@ export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin
       root = cfg.root;
     },
     /** Invalidate the virtual module when any markdown file changes so
-     * a frontmatter edit (notably `status:`) reflows the sidebar badge
-     * without a full restart. */
+     * `lastUpdated` reflows without a full restart. */
     handleHotUpdate(ctx) {
       if (!ctx.file.endsWith('.md')) return;
       const mod = ctx.server.moduleGraph.getModuleById(RESOLVED_ID);
@@ -155,12 +129,10 @@ export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin
         for (const [rel, route] of walkContentFiles(contentDir, root)) {
           const date = gitDate(rel, root);
           if (!date) continue;
-          const status = readStatus(join(root, rel));
           // .md edit URL wins when present (more useful for prose pages)
           map[route] = {
             editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
             lastUpdated: date,
-            ...(status ? {status} : {}),
           };
         }
       } catch {
