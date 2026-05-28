@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync} from 'node:fs';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 
 /**
  * Generates `create-ngmd/template/` from the parent ngmd repo source so the
@@ -43,7 +43,7 @@ const INCLUDE = [
 ];
 
 function clean(dir) {
-  if (existsSync(dir)) rmSync(dir, { recursive: true, force: true });
+  if (existsSync(dir)) rmSync(dir, {recursive: true, force: true});
 }
 
 function copyOne(name) {
@@ -53,7 +53,7 @@ function copyOne(name) {
     console.warn(`  skip ${name} (missing)`);
     return;
   }
-  cpSync(from, to, { recursive: true });
+  cpSync(from, to, {recursive: true});
   console.log(`  + ${name}`);
 }
 
@@ -119,14 +119,14 @@ function slimDocsContent() {
   for (const p of dropPages) {
     const full = join(PAGES, p);
     if (existsSync(full)) {
-      rmSync(full, { recursive: true, force: true });
+      rmSync(full, {recursive: true, force: true});
       console.log(`  - src/app/pages/${p}`);
     }
   }
 
   // Replace src/content/*.md with a single placeholder welcome.md.
   if (existsSync(CONTENT)) {
-    rmSync(CONTENT, { recursive: true, force: true });
+    rmSync(CONTENT, {recursive: true, force: true});
   }
   const welcome =
     '---\n' +
@@ -148,7 +148,7 @@ function slimDocsContent() {
     'cards, tabs, pill rows, workflows, hero, and a code ' +
     'block with shiki highlighting. Compose them in a `.page.ts` route for ' +
     'pages that need bespoke layout; for prose pages, stick with markdown.\n';
-  mkdirSync(CONTENT, { recursive: true });
+  mkdirSync(CONTENT, {recursive: true});
   writeFileSync(join(CONTENT, 'welcome.md'), welcome);
   console.log('  + src/content/welcome.md (placeholder)');
 
@@ -162,11 +162,11 @@ function slimDocsContent() {
       const before = src.slice(0, navStart);
       const after = src.slice(closeIdx);
       const minimalNav =
-        "nav: [\n" +
-        "    {\n" +
+        'nav: [\n' +
+        '    {\n' +
         "      label: 'Getting Started',\n" +
         "      items: [{ label: 'Welcome', href: '/welcome' }],\n" +
-        "    },\n  ],\n};";
+        '    },\n  ],\n};';
       src = before + minimalNav + after.replace(/^  \],\n\};/, '');
       writeFileSync(cfg, src);
       console.log('  ~ trimmed nav in src/ngmd.config.ts');
@@ -184,30 +184,30 @@ function writeIndexPage() {
     "import { Component, inject } from '@angular/core';\n" +
     "import { RouterLink } from '@angular/router';\n" +
     "import { LayoutMode } from '../layout-mode.service';\n\n" +
-    "@Component({\n" +
+    '@Component({\n' +
     "  selector: 'app-home',\n" +
-    "  imports: [RouterLink],\n" +
-    "  template: `\n" +
-    "    <section class=\"mx-auto max-w-2xl px-6 py-24 text-center\">\n" +
-    "      <h1 class=\"text-4xl font-bold tracking-tight\">Your docs</h1>\n" +
-    "      <p class=\"mt-4 text-zinc-600 dark:text-zinc-400\">\n" +
-    "        Scaffolded with <code>create-ngmd</code>. Edit\n" +
-    "        <code>src/content/welcome.md</code> to make this your own.\n" +
-    "      </p>\n" +
-    "      <a\n" +
-    "        routerLink=\"/welcome\"\n" +
-    "        class=\"mt-8 inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900\"\n" +
-    "      >\n" +
-    "        Read the docs →\n" +
-    "      </a>\n" +
-    "    </section>\n" +
-    "  `,\n" +
-    "})\n" +
-    "export default class HomePage {\n" +
-    "  constructor() {\n" +
-    "    inject(LayoutMode).chromeHidden.set(true);\n" +
-    "  }\n" +
-    "}\n";
+    '  imports: [RouterLink],\n' +
+    '  template: `\n' +
+    '    <section class="mx-auto max-w-2xl px-6 py-24 text-center">\n' +
+    '      <h1 class="text-4xl font-bold tracking-tight">Your docs</h1>\n' +
+    '      <p class="mt-4 text-zinc-600 dark:text-zinc-400">\n' +
+    '        Scaffolded with <code>create-ngmd</code>. Edit\n' +
+    '        <code>src/content/welcome.md</code> to make this your own.\n' +
+    '      </p>\n' +
+    '      <a\n' +
+    '        routerLink="/welcome"\n' +
+    '        class="mt-8 inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900"\n' +
+    '      >\n' +
+    '        Read the docs →\n' +
+    '      </a>\n' +
+    '    </section>\n' +
+    '  `,\n' +
+    '})\n' +
+    'export default class HomePage {\n' +
+    '  constructor() {\n' +
+    '    inject(LayoutMode).chromeHidden.set(true);\n' +
+    '  }\n' +
+    '}\n';
   writeFileSync(path, body);
   console.log('  ~ replaced src/app/pages/index.page.ts (generic landing)');
 }

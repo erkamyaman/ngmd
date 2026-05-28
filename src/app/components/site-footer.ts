@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { LucideAngularModule, Github } from 'lucide-angular';
+import {Component} from '@angular/core';
+import {LucideAngularModule, Github} from 'lucide-angular';
 
 @Component({
   selector: 'app-site-footer',
@@ -8,9 +8,7 @@ import { LucideAngularModule, Github } from 'lucide-angular';
     <footer
       class="border-t border-zinc-200 dark:border-zinc-800 py-6 px-4 sm:px-6 text-sm text-zinc-500 dark:text-zinc-400"
     >
-      <div
-        class="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3"
-      >
+      <div class="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3">
         <span>
           © {{ year }}
           <a
@@ -18,8 +16,8 @@ import { LucideAngularModule, Github } from 'lucide-angular';
             target="_blank"
             rel="noopener noreferrer"
             class="font-medium text-zinc-700 dark:text-zinc-300 hover:text-[color:var(--accent)]"
-          >Erkam Yaman</a>.
-          Released under the MIT License.
+            >Erkam Yaman</a
+          >. Released under the MIT License.
         </span>
         <a
           href="https://github.com/erkamyaman/ngmd"

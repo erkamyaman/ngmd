@@ -22,9 +22,13 @@ import {
       </div>
       <div class="flex-1 min-w-0">
         @if (title()) {
-          <h3 class="text-lg font-semibold mt-1.5 mb-2 text-zinc-900 dark:text-zinc-100">{{ title() }}</h3>
+          <h3 class="text-lg font-semibold mt-1.5 mb-2 text-zinc-900 dark:text-zinc-100">
+            {{ title() }}
+          </h3>
         }
-        <div class="text-zinc-700 dark:text-zinc-300 leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+        <div
+          class="text-zinc-700 dark:text-zinc-300 leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+        >
           <ng-content></ng-content>
         </div>
       </div>
@@ -92,8 +96,7 @@ export class NgmdWorkflow implements AfterContentInit, AfterViewInit {
     // for component pages this is a redundant attribute set that the step
     // ignores (its signal is already the right value).
     if (typeof document === 'undefined') return;
-    const els =
-      this.host.nativeElement.querySelectorAll<HTMLElement>('ngmd-step');
+    const els = this.host.nativeElement.querySelectorAll<HTMLElement>('ngmd-step');
     els.forEach((el, i) => el.setAttribute('data-step-index', String(i)));
   }
 }

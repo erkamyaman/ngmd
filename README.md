@@ -51,13 +51,13 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 
 ## Stack
 
-| Tool | Role |
-|---|---|
-| <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v21) | Framework |
-| <a href="https://analogjs.org" target="_blank" rel="noopener noreferrer">AnalogJS</a> | File-based routing, SSR/SSG, content collections |
-| <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind v4</a> | Styling |
-| <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a> | Code highlighting |
-| <a href="https://marked.js.org" target="_blank" rel="noopener noreferrer">Marked</a> | Markdown parsing |
+| Tool                                                                                        | Role                                             |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v21)   | Framework                                        |
+| <a href="https://analogjs.org" target="_blank" rel="noopener noreferrer">AnalogJS</a>       | File-based routing, SSR/SSG, content collections |
+| <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind v4</a> | Styling                                          |
+| <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a>           | Code highlighting                                |
+| <a href="https://marked.js.org" target="_blank" rel="noopener noreferrer">Marked</a>        | Markdown parsing                                 |
 
 ## Deploy
 

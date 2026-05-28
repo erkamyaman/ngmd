@@ -7,6 +7,7 @@ A modern, AnalogJS-native, branding-flexible docs site starter and component too
 **NgMd**.
 
 Availability:
+
 - npm: `ngmd`, `ng-md`, `@ngmd/*` scope — all free
 - GitHub: no Angular-related collisions
 - Deployed: [ngmd.netlify.app](https://ngmd.netlify.app) (May 2026)
@@ -32,12 +33,12 @@ Build is green end-to-end.
 
 The Angular ecosystem has no canonical docs-site starter comparable to:
 
-| Tool | Stars | Stack |
-|------|-------|-------|
+| Tool       | Stars | Stack               |
+| ---------- | ----- | ------------------- |
 | Docusaurus | 64.9k | React / Meta-backed |
-| VitePress | 17.7k | Vue / Vite |
-| Nextra | 13.8k | Next.js / React |
-| Starlight | 8.5k | Astro |
+| VitePress  | 17.7k | Vue / Vite          |
+| Nextra     | 13.8k | Next.js / React     |
+| Starlight  | 8.5k  | Astro               |
 
 The Angular space:
 
@@ -68,11 +69,11 @@ Not aimed at API-reference-only use cases (Compodoc owns that).
 
 ## Architecture (Spartan-inspired, Analog-powered)
 
-| Spartan | NgMd equivalent | Role |
-|---------|-----------------|------|
-| `@spartan-ng/brain` | `@ngmd/core` | Headless primitives — renderer, content loader, nav builder, search index, anchor guard |
+| Spartan               | NgMd equivalent            | Role                                                                                                   |
+| --------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `@spartan-ng/brain`   | `@ngmd/core`               | Headless primitives — renderer, content loader, nav builder, search index, anchor guard                |
 | `helm/*` (copy/paste) | `@ngmd/theme` source files | Styled docs UI — card, callout, sidebar, command palette, code block. Users copy them in and own them. |
-| `@spartan-ng/cli` | `@ngmd/cli` | Scaffolding — `npx create-ngmd`, plus `ngmd add command` style component installers |
+| `@spartan-ng/cli`     | `@ngmd/cli`                | Scaffolding — `npx create-ngmd`, plus `ngmd add command` style component installers                    |
 
 Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 
@@ -111,17 +112,17 @@ Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 
 ## Differentiation vs ng-doc
 
-| Dimension | ng-doc | NgMd |
-|-----------|--------|------|
-| Build system | Angular CLI lock-in | AnalogJS / Vite, composable |
-| Page authoring | `*.page.ts` descriptor + `.md` | Pure file-based `.md` |
-| In-markdown dynamism | Nunjucks templating | Angular components inline |
-| Branding | CSS vars, moderate | Tailwind tokens, very flexible |
-| Component ownership | Library API | Copy/paste, own the source |
-| Versioning | None | Built-in |
-| i18n | None | Built-in |
-| Landing primitives | Missing | Hero / feature grid / etc. |
-| Bus factor | 1 maintainer | Community-owned from day one |
+| Dimension            | ng-doc                         | NgMd                           |
+| -------------------- | ------------------------------ | ------------------------------ |
+| Build system         | Angular CLI lock-in            | AnalogJS / Vite, composable    |
+| Page authoring       | `*.page.ts` descriptor + `.md` | Pure file-based `.md`          |
+| In-markdown dynamism | Nunjucks templating            | Angular components inline      |
+| Branding             | CSS vars, moderate             | Tailwind tokens, very flexible |
+| Component ownership  | Library API                    | Copy/paste, own the source     |
+| Versioning           | None                           | Built-in                       |
+| i18n                 | None                           | Built-in                       |
+| Landing primitives   | Missing                        | Hero / feature grid / etc.     |
+| Bus factor           | 1 maintainer                   | Community-owned from day one   |
 
 ## v0 scope (built)
 

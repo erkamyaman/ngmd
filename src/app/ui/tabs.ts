@@ -100,8 +100,7 @@ export class NgmdTab {
     }
     const elementRef: ElementRef<HTMLElement> = inject(ElementRef);
     const host = elementRef.nativeElement;
-    const sync = () =>
-      this.active.set(host.getAttribute('data-active') === 'true');
+    const sync = () => this.active.set(host.getAttribute('data-active') === 'true');
     sync();
     const observer = new MutationObserver(sync);
     observer.observe(host, {
@@ -116,9 +115,7 @@ export class NgmdTab {
   selector: 'ngmd-tabs',
   imports: [LucideAngularModule],
   template: `
-    <div
-      class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
-    >
+    <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
       <div
         role="tablist"
         class="flex flex-wrap border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900"

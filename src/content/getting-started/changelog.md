@@ -6,7 +6,27 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.1 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Sidebar status badges.** A new `status:` field in any `.md` page's frontmatter renders a coloured chip next to its sidebar entry. Five values: `new`, `alpha`, `beta`, `stable`, `deprecated`. The `page-meta.plugin.ts` Vite plugin parses the frontmatter at build time and exposes the map via the existing `virtual:ngmd/page-meta` virtual module; the sidebar imports it and renders the chip inline. HMR invalidates the virtual module on any `.md` edit so badge changes show without a server restart.
+
+**Single source of truth for badge variants.** Every variant (Tailwind classes plus name) lives in one map: `BADGE_VARIANTS` in `src/types/badge.ts`. The inline `&lt;ngmd-badge&gt;` component, the sidebar status chip, and the `status:` frontmatter validator all derive from the same map. Adding a new variant is one row; the `BadgeVariant` type and `PAGE_STATUS_VALUES` array widen automatically.
+
+**`&lt;ngmd-image&gt;` / `&lt;ngmd-video&gt;` paired-tag support.** Marked extensions' regexes only matched the self-closing `&lt;ngmd-image .../&gt;` form. 0.0.6 switched all source content to paired `&lt;ngmd-image&gt;&lt;/ngmd-image&gt;` tags ("HTML parsers don't honour self-closing custom elements"), which made the extensions silently fall through to literal-text rendering on multi-line invocations. Regexes now accept both forms, plus multi-line attributes.
+
+**Inline-code chips reach direct Angular pages.** The fuchsia chip styling previously only applied inside `&lt;analog-markdown&gt;` / `&lt;analog-markdown-route&gt;`. Pages built as plain `.page.ts` Angular templates (Components reference, home) missed it, so identifiers in their prose rendered as plain monospace. Added a `.ngmd-prose code:not(pre code)` selector and tagged the relevant article wrappers. Same visual rhythm as markdown pages.
+
+**Word-spacing on prose.** Inline-code chips were visually kissing the neighbouring words. Added `word-spacing: 0.05em` on `analog-markdown`, `analog-markdown-route`, and `.ngmd-prose` so the rhythm gets a touch of breathing room without changing chip-internal padding.
+
+**Sidebar keyboard focus restored.** Nav links previously suppressed both pointer and keyboard focus indicators. The pointer suppression stays (no flash on click), but `focus-visible` now paints an accent outline so keyboard users can see the focused row.
+
+**Email link styling.** Removed `&lt;code&gt;` wrapping around the security-report email in `get-help.md` so it renders as a plain accent link instead of an inline-code chip.
+
+**Prettier formatter.** Config mirrors the Angular monorepo `.prettierrc` byte-for-byte: single quotes, width 100, trailing comma all, no bracket spacing, HTML parsed as Angular templates. New scripts `pnpm format` (write) and `pnpm format:check` (CI). `.vscode/settings.json` opts the workspace into format-on-save with the Prettier extension. `src/content/**` and `create-ngmd/template/**` are excluded so prose line breaks and the scaffold-byte-for-byte copy stay untouched.
+
+**Docs.** Components reference page Badge section has a new accordion ("Whole-page status (sidebar chip)" + "Adding a new variant") with a concrete code example showing the `BADGE_VARIANTS` row pattern. `markdown-routes.md` has a "Sidebar status badge" subsection. `CONTRIBUTING.md` documents the formatter; `help/contribute.md` adds `pnpm format:check` to the pre-PR checklist.
+
+## 0.1.0
 
 **Per-instance spacing on NgmdUi tags.** Every block authoring component (`&lt;ngmd-accordion&gt;`, `&lt;ngmd-callout&gt;`, `&lt;ngmd-card-grid&gt;`, `&lt;ngmd-code-block&gt;`, `&lt;ngmd-image&gt;`, `&lt;ngmd-tabs&gt;`, `&lt;ngmd-video&gt;`, `&lt;ngmd-hero&gt;`, `&lt;ngmd-workflow&gt;`, `&lt;ngmd-alert&gt;`, `&lt;ngmd-pill-row&gt;`) now accepts a Tailwind margin class on the markdown tag: `&lt;ngmd-callout class="mt-10"&gt;`, `&lt;ngmd-accordion class="my-0"&gt;`. Default `margin: 1.5rem 0` lives on the host in `@layer base`; `mt-*`, `mb-*`, `my-*`, `mx-*` from `@layer utilities` win on cascade. Inner template divs no longer carry the `my-X` they used to (it was trapped inside the flex/grid formatting context and unreachable from markdown).
 
@@ -130,7 +150,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.1.0</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.1.1</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 
 @Component({
   selector: 'ngmd-hero',
@@ -26,7 +26,9 @@ import { Component, computed, input } from '@angular/core';
 })
 export class NgmdHero {
   readonly title = input.required<string>();
-  readonly gradient = input(false, { transform: (v: boolean | string) => v === '' || v === true || v === 'true' });
+  readonly gradient = input(false, {
+    transform: (v: boolean | string) => v === '' || v === true || v === 'true',
+  });
 
   readonly bgClass = computed(() =>
     this.gradient()
@@ -35,9 +37,7 @@ export class NgmdHero {
   );
 
   readonly titleClass = computed(() =>
-    this.gradient()
-      ? 'bg-clip-text text-transparent'
-      : 'text-zinc-900 dark:text-zinc-100',
+    this.gradient() ? 'bg-clip-text text-transparent' : 'text-zinc-900 dark:text-zinc-100',
   );
 
   readonly bodyClass = computed(() => 'text-zinc-700 dark:text-zinc-300');

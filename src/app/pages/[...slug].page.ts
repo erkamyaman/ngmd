@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import {AsyncPipe} from '@angular/common';
 import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -7,10 +7,10 @@ import {
   effect,
   inject,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { injectContent, MarkdownComponent } from '@analogjs/content';
-import { LayoutMode } from '../layout-mode.service';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {RouterLink} from '@angular/router';
+import {injectContent, MarkdownComponent} from '@analogjs/content';
+import {LayoutMode} from '../layout-mode.service';
 
 /**
  * Catch-all route for every markdown page.
@@ -44,12 +44,8 @@ const NOT_FOUND = '__ngmd-not-found__';
     @if (content$ | async; as doc) {
       @if (doc.content === notFound) {
         <section class="mx-auto max-w-2xl px-6 py-24 text-center">
-          <p class="text-sm font-medium tracking-[0.2em] text-zinc-400 dark:text-zinc-500">
-            404
-          </p>
-          <h1 class="mt-3 text-4xl sm:text-5xl font-bold tracking-tight">
-            Page not found
-          </h1>
+          <p class="text-sm font-medium tracking-[0.2em] text-zinc-400 dark:text-zinc-500">404</p>
+          <h1 class="mt-3 text-4xl sm:text-5xl font-bold tracking-tight">Page not found</h1>
           <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
             The page you're looking for doesn't exist or has moved.
           </p>
@@ -80,7 +76,7 @@ export default class DocPage implements OnDestroy {
   private readonly layout = inject(LayoutMode);
   protected readonly notFound = NOT_FOUND;
 
-  readonly content$ = injectContent<{ title: string }>('slug', NOT_FOUND);
+  readonly content$ = injectContent<{title: string}>('slug', NOT_FOUND);
   private readonly doc = toSignal(this.content$);
   private readonly missing = computed(() => this.doc()?.content === NOT_FOUND);
 

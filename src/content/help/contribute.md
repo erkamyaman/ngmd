@@ -56,9 +56,10 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
 ## Before pushing
 
 1. **`pnpm run build` passes locally.** Link guards, page-meta, and sitemap all run at build time.
-2. **Manual smoke test** in the dev server: load the affected route, navigate, toggle dark mode.
-3. **No `console.log`** left in committed code.
-4. **Commit message** follows the existing log style: `<type>: short imperative summary` (`feat`, `fix`, `docs`, `refactor`, `build`, `chore`).
+2. **`pnpm format:check` is clean.** Prettier config mirrors the Angular monorepo. Run `pnpm format` to auto-fix.
+3. **Manual smoke test** in the dev server: load the affected route, navigate, toggle dark mode.
+4. **No `console.log`** left in committed code.
+5. **Commit message** follows the existing log style: `<type>: short imperative summary` (`feat`, `fix`, `docs`, `refactor`, `build`, `chore`).
 
 ## Where to next
 

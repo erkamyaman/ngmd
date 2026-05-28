@@ -1,30 +1,31 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {RouterLink} from '@angular/router';
 
-import { NgmdCodeBlock } from '../../ui/code-block';
+import {NgmdCodeBlock} from '../../ui/code-block';
 
 @Component({
   selector: 'app-components',
   imports: [RouterLink, NgmdCodeBlock],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
-    <article class="max-w-3xl mx-auto p-8 space-y-12">
+    <article class="ngmd-prose max-w-3xl mx-auto p-8 space-y-12">
       <header>
         <h1 class="text-4xl font-bold tracking-tight">Components</h1>
         <p class="mt-3 text-zinc-600 dark:text-zinc-400">
-          The authoring components NgMd ships in <code>src/app/ui/</code>.
-          Compose them in any <code>.page.ts</code> via the
-          <code>NgmdUi</code> barrel, or drop them inline in any
-          <code>.md</code> file via the Custom Elements bridge.
-          See <a routerLink="/concepts/showcase">the showcase</a> for the
-          markdown-side view.
+          The authoring components NgMd ships in <code>src/app/ui/</code>. Compose them in any
+          <code>.page.ts</code> via the <code>NgmdUi</code> barrel, or drop them inline in any
+          <code>.md</code> file via the Custom Elements bridge. See
+          <a routerLink="/concepts/showcase">the showcase</a> for the markdown-side view.
         </p>
         <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Every block component below accepts a Tailwind class on the
-          markdown tag for per-instance spacing.
+          Every block component below accepts a Tailwind class on the markdown tag for per-instance
+          spacing.
           <code>&lt;ngmd-callout class="mt-10"&gt;</code>,
-          <code>&lt;ngmd-card-grid class="my-0"&gt;</code>, etc.
-          See <a routerLink="/concepts/markdown-routes" fragment="per-instance-spacing">per-instance spacing</a> for the full pattern.
+          <code>&lt;ngmd-card-grid class="my-0"&gt;</code>, etc. See
+          <a routerLink="/concepts/markdown-routes" fragment="per-instance-spacing"
+            >per-instance spacing</a
+          >
+          for the full pattern.
         </p>
       </header>
 
@@ -32,8 +33,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
         <h2 id="callout" class="text-2xl font-semibold tracking-tight">Callout</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Bordered box with a coloured side stripe. Five types:
-          <code>info</code>, <code>tip</code>, <code>success</code>,
-          <code>warning</code>, <code>danger</code>.
+          <code>info</code>, <code>tip</code>, <code>success</code>, <code>warning</code>,
+          <code>danger</code>.
         </p>
         <div class="mt-4 space-y-3">
           <ngmd-callout type="info" title="Note">
@@ -45,9 +46,7 @@ import { NgmdCodeBlock } from '../../ui/code-block';
           <ngmd-callout type="success" title="Done">
             Confirmation that a step worked.
           </ngmd-callout>
-          <ngmd-callout type="warning" title="Warning">
-            Non-blocking caution.
-          </ngmd-callout>
+          <ngmd-callout type="warning" title="Warning"> Non-blocking caution. </ngmd-callout>
           <ngmd-callout type="danger" title="Critical">
             Breaking-change or data-loss warning. Use sparingly.
           </ngmd-callout>
@@ -58,26 +57,16 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="alert" class="text-2xl font-semibold tracking-tight">Alert</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Single-line banner with a side stripe. Lighter than a callout.
-          Severities: <code>info</code>, <code>warning</code>,
-          <code>critical</code>, <code>helpful</code>, <code>important</code>.
+          Single-line banner with a side stripe. Lighter than a callout. Severities:
+          <code>info</code>, <code>warning</code>, <code>critical</code>, <code>helpful</code>,
+          <code>important</code>.
         </p>
         <div class="mt-4 space-y-3">
-          <ngmd-alert severity="info">
-            Plain informational alert.
-          </ngmd-alert>
-          <ngmd-alert severity="helpful">
-            Sidebar context for the reader.
-          </ngmd-alert>
-          <ngmd-alert severity="warning">
-            Watch out, but the page still works.
-          </ngmd-alert>
-          <ngmd-alert severity="critical">
-            Something will break if you ignore this.
-          </ngmd-alert>
-          <ngmd-alert severity="important">
-            Worth pausing for.
-          </ngmd-alert>
+          <ngmd-alert severity="info"> Plain informational alert. </ngmd-alert>
+          <ngmd-alert severity="helpful"> Sidebar context for the reader. </ngmd-alert>
+          <ngmd-alert severity="warning"> Watch out, but the page still works. </ngmd-alert>
+          <ngmd-alert severity="critical"> Something will break if you ignore this. </ngmd-alert>
+          <ngmd-alert severity="important"> Worth pausing for. </ngmd-alert>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="alertCode" />
       </section>
@@ -85,8 +74,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="card" class="text-2xl font-semibold tracking-tight">Card</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Bordered card with title and body. Pass <code>link</code> to make
-          the whole card a router link with a hover state.
+          Bordered card with title and body. Pass <code>link</code> to make the whole card a router
+          link with a hover state.
         </p>
         <div class="mt-4 space-y-3">
           <ngmd-card title="Plain card">
@@ -102,8 +91,7 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="tabs" class="text-2xl font-semibold tracking-tight">Tabs</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Tab UI with keyboard navigation. Bodies can be any
-          markup, not just code.
+          Tab UI with keyboard navigation. Bodies can be any markup, not just code.
         </p>
         <div class="mt-4">
           <ngmd-tabs>
@@ -142,14 +130,20 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="workflow" class="text-2xl font-semibold tracking-tight">Workflow</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Numbered step list with a connecting line down the side. Each step
-          gets its own title and body.
+          Numbered step list with a connecting line down the side. Each step gets its own title and
+          body.
         </p>
         <div class="mt-4">
           <ngmd-workflow>
-            <ngmd-step title="Scaffold">Run <code>pnpm create ngmd&#64;latest my-docs</code>.</ngmd-step>
-            <ngmd-step title="Install">Run <code>pnpm install</code> in the new directory.</ngmd-step>
-            <ngmd-step title="Develop">Run <code>pnpm dev</code> and open <code>http://localhost:5173</code>.</ngmd-step>
+            <ngmd-step title="Scaffold"
+              >Run <code>pnpm create ngmd&#64;latest my-docs</code>.</ngmd-step
+            >
+            <ngmd-step title="Install"
+              >Run <code>pnpm install</code> in the new directory.</ngmd-step
+            >
+            <ngmd-step title="Develop"
+              >Run <code>pnpm dev</code> and open <code>http://localhost:5173</code>.</ngmd-step
+            >
           </ngmd-workflow>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="workflowCode" />
@@ -163,9 +157,7 @@ import { NgmdCodeBlock } from '../../ui/code-block';
           <code>--accent-gradient</code> token), omit for the quiet variant.
         </p>
         <div class="mt-4">
-          <ngmd-hero title="Welcome" gradient>
-            The hero you see on the home page.
-          </ngmd-hero>
+          <ngmd-hero title="Welcome" gradient> The hero you see on the home page. </ngmd-hero>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="heroCode" />
       </section>
@@ -173,8 +165,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="code-block" class="text-2xl font-semibold tracking-tight">Code block</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Standalone code block with header bar showing the filename. Lazy-loads
-          Shiki at runtime for syntax highlighting. Pass either a raw
+          Standalone code block with header bar showing the filename. Lazy-loads Shiki at runtime
+          for syntax highlighting. Pass either a raw
           <code>[code]</code> string or fenced markdown.
         </p>
         <div class="mt-4">
@@ -186,8 +178,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="video" class="text-2xl font-semibold tracking-tight">Video</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          YouTube or Vimeo embed. Pass the canonical watch URL; the component
-          normalises it to the player iframe and lazy-loads.
+          YouTube or Vimeo embed. Pass the canonical watch URL; the component normalises it to the
+          player iframe and lazy-loads.
         </p>
         <div class="mt-4">
           <ngmd-video src="https://www.youtube.com/watch?v=_ZcHwv91Rmo" title="Angular intro" />
@@ -198,8 +190,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="image" class="text-2xl font-semibold tracking-tight">Image</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Figure with optional caption. Lazy-loads, applies the standard
-          rounded border so it sits in prose without extra Tailwind.
+          Figure with optional caption. Lazy-loads, applies the standard rounded border so it sits
+          in prose without extra Tailwind.
         </p>
         <div class="mt-4">
           <ngmd-image
@@ -214,22 +206,21 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="accordion" class="text-2xl font-semibold tracking-tight">Accordion</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Disclosure list, backed by the native <code>&lt;details&gt;</code>
-          element for keyboard, ARIA, and SSR-friendly default-open for free.
-          Pass <code>open</code> on an item to start it expanded.
+          Disclosure list, backed by the native <code>&lt;details&gt;</code> element for keyboard,
+          ARIA, and SSR-friendly default-open for free. Pass <code>open</code> on an item to start
+          it expanded.
         </p>
         <ngmd-accordion>
           <ngmd-accordion-item title="When was NgMd released?" open>
-            Initial public release was May 2026. The starter is at v0 while
-            we collect feedback from first projects.
+            Initial public release was May 2026. The starter is at v0 while we collect feedback from
+            first projects.
           </ngmd-accordion-item>
           <ngmd-accordion-item title="Does it support i18n?">
-            Not yet. Locale-prefixed routes plus a header switcher are on
-            the v1 roadmap.
+            Not yet. Locale-prefixed routes plus a header switcher are on the v1 roadmap.
           </ngmd-accordion-item>
           <ngmd-accordion-item title="Can I use it with my existing Angular app?">
-            NgMd is a standalone starter, not a library to bolt on. Scaffold
-            a new project and migrate content into it, or copy the parts of
+            NgMd is a standalone starter, not a library to bolt on. Scaffold a new project and
+            migrate content into it, or copy the parts of
             <code>src/app/</code> you want.
           </ngmd-accordion-item>
         </ngmd-accordion>
@@ -239,9 +230,8 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="card-grid" class="text-2xl font-semibold tracking-tight">Card grid</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Container around <code>&lt;ngmd-card&gt;</code> for n-up layouts.
-          Two columns by default, pass <code>columns="3"</code> for three.
-          Stacks to single column on mobile.
+          Container around <code>&lt;ngmd-card&gt;</code> for n-up layouts. Two columns by default,
+          pass <code>columns="3"</code> for three. Stacks to single column on mobile.
         </p>
         <div class="mb-8">
           <ngmd-card-grid columns="2">
@@ -259,18 +249,60 @@ import { NgmdCodeBlock } from '../../ui/code-block';
       <section>
         <h2 id="badge" class="text-2xl font-semibold tracking-tight">Badge</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Inline status pill. Five variants: <code>alpha</code>,
-          <code>beta</code>, <code>stable</code>, <code>deprecated</code>,
-          <code>new</code>. Pairs well with headings and inline references.
+          Inline status pill. Five variants, each tied to a lifecycle meaning
+          and a fixed colour so the signal reads the same way across every
+          page.
         </p>
         <div class="mt-4 flex flex-wrap gap-2 items-center">
+          <ngmd-badge variant="new">New</ngmd-badge>
           <ngmd-badge variant="alpha">Alpha</ngmd-badge>
           <ngmd-badge variant="beta">Beta</ngmd-badge>
           <ngmd-badge variant="stable">Stable</ngmd-badge>
           <ngmd-badge variant="deprecated">Deprecated</ngmd-badge>
-          <ngmd-badge variant="new">New</ngmd-badge>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="badgeCode" />
+        <ngmd-accordion>
+          <ngmd-accordion-item title="Custom labels and variants">
+            <p>
+              Two independent axes. The <code>variant</code> attribute picks
+              the <strong>colour</strong> (lifecycle meaning). Whatever sits
+              between the tags becomes the <strong>label</strong>, uppercased
+              automatically. Mix and match.
+            </p>
+            <ngmd-code-block language="html" [code]="badgeCustomLabelCode" />
+            <p class="mt-4">Renders:</p>
+            <div class="mt-2 flex flex-wrap gap-2 items-center">
+              <ngmd-badge variant="new">Public preview</ngmd-badge>
+              <ngmd-badge variant="beta">Opt-in</ngmd-badge>
+              <ngmd-badge variant="deprecated">Removed in v3</ngmd-badge>
+            </div>
+            <p class="mt-4">
+              Need a new colour? Every variant lives in one map:
+              <code>BADGE_VARIANTS</code> in <code>src/types/badge.ts</code>.
+              Add a row and both the inline <code>&lt;ngmd-badge&gt;</code>
+              and the whole-page sidebar chip pick it up. Example: a violet
+              <code>preview</code> variant.
+            </p>
+            <ngmd-code-block header="src/types/badge.ts" language="ts" [code]="badgeNewVariantCode" />
+            <p class="mt-4">
+              The <code>BadgeVariant</code> type and the <code>status:</code>
+              frontmatter validator are derived from this map, so a new key is
+              accepted in <code>.md</code> files immediately.
+            </p>
+          </ngmd-accordion-item>
+          <ngmd-accordion-item title="Whole-page status (sidebar chip)">
+            <p>
+              For an entire page rather than an inline mention, set
+              <code>status:</code> in the markdown frontmatter. The same chip
+              renders beside the page's sidebar entry. All five lifecycle
+              states above work as values.
+            </p>
+            <ngmd-code-block language="md" [code]="badgeStatusFrontmatterCode" />
+            <p class="mt-4">
+              See <a routerLink="/concepts/markdown-routes" fragment="sidebar-status-badge" class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]">page frontmatter</a> for the pipeline that wires this.
+            </p>
+          </ngmd-accordion-item>
+        </ngmd-accordion>
       </section>
     </article>
   `,
@@ -328,9 +360,9 @@ export default class ComponentsPage {
   ].join('\n');
 
   readonly codeBlockSample = [
-    "export function greet(name: string) {",
-    "  console.log(`Hello, ${name}`);",
-    "}",
+    'export function greet(name: string) {',
+    '  console.log(`Hello, ${name}`);',
+    '}',
   ].join('\n');
 
   readonly codeBlockCode = [
@@ -377,5 +409,29 @@ export default class ComponentsPage {
   readonly badgeCode = [
     '<ngmd-badge variant="beta">Beta</ngmd-badge>',
     '<ngmd-badge variant="deprecated">Deprecated</ngmd-badge>',
+  ].join('\n');
+
+  readonly badgeCustomLabelCode = [
+    '<ngmd-badge variant="new">Public preview</ngmd-badge>',
+    '<ngmd-badge variant="beta">Opt-in</ngmd-badge>',
+    '<ngmd-badge variant="deprecated">Removed in v3</ngmd-badge>',
+  ].join('\n');
+
+  readonly badgeStatusFrontmatterCode = [
+    '---',
+    'title: Showcase',
+    'status: beta',
+    '---',
+  ].join('\n');
+
+  readonly badgeNewVariantCode = [
+    'export const BADGE_VARIANTS = {',
+    '  // ...existing variants',
+    "  preview: 'bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300',",
+    '} as const satisfies Record<string, string>;',
+    '',
+    '// Derived automatically. No manual edit needed:',
+    'export type BadgeVariant = keyof typeof BADGE_VARIANTS;',
+    'export type PageStatus = BadgeVariant;',
   ].join('\n');
 }

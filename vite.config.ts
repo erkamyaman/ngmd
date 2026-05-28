@@ -1,13 +1,13 @@
 /// <reference types="vitest" />
 
-import { defineConfig, type Plugin } from 'vite';
+import {defineConfig, type Plugin} from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
-import { readFileSync } from 'node:fs';
-import { getBuildExtensions } from './src/marked-extensions';
-import { pageMetaPlugin } from './page-meta.plugin';
-import { internalLinkGuard } from './link-guard.plugin';
-import { sitemapPlugin } from './sitemap.plugin';
+import {readFileSync} from 'node:fs';
+import {getBuildExtensions} from './src/marked-extensions';
+import {pageMetaPlugin} from './page-meta.plugin';
+import {internalLinkGuard} from './link-guard.plugin';
+import {sitemapPlugin} from './sitemap.plugin';
 import config from './src/ngmd.config';
 
 /**
@@ -51,8 +51,8 @@ export default defineConfig(async () => ({
   plugins: [
     externalLinkGuard(),
     internalLinkGuard(),
-    pageMetaPlugin({ repoUrl: config.site.githubUrl, branch: 'main' }),
-    sitemapPlugin({ siteUrl: config.site.url }),
+    pageMetaPlugin({repoUrl: config.site.githubUrl, branch: 'main'}),
+    sitemapPlugin({siteUrl: config.site.url}),
     analog({
       content: {
         highlighter: 'shiki',
@@ -61,7 +61,7 @@ export default defineConfig(async () => ({
         },
         shikiOptions: {
           highlight: {
-            themes: { light: 'github-light', dark: 'github-dark' },
+            themes: {light: 'github-light', dark: 'github-dark'},
             defaultColor: false,
           },
           highlighter: {

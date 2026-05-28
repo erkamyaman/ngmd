@@ -1,8 +1,4 @@
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-} from '@angular/common/http';
+import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {
   ApplicationConfig,
   Injector,
@@ -10,16 +6,16 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
-import { provideContent, withMarkdownRenderer } from '@analogjs/content';
-import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter';
-import { withInMemoryScrolling, withViewTransitions, TitleStrategy } from '@angular/router';
-import { ViewportScroller } from '@angular/common';
-import { marked } from 'marked';
-import { ngmdRuntimeExtensions } from '../marked-extensions';
-import { NgmdTitleStrategy } from './title-strategy';
-import { registerNgmdElements } from './register-elements';
+import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {provideFileRouter, requestContextInterceptor} from '@analogjs/router';
+import {provideContent, withMarkdownRenderer} from '@analogjs/content';
+import {withShikiHighlighter} from '@analogjs/content/shiki-highlighter';
+import {withInMemoryScrolling, withViewTransitions, TitleStrategy} from '@angular/router';
+import {ViewportScroller} from '@angular/common';
+import {marked} from 'marked';
+import {ngmdRuntimeExtensions} from '../marked-extensions';
+import {NgmdTitleStrategy} from './title-strategy';
+import {registerNgmdElements} from './register-elements';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,13 +32,10 @@ export const appConfig: ApplicationConfig = {
       // Falls back to default behaviour on older browsers (Chrome <111).
       withViewTransitions(),
     ),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([requestContextInterceptor])
-    ),
+    provideHttpClient(withFetch(), withInterceptors([requestContextInterceptor])),
     provideClientHydration(withEventReplay()),
     provideContent(withMarkdownRenderer(), withShikiHighlighter()),
-    { provide: TitleStrategy, useClass: NgmdTitleStrategy },
+    {provide: TitleStrategy, useClass: NgmdTitleStrategy},
     // AnalogJS's runtime MarkedSetupService only registers gfm/mangle/shiki.
     // The `markedOptions` in vite.config.ts only feeds the build-time
     // MarkdownRouteComponent. Pages using `<analog-markdown [content]>` parse

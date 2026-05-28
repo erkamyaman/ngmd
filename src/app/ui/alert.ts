@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import {
   LucideAngularModule,
   Info,
@@ -72,10 +72,6 @@ export class NgmdAlert {
 
   protected readonly iconImg = computed(() => ICON_MAP[this.severity()]);
   protected readonly accentClass = computed(() => ACCENT[this.severity()]);
-  protected readonly boxClass = computed(
-    () => `${BOX} ${STRIPE[this.severity()]}`,
-  );
-  protected readonly tag = computed(() =>
-    (this.label() || this.severity()).toUpperCase(),
-  );
+  protected readonly boxClass = computed(() => `${BOX} ${STRIPE[this.severity()]}`);
+  protected readonly tag = computed(() => (this.label() || this.severity()).toUpperCase());
 }

@@ -1,6 +1,6 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
-import type { Plugin } from 'vite';
+import {readFileSync, readdirSync, statSync} from 'node:fs';
+import {join, relative} from 'node:path';
+import type {Plugin} from 'vite';
 
 /**
  * Build-time guard that errors on broken internal links inside markdown files.
@@ -29,7 +29,7 @@ function slugify(s: string): string {
 }
 
 function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  for (const entry of readdirSync(dir, {withFileTypes: true})) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       walkPageFiles(full, root, out);
@@ -51,15 +51,13 @@ function walkContentFiles(
   baseDir: string = dir,
   out: Array<[string, string]> = [],
 ): Array<[string, string]> {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  for (const entry of readdirSync(dir, {withFileTypes: true})) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       walkContentFiles(full, root, baseDir, out);
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       const rel = relative(root, full);
-      const fromContent = relative(baseDir, full)
-        .replace(/\\/g, '/')
-        .replace(/\.md$/, '');
+      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
       out.push([rel, '/' + fromContent]);
     }
   }
@@ -67,9 +65,7 @@ function walkContentFiles(
 }
 
 function routeFromPagePath(rel: string): string {
-  const trimmed = rel
-    .replace(/^src\/app\/pages\//, '')
-    .replace(/\.page\.ts$/, '');
+  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
   if (trimmed === 'index') return '/';
   if (trimmed.startsWith('[')) return '';
   return '/' + trimmed;
@@ -144,20 +140,14 @@ export function internalLinkGuard(): Plugin {
       const validate = (href: string, label: string) => {
         if (!href) return;
         // external / mail / relative — skip
-        if (
-          /^(https?:|mailto:|tel:|#)/.test(href) === false &&
-          !href.startsWith('/')
-        )
-          return;
+        if (/^(https?:|mailto:|tel:|#)/.test(href) === false && !href.startsWith('/')) return;
         if (/^(https?:|mailto:|tel:)/.test(href)) return;
 
         const [path, fragment] = href.split('#');
         if (path === '') {
           // in-page fragment: must exist in this file
           if (fragment && !ownSlugs.has(fragment)) {
-            issues.push(
-              `  ${label} → "#${fragment}" has no matching heading in this file`,
-            );
+            issues.push(`  ${label} → "#${fragment}" has no matching heading in this file`);
           }
           return;
         }
@@ -170,9 +160,7 @@ export function internalLinkGuard(): Plugin {
         if (fragment) {
           const targetSlugs = headingsByRoute.get(path);
           if (targetSlugs && !targetSlugs.has(fragment)) {
-            issues.push(
-              `  ${label} → "${path}#${fragment}" — fragment not found in target page`,
-            );
+            issues.push(`  ${label} → "${path}#${fragment}" — fragment not found in target page`);
           }
           // if targetSlugs is undefined (e.g. .page.ts route), skip fragment check
         }

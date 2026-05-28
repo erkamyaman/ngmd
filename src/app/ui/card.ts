@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import {Component, computed, input} from '@angular/core';
+import {NgTemplateOutlet} from '@angular/common';
+import {RouterLink} from '@angular/router';
 import {
   LucideAngularModule,
   Book,
@@ -113,7 +113,9 @@ const ICON_MAP: Record<string, LucideIconData> = {
         <ng-content></ng-content>
       </div>
       @if (cta()) {
-        <span class="mt-3 inline-block text-sm font-medium text-[color:var(--accent)]">{{ cta() }} →</span>
+        <span class="mt-3 inline-block text-sm font-medium text-[color:var(--accent)]"
+          >{{ cta() }} →</span
+        >
       }
     </ng-template>
   `,

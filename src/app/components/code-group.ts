@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 /**
  * Wires tab-switching for `<div class="ngmd-code-group">` blocks emitted by
@@ -14,7 +14,11 @@ import { filter } from 'rxjs';
 @Component({
   selector: 'app-code-group',
   template: '',
-  styles: `:host { display: none; }`,
+  styles: `
+    :host {
+      display: none;
+    }
+  `,
 })
 export class CodeGroup implements AfterViewInit {
   private readonly router = inject(Router);
@@ -44,25 +48,16 @@ export class CodeGroup implements AfterViewInit {
 
   private enhance(group: HTMLElement): void {
     group.setAttribute('data-enhanced', 'true');
-    const tabs = group.querySelectorAll<HTMLButtonElement>(
-      '.ngmd-code-group__tab',
-    );
-    const panels = group.querySelectorAll<HTMLElement>(
-      '.ngmd-code-group__panel',
-    );
+    const tabs = group.querySelectorAll<HTMLButtonElement>('.ngmd-code-group__tab');
+    const panels = group.querySelectorAll<HTMLElement>('.ngmd-code-group__panel');
 
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         const target = tab.getAttribute('data-target');
         if (!target) return;
-        tabs.forEach((t) =>
-          t.setAttribute('data-active', t === tab ? 'true' : 'false'),
-        );
+        tabs.forEach((t) => t.setAttribute('data-active', t === tab ? 'true' : 'false'));
         panels.forEach((p) =>
-          p.setAttribute(
-            'data-active',
-            p.getAttribute('data-id') === target ? 'true' : 'false',
-          ),
+          p.setAttribute('data-active', p.getAttribute('data-id') === target ? 'true' : 'false'),
         );
       });
     });

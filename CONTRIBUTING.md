@@ -30,6 +30,19 @@ pnpm run build        # production build, runs link guards + sitemap
 
 Node 20.19.1 or newer required (AnalogJS 2.5 + Vite 8 floor).
 
+## Code style
+
+Prettier owns formatting. Config mirrors the Angular monorepo's `.prettierrc` (single quotes, width 100, trailing comma all, no bracket spacing, HTML parsed as Angular templates).
+
+```bash
+pnpm format           # rewrite all files in place
+pnpm format:check     # report drift without writing, use in CI / pre-PR
+```
+
+For format-on-save in VS Code, install the recommended Prettier extension (`esbenp.prettier-vscode`) and reload the window. `.vscode/settings.json` already opts the workspace in.
+
+`src/content/**` and `create-ngmd/template/**` are excluded so prose line breaks and the scaffold-byte-for-byte copy stay untouched.
+
 ## What we welcome
 
 - **Bug fixes** with a reproduction or clear description of the broken behaviour
@@ -64,6 +77,7 @@ git log --oneline -10
 Pattern: `<type>: short imperative summary`. Common types: `feat`, `fix`, `docs`, `refactor`, `build`, `chore`. Keep titles under ~70 characters.
 
 Examples from the existing log:
+
 - `feat: catch-all routing serves every markdown page`
 - `fix: tabs in markdown via Custom Elements`
 - `docs: trim changelog to release-note shape`

@@ -1,14 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 interface Heading {
   id: string;
@@ -28,7 +21,11 @@ interface Heading {
                 [href]="'#' + h.id"
                 (click)="scrollToHeading(h.id, $event)"
                 class="block rounded px-2 -mx-2 py-0.5 text-zinc-500 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-none"
-                [class]="isActive(h.id) ? 'bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium' : ''"
+                [class]="
+                  isActive(h.id)
+                    ? 'bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium'
+                    : ''
+                "
               >
                 {{ h.text }}
               </a>
@@ -71,7 +68,7 @@ export class Toc implements AfterViewInit {
     event.preventDefault();
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.scrollIntoView({behavior: 'smooth', block: 'start'});
       // Force-activate the clicked id. The IntersectionObserver uses a
       // `rootMargin: '0px 0px -70% 0px'` so only the top 30% of viewport
       // counts as "in view"; the LAST heading can't reach that region if
@@ -80,11 +77,7 @@ export class Toc implements AfterViewInit {
       this.active.set(id);
       // index.html has <base href="/">, so a relative `#frag` resolves to
       // `/#frag` and strips the path. Pass the full path explicitly.
-      history.replaceState(
-        null,
-        '',
-        `${location.pathname}${location.search}#${id}`,
-      );
+      history.replaceState(null, '', `${location.pathname}${location.search}#${id}`);
     }
   }
 
@@ -113,7 +106,7 @@ export class Toc implements AfterViewInit {
     this.contentObserver = new MutationObserver(() => {
       if (this.tryScan()) this.contentObserver?.disconnect();
     });
-    this.contentObserver.observe(main, { childList: true, subtree: true });
+    this.contentObserver.observe(main, {childList: true, subtree: true});
   }
 
   private tryScan(): boolean {
@@ -163,7 +156,7 @@ export class Toc implements AfterViewInit {
           }
         }
       },
-      { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+      {rootMargin: '0px 0px -70% 0px', threshold: 0},
     );
     nodes.forEach((node) => this.observer!.observe(node));
 
@@ -180,9 +173,7 @@ export class Toc implements AfterViewInit {
         this.active.set(last.id);
       }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    this.destroyRef.onDestroy(() =>
-      window.removeEventListener('scroll', onScroll),
-    );
+    window.addEventListener('scroll', onScroll, {passive: true});
+    this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
   }
 }

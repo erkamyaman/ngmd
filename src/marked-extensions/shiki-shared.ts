@@ -1,4 +1,4 @@
-import { createHighlighter, type Highlighter } from 'shiki';
+import {createHighlighter, type Highlighter} from 'shiki';
 
 /**
  * Shared shiki highlighter instance used by every build-time fence extension

@@ -1,8 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
-import { Router, NavigationEnd, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
-import { LucideAngularModule, ChevronRight, House } from 'lucide-angular';
+import {Component, computed, inject} from '@angular/core';
+import {Router, NavigationEnd, RouterLink} from '@angular/router';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {filter, map, startWith} from 'rxjs';
+import {LucideAngularModule, ChevronRight, House} from 'lucide-angular';
 
 interface Crumb {
   label: string;
@@ -58,7 +58,7 @@ export class Breadcrumb {
       map(() => this.router.url),
       startWith(this.router.url),
     ),
-    { initialValue: '/' },
+    {initialValue: '/'},
   );
 
   readonly crumbs = computed<Crumb[]>(() => {

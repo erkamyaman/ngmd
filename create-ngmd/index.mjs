@@ -1,9 +1,17 @@
 #!/usr/bin/env node
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createInterface } from 'node:readline/promises';
-import { stdin, stdout } from 'node:process';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createInterface} from 'node:readline/promises';
+import {stdin, stdout} from 'node:process';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = join(HERE, 'template');
@@ -60,10 +68,7 @@ function replacePlaceholders(target, name) {
       replacer: (s) =>
         s
           .replace(/name:\s*'NgMd'/, `name: '${name}'`)
-          .replace(
-            /githubUrl:\s*'[^']*'/,
-            `githubUrl: 'https://github.com/your-org/${name}'`,
-          ),
+          .replace(/githubUrl:\s*'[^']*'/, `githubUrl: 'https://github.com/your-org/${name}'`),
     },
     {
       file: 'index.html',
@@ -74,7 +79,7 @@ function replacePlaceholders(target, name) {
     },
   ];
 
-  for (const { file, replacer } of subs) {
+  for (const {file, replacer} of subs) {
     const path = join(target, file);
     if (!existsSync(path)) continue;
     writeFileSync(path, replacer(readFileSync(path, 'utf8')));
@@ -85,7 +90,9 @@ async function main() {
   const argv = process.argv.slice(2);
   const requested = argv[0];
 
-  console.log(`\n${c.bold}${c.cyan}create-ngmd${c.reset} ${c.dim}— scaffold a new NgMd project${c.reset}\n`);
+  console.log(
+    `\n${c.bold}${c.cyan}create-ngmd${c.reset} ${c.dim}— scaffold a new NgMd project${c.reset}\n`,
+  );
 
   if (!existsSync(TEMPLATE_DIR)) {
     console.error(`${c.red}error:${c.reset} template directory missing at ${TEMPLATE_DIR}`);
@@ -95,7 +102,7 @@ async function main() {
 
   let name = requested;
   if (!name) {
-    const rl = createInterface({ input: stdin, output: stdout });
+    const rl = createInterface({input: stdin, output: stdout});
     name = await prompt(rl, 'Project name', 'my-docs');
     rl.close();
   }
@@ -112,11 +119,13 @@ async function main() {
   if (existsSync(target)) {
     const isEmpty = readdirSync(target).length === 0;
     if (!isEmpty) {
-      console.error(`${c.red}error:${c.reset} directory "${name}" already exists and is not empty.`);
+      console.error(
+        `${c.red}error:${c.reset} directory "${name}" already exists and is not empty.`,
+      );
       process.exit(1);
     }
   } else {
-    mkdirSync(target, { recursive: true });
+    mkdirSync(target, {recursive: true});
   }
 
   console.log(`${c.dim}scaffolding into${c.reset} ${target}\n`);
@@ -136,7 +145,7 @@ async function main() {
   const gitignoreFromNpm = join(target, 'gitignore');
   if (existsSync(gitignoreFromNpm)) {
     cpSync(gitignoreFromNpm, join(target, '.gitignore'));
-    const { rmSync } = await import('node:fs');
+    const {rmSync} = await import('node:fs');
     rmSync(gitignoreFromNpm);
   }
 
@@ -161,5 +170,9 @@ main().catch((err) => {
 });
 
 function statSafe(p) {
-  try { return statSync(p); } catch { return null; }
+  try {
+    return statSync(p);
+  } catch {
+    return null;
+  }
 }

@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule, ChevronDown } from 'lucide-angular';
+import {Component, signal} from '@angular/core';
+import {RouterLink, RouterLinkActive} from '@angular/router';
+import {LucideAngularModule, ChevronDown} from 'lucide-angular';
 import config from '../../ngmd.config';
+import {pageMeta} from 'virtual:ngmd/page-meta';
+import {BADGE_VARIANTS, type PageStatus} from '../../types/badge';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,10 +32,17 @@ import config from '../../ngmd.config';
                   <a
                     [routerLink]="item.href"
                     routerLinkActive="bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                    class="block rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-none"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="flex items-center justify-between gap-2 rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-2 focus-visible:outline focus-visible:outline-offset-[-2px] focus-visible:outline-[color:var(--accent)]"
                   >
-                    {{ item.label }}
+                    <span class="min-w-0 truncate">{{ item.label }}</span>
+                    @if (statusFor(item.href); as status) {
+                      <span
+                        class="inline-flex items-center rounded-full px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wider"
+                        [class]="statusClass(status)"
+                        >{{ status }}</span
+                      >
+                    }
                   </a>
                 </li>
               }
@@ -47,9 +56,7 @@ import config from '../../ngmd.config';
 export class Sidebar {
   readonly sections = config.nav;
   readonly chevron = ChevronDown;
-  private readonly openSections = signal<Set<string>>(
-    new Set(config.nav.map((s) => s.label)),
-  );
+  private readonly openSections = signal<Set<string>>(new Set(config.nav.map((s) => s.label)));
 
   isOpen(label: string): boolean {
     return this.openSections().has(label);
@@ -62,5 +69,16 @@ export class Sidebar {
       else next.add(label);
       return next;
     });
+  }
+
+  /** Pulls the lifecycle status from the page's frontmatter via the
+   * build-time `virtual:ngmd/page-meta` map. Returns undefined when the
+   * page either has no entry or doesn't declare a status. */
+  statusFor(href: string): PageStatus | undefined {
+    return pageMeta[href]?.status;
+  }
+
+  statusClass(status: PageStatus): string {
+    return BADGE_VARIANTS[status];
   }
 }

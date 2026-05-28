@@ -1,12 +1,5 @@
-import {
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
-import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
+import {Component, DestroyRef, effect, inject, input, signal} from '@angular/core';
+import {DomSanitizer, type SafeHtml} from '@angular/platform-browser';
 
 /**
  * Code block with a header bar and shiki syntax highlighting at runtime.
@@ -16,7 +9,9 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'ngmd-code-block',
   template: `
-    <div class="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950">
+    <div
+      class="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950"
+    >
       @if (header()) {
         <div
           class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-xs text-zinc-500 dark:text-zinc-400"
@@ -29,9 +24,34 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
             class="inline-flex items-center justify-center size-6 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
           >
             @if (copied()) {
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
             } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
             }
           </button>
         </div>
@@ -43,9 +63,34 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
           class="absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10"
         >
           @if (copied()) {
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
           } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+            </svg>
           }
         </button>
       }
@@ -55,7 +100,9 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
           [innerHTML]="html"
         ></div>
       } @else {
-        <pre class="m-0 p-4 overflow-x-auto text-sm leading-relaxed bg-transparent border-0 rounded-none"><code [class]="codeClass()">{{ code() }}</code></pre>
+        <pre
+          class="m-0 p-4 overflow-x-auto text-sm leading-relaxed bg-transparent border-0 rounded-none"
+        ><code [class]="codeClass()">{{ code() }}</code></pre>
       }
     </div>
   `,
@@ -82,8 +129,7 @@ export class NgmdCodeBlock {
     }
   }
 
-  protected readonly codeClass = () =>
-    this.language() ? `language-${this.language()}` : '';
+  protected readonly codeClass = () => (this.language() ? `language-${this.language()}` : '');
 
   constructor() {
     let cancelled = false;
@@ -95,11 +141,11 @@ export class NgmdCodeBlock {
       if (!code || typeof window === 'undefined') return;
 
       try {
-        const { codeToHtml } = await import('shiki');
+        const {codeToHtml} = await import('shiki');
         if (cancelled) return;
         const html = await codeToHtml(code, {
           lang: lang || 'text',
-          themes: { light: 'github-light', dark: 'github-dark' },
+          themes: {light: 'github-light', dark: 'github-dark'},
           defaultColor: false,
         });
         if (!cancelled) {

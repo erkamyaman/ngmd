@@ -1,4 +1,4 @@
-import type { Tokens } from 'marked';
+import type {Tokens} from 'marked';
 
 interface NgmdImageToken extends Tokens.Generic {
   type: 'ngmd-image';
