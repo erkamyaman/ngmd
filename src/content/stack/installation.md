@@ -37,7 +37,7 @@ pnpm run dev
 Open `http://localhost:5173`. Done.
 
 <ngmd-callout type="tip" title="Pinned versions land in your repo">
-  The scaffolder copies a slim template that owns its dependencies. You don't depend on <code>create-ngmd</code> after install — it never appears in your <code>package.json</code>.
+  The scaffolder copies a slim template that owns its dependencies. You don't depend on <code>create-ngmd</code> after install. It never appears in your <code>package.json</code>.
 </ngmd-callout>
 
 ## After install: first steps

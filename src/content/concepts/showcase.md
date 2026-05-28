@@ -244,4 +244,20 @@ yarn create ngmd my-docs
 bun create ngmd my-docs
 ```
 
+## Per-instance spacing
+
+Every block authoring tag accepts a Tailwind margin class to tighten or loosen the gap around it. Default is `margin: 1.5rem 0`:
+
+<ngmd-callout type="info" title="Default spacing">
+  No class on this callout. Default 1.5rem above and below.
+</ngmd-callout>
+
+<ngmd-callout type="tip" title="Roomier" class="mt-10">
+  <code>class="mt-10"</code> bumps just the top to 2.5rem. Bottom stays default.
+</ngmd-callout>
+
+<ngmd-callout type="info" title="Tighter" class="my-1">
+  <code>class="my-1"</code> collapses both sides to 0.25rem.
+</ngmd-callout>
+
 That's every NgmdUi component working inline in markdown via the catch-all + Custom Elements path. Build pipeline, link guards, sitemap. All of these pages run through the same machinery.

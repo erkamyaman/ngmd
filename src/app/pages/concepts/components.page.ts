@@ -19,6 +19,13 @@ import { NgmdCodeBlock } from '../../ui/code-block';
           See <a routerLink="/concepts/showcase">the showcase</a> for the
           markdown-side view.
         </p>
+        <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
+          Every block component below accepts a Tailwind class on the
+          markdown tag for per-instance spacing.
+          <code>&lt;ngmd-callout class="mt-10"&gt;</code>,
+          <code>&lt;ngmd-card-grid class="my-0"&gt;</code>, etc.
+          See <a routerLink="/concepts/markdown-routes" fragment="per-instance-spacing">per-instance spacing</a> for the full pattern.
+        </p>
       </header>
 
       <section>

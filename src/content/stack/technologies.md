@@ -45,7 +45,7 @@ NgMd is built on three headline pieces (*Angular, *AnalogJS, *Vite) and a curate
 | <img class="pkg-icon" src="https://analogjs.org/img/logos/analog-logo.svg" alt="" /> [@analogjs/content](https://analogjs.org/docs/features/routing/content) | Markdown content collections that the catch-all reads via `injectContent()`. |
 | <img class="pkg-icon" src="https://cdn.simpleicons.org/markdown/FAFAFA" alt="" /> [marked](https://marked.js.org) | Markdown parser. |
 | <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [marked-shiki](https://github.com/agusterodin/marked-shiki) | Bridge running Shiki over fenced code blocks at build time. |
-| <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [shiki](https://shiki.style) | VS Code-grade syntax highlighting. Pinned at `1.29.2` because newer 4.x conflicts with `@analogjs/platform` 2.5's peer dep. |
+| <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [shiki](https://shiki.style) | VS Code-grade syntax highlighting. Held at `^1.29.2` because newer 4.x conflicts with `@analogjs/platform` 2.5's peer dep. |
 | <img class="pkg-icon" src="https://cdn.simpleicons.org/yaml/CB171E" alt="" /> [front-matter](https://github.com/jxson/front-matter) | Frontmatter parser used by AnalogJS content collections. |
 
 ## Marked extensions
@@ -76,7 +76,7 @@ Vite plugins committed alongside `vite.config.ts`:
 
 | Package | Role |
 |---|---|
-| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.0.10`. |
+| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.1.0`. |
 
 ## Package management
 

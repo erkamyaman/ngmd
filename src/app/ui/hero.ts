@@ -4,7 +4,7 @@ import { Component, computed, input } from '@angular/core';
   selector: 'ngmd-hero',
   template: `
     <header
-      class="my-8 rounded-2xl px-6 py-10 sm:px-10 sm:py-14"
+      class="rounded-2xl px-6 py-10 sm:px-10 sm:py-14"
       [class]="bgClass()"
       [style.background-image]="gradient() ? 'var(--accent-gradient-soft)' : null"
     >

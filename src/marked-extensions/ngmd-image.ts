@@ -8,7 +8,11 @@ interface NgmdImageToken extends Tokens.Generic {
   width?: string;
 }
 
-const tagRule = /^<ngmd-image([^>]*)\/>/s;
+// Accepts both self-closing `<ngmd-image .../>` and paired
+// `<ngmd-image ...></ngmd-image>` (HTML5 parsers don't honour the
+// self-closing form for custom elements, so authoring docs use the
+// paired form). `s` flag lets attributes span multiple lines.
+const tagRule = /^<ngmd-image([^>]*?)(?:\/>|>\s*<\/ngmd-image>)/s;
 const attrRule = (name: string) => new RegExp(`${name}="([^"]*)"`);
 
 export const ngmdImageExtension = {

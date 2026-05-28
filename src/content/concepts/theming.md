@@ -84,7 +84,7 @@ Six accent tokens cover everything:
 
 ## Light / dark mode
 
-NgMd uses class-based dark mode. The `ThemeService` toggles a `dark` class on `<html>`:
+NgMd uses class-based dark mode. The `ThemeService` toggles a `dark` class on `&lt;html&gt;`:
 
 ```ts
 this.document.documentElement.classList.toggle('dark', mode === 'dark');
@@ -119,7 +119,7 @@ For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft`
 Components that lean on the accent (sidebar active item, TOC active heading, command palette row, page footer hover, heading anchor hover, card icon, card CTA arrow, pill hover, hero gradient, code-preview headings, install-picker tabs) all pick the new colour up automatically.
 
 <ngmd-callout type="info" title="Inline code chips are hardcoded">
-  Body inline code uses a three-stop fuchsia gradient border (<code>#f0abfc → #d946ef → #a21caf</code>) hardcoded in <code>src/styles.css</code> under the <code>analog-markdown code:not(pre code)</code> rule. Rebranding to a non-fuchsia accent? Update those three hex values there too — they're not driven by the brand tokens.
+  Body inline code uses a three-stop fuchsia gradient border (<code>#f0abfc → #d946ef → #a21caf</code>) hardcoded in <code>src/styles.css</code> under the <code>analog-markdown code:not(pre code)</code> rule. Rebranding to a non-fuchsia accent? Update those three hex values there too. They're not driven by the brand tokens.
 </ngmd-callout>
 
 ## How components consume tokens
@@ -143,7 +143,7 @@ Tailwind v4 supports arbitrary-value classes that read a CSS variable directly. 
 Why this matters: the Tailwind shade utilities (`text-fuchsia-500`, `bg-rose-100/10`) bake the colour into the class name and survive a token swap untouched. The bracket syntax reads the variable at render time, so any change to `--accent` in `:root` / `.dark` propagates through the whole site without touching component code.
 
 <ngmd-callout type="tip" title="Gradient images use inline style">
-  Tailwind v4's class scanner doesn't always pick up <code>bg-[image:var(...)]</code> reliably. NgMd uses <code>style="background-image: var(--accent-gradient)"</code> for hero and spotlight elements — same CSS variable, just dropped into the inline style attribute so it always works regardless of class generation.
+  Tailwind v4's class scanner doesn't always pick up <code>bg-[image:var(...)]</code> reliably. NgMd uses <code>style="background-image: var(--accent-gradient)"</code> for hero and spotlight elements (same CSS variable, just dropped into the inline style attribute so it always works regardless of class generation).
 </ngmd-callout>
 
 When an active state needs to win against a static `text-zinc-500` (or similar base utility), append `!` to bump specificity:

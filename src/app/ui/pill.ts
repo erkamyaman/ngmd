@@ -55,7 +55,7 @@ export class NgmdPill {
 @Component({
   selector: 'ngmd-pill-row',
   template: `
-    <div class="flex flex-wrap gap-2 my-4">
+    <div class="flex flex-wrap gap-2">
       <ng-content></ng-content>
     </div>
   `,

@@ -11,7 +11,7 @@ import { Component, computed, input } from '@angular/core';
 @Component({
   selector: 'ngmd-card-grid',
   template: `
-    <div class="my-6 grid grid-cols-1 gap-4" [class]="colsClass()">
+    <div class="grid grid-cols-1 gap-4" [class]="colsClass()">
       <ng-content></ng-content>
     </div>
   `,
