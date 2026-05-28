@@ -262,6 +262,34 @@ import {NgmdCodeBlock} from '../../ui/code-block';
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="badgeCode" />
         <ngmd-accordion>
+          <ngmd-accordion-item title="Custom labels and variants">
+            <p>
+              Two independent axes. The <code>variant</code> attribute picks
+              the <strong>colour</strong> (lifecycle meaning). Whatever sits
+              between the tags becomes the <strong>label</strong>, uppercased
+              automatically. Mix and match.
+            </p>
+            <ngmd-code-block language="html" [code]="badgeCustomLabelCode" />
+            <p class="mt-4">Renders:</p>
+            <div class="mt-2 flex flex-wrap gap-2 items-center">
+              <ngmd-badge variant="new">Public preview</ngmd-badge>
+              <ngmd-badge variant="beta">Opt-in</ngmd-badge>
+              <ngmd-badge variant="deprecated">Removed in v3</ngmd-badge>
+            </div>
+            <p class="mt-4">
+              Need a new colour? Every variant lives in one map:
+              <code>BADGE_VARIANTS</code> in <code>src/types/badge.ts</code>.
+              Add a row and both the inline <code>&lt;ngmd-badge&gt;</code>
+              and the whole-page sidebar chip pick it up. Example: a violet
+              <code>preview</code> variant.
+            </p>
+            <ngmd-code-block header="src/types/badge.ts" language="ts" [code]="badgeNewVariantCode" />
+            <p class="mt-4">
+              The <code>BadgeVariant</code> type and the <code>status:</code>
+              frontmatter validator are derived from this map, so a new key is
+              accepted in <code>.md</code> files immediately.
+            </p>
+          </ngmd-accordion-item>
           <ngmd-accordion-item title="Whole-page status (sidebar chip)">
             <p>
               For an entire page rather than an inline mention, set
@@ -272,20 +300,6 @@ import {NgmdCodeBlock} from '../../ui/code-block';
             <ngmd-code-block language="md" [code]="badgeStatusFrontmatterCode" />
             <p class="mt-4">
               See <a routerLink="/concepts/markdown-routes" fragment="sidebar-status-badge" class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]">page frontmatter</a> for the pipeline that wires this.
-            </p>
-          </ngmd-accordion-item>
-          <ngmd-accordion-item title="Adding a new variant">
-            <p>
-              Every variant lives in one map: <code>BADGE_VARIANTS</code> in
-              <code>src/types/badge.ts</code>. Add a row and both the inline
-              <code>&lt;ngmd-badge&gt;</code> and the whole-page sidebar chip pick it
-              up. Example: a violet <code>preview</code> variant.
-            </p>
-            <ngmd-code-block header="src/types/badge.ts" language="ts" [code]="badgeNewVariantCode" />
-            <p class="mt-4">
-              The <code>BadgeVariant</code> type and the <code>status:</code>
-              frontmatter validator are derived from this map, so a new key is
-              accepted in <code>.md</code> files immediately.
             </p>
           </ngmd-accordion-item>
         </ngmd-accordion>
@@ -395,6 +409,12 @@ export default class ComponentsPage {
   readonly badgeCode = [
     '<ngmd-badge variant="beta">Beta</ngmd-badge>',
     '<ngmd-badge variant="deprecated">Deprecated</ngmd-badge>',
+  ].join('\n');
+
+  readonly badgeCustomLabelCode = [
+    '<ngmd-badge variant="new">Public preview</ngmd-badge>',
+    '<ngmd-badge variant="beta">Opt-in</ngmd-badge>',
+    '<ngmd-badge variant="deprecated">Removed in v3</ngmd-badge>',
   ].join('\n');
 
   readonly badgeStatusFrontmatterCode = [
