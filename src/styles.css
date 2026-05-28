@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Tailwind v4 doesn't scan `.md` by default. Tell it to, so authoring
+ * components can take Tailwind classes (`<ngmd-accordion class="my-8">`,
+ * etc.) and have those utilities actually appear in the generated CSS. */
+@source "./content/**/*.md";
+
 /* View Transitions API tuning. Angular's withViewTransitions() crossfades
  * route changes via these pseudo-elements. Shorten the default ~250ms to
  * 150ms so it stays snappy. */
@@ -95,6 +100,32 @@ ngmd-workflow:not(:defined) {
 }
 
 @layer base {
+  /* Host margin lives here (not on the inner template div) so a class
+   * on the markdown tag overrides it. Inner-div margins are trapped by
+   * the flex/grid formatting context they sit in, so `class="my-8"`
+   * written in .md cannot reach them. With margin on the host +
+   * `display: block`, `<ngmd-callout class="my-8">` works as expected.
+   * Lives inside `@layer base` so Tailwind utilities (which sit in the
+   * later `@layer utilities`) win on cascade and the `class=` override
+   * actually applies. Unlayered rules would otherwise always beat
+   * layered ones regardless of selector specificity. */
+  ngmd-accordion,
+  ngmd-callout,
+  ngmd-card-grid,
+  ngmd-code-block,
+  ngmd-image,
+  ngmd-tabs,
+  ngmd-video,
+  ngmd-hero,
+  ngmd-workflow,
+  ngmd-alert,
+  ngmd-pill-row {
+    display: block;
+    margin: 1.5rem 0;
+  }
+}
+
+@layer base {
   :root {
     /* Surface */
     --bg: #ffffff;
@@ -169,6 +200,56 @@ ngmd-workflow:not(:defined) {
   a {
     text-decoration: inherit;
   }
+
+  /* Scrollbar styling, ported from angular.dev (shared-docs
+   * `_scroll-track.scss`). Opt in by adding the class to a scrollable
+   * element. Global / native scrollbars stay browser-default.
+   *
+   * - `.ngmd-scroll-track` — 8px, large surfaces (main page)
+   * - `.ngmd-scroll-track-mini` — 6px, side surfaces (sidebar, TOC, code)
+   *
+   * Both: transparent track, rounded thumb, colour shift on hover. */
+  .ngmd-scroll-track::-webkit-scrollbar-track,
+  .ngmd-scroll-track-mini::-webkit-scrollbar-track,
+  .ngmd-scroll-track::-webkit-scrollbar-corner,
+  .ngmd-scroll-track-mini::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .ngmd-scroll-track::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .ngmd-scroll-track-mini::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Main page (body) — adev pattern: base is brighter (medium gray) and
+   * hover goes a notch darker. Different palette step from the side
+   * scroll so they don't read identical. */
+  .ngmd-scroll-track::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--muted) 45%, transparent);
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .ngmd-scroll-track::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted);
+  }
+
+  /* Side surfaces — pick up colour on hover so the user knows they can
+   * grab the small thumb. */
+  .ngmd-scroll-track-mini::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .ngmd-scroll-track-mini::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted);
+  }
 }
 
 @layer components {
@@ -184,14 +265,14 @@ ngmd-workflow:not(:defined) {
   }
 
   /* Same treatment for the accordion-item button. */
-  .ngmd-accordion-item > button:focus:not(:focus-visible) {
+  .ngmd-accordion-item>button:focus:not(:focus-visible) {
     outline: none;
     box-shadow: none;
   }
 
   /* Visible keyboard focus for accordion buttons. Accent ring so the focused
    * row reads at a glance during keyboard navigation. */
-  .ngmd-accordion-item > button:focus-visible {
+  .ngmd-accordion-item>button:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -2px;
   }
@@ -318,6 +399,11 @@ ngmd-workflow:not(:defined) {
     font-weight: 500;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     border: 1.5px solid transparent;
+    /* When a long chip wraps across two lines, each fragment gets a
+     * full border + padding instead of the default split where the
+     * right side is open on line 1 and the left side is open on line 2. */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   .dark analog-markdown code:not(pre code),
@@ -327,7 +413,7 @@ ngmd-workflow:not(:defined) {
 
   analog-markdown pre,
   analog-markdown-route pre {
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     padding: 1rem 1.25rem;
     border-radius: 0.5rem;
     overflow-x: auto;
@@ -351,7 +437,7 @@ ngmd-workflow:not(:defined) {
   analog-markdown-route table {
     width: 100%;
     border-collapse: collapse;
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     font-size: 0.875rem;
     line-height: 1.6;
     display: block;
@@ -428,7 +514,7 @@ ngmd-workflow:not(:defined) {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--bg-muted);
@@ -443,7 +529,7 @@ ngmd-workflow:not(:defined) {
   }
 
   .ngmd-image {
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     margin-inline: 0;
   }
 
@@ -462,7 +548,7 @@ ngmd-workflow:not(:defined) {
   }
 
   .ngmd-code-group {
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -572,19 +658,22 @@ ngmd-workflow:not(:defined) {
   .ngmd-accordion-chevron .ngmd-accordion-chevron-down {
     opacity: 1;
   }
+
   .ngmd-accordion-chevron .ngmd-accordion-chevron-up {
     opacity: 0;
   }
+
   .ngmd-accordion-item.is-open .ngmd-accordion-chevron-down {
     opacity: 0;
   }
+
   .ngmd-accordion-item.is-open .ngmd-accordion-chevron-up {
     opacity: 1;
   }
 
   /* Open-state button background. Token-driven so it follows the surface
    * palette in both modes (zinc-100 in light, zinc-900 in dark). */
-  .ngmd-accordion-item.is-open > button {
+  .ngmd-accordion-item.is-open>button {
     background: var(--bg-muted);
   }
 
@@ -623,7 +712,7 @@ ngmd-workflow:not(:defined) {
   /* `<div class="ngmd-code-import">` wraps a file= imported code block with
    * a header bar that links the file path to its GitHub source. */
   .ngmd-code-import {
-    margin-block: 1.5rem;
+    margin: 1.5rem 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;

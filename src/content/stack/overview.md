@@ -19,7 +19,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     One <code>src/app/pages/[...slug].page.ts</code> serves every prose route. Drop a <code>.md</code> at any path under <code>src/content/</code> and it shows up at the matching URL. Same shape adev uses.
   </ngmd-card>
   <ngmd-card icon="box" title="Custom Elements bridge">
-    Sixteen NgmdUi components are registered via <code>@angular/elements</code>, so they upgrade inside <code>&lt;analog-markdown [innerHTML]&gt;</code>. Drop <code>&lt;ngmd-callout&gt;</code> straight into prose and it renders. Code-block is the exception — fenced <code>```</code> covers that.
+    Sixteen NgmdUi components are registered via <code>@angular/elements</code>, so they upgrade inside <code>&lt;analog-markdown [innerHTML]&gt;</code>. Drop <code>&lt;ngmd-callout&gt;</code> straight into prose and it renders. Code-block is the exception (fenced <code>```</code> covers that).
   </ngmd-card>
   <ngmd-card icon="shield" title="Build-time link guards">
     Broken internal anchors fail the build instead of reaching production. External raw-HTML anchors without <code>target="_blank"</code> also fail. Catches what runtime tests don't.
@@ -36,7 +36,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     CSS-variable tokens, light / dark / auto with no-flash boot script, fuchsia accent throughout. Native View Transitions API for crossfades.
   </ngmd-card>
   <ngmd-card icon="box" title="17 authoring components">
-    Callout, alert, card, card-grid, tabs, workflow, hero, code-block, accordion, badge, video, image, pill, pill-row, plus 4 children. Sixteen of them render inline in <code>.md</code> via Custom Elements; code-block uses fenced <code>```</code>.
+    Callout, alert, card, card-grid, tabs, pill-row, workflow, hero, code-block, accordion, badge, video, image, plus 4 children (pill, step, tab, accordion-item). Sixteen of them render inline in <code>.md</code> via Custom Elements; code-block uses fenced <code>```</code>.
   </ngmd-card>
   <ngmd-card icon="sparkles" title="Agent skills" link="/ai/agent-skills" cta="Read">
     <code>ngmd-new-site</code> and <code>ngmd-authoring</code> ship for Claude Code, Gemini CLI, Antigravity. Format mirrors <code>angular/skills</code>.
@@ -59,7 +59,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     Utility CSS that doesn't impose a design system. Theme tokens live as CSS variables; the rest is regular Tailwind. <code>&#64;variant dark</code> powers class-based dark mode.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Shiki 1.29.2" image="https://shiki.style/logo.svg">
-    VS Code-quality syntax highlighting. Pinned because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.5's peer dep. Dual-theme HTML output: github-light + github-dark in one pass.
+    VS Code-quality syntax highlighting. Held at 1.x because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.5's peer dep. Dual-theme HTML output: github-light + github-dark in one pass.
   </ngmd-accordion-item>
 </ngmd-accordion>
 

@@ -117,7 +117,7 @@ export class NgmdTab {
   imports: [LucideAngularModule],
   template: `
     <div
-      class="my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+      class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
     >
       <div
         role="tablist"

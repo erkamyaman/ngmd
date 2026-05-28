@@ -6,7 +6,11 @@ interface NgmdVideoToken extends Tokens.Generic {
   title?: string;
 }
 
-const tagRule = /^<ngmd-video([^>]*)\/>/s;
+// Accepts both self-closing `<ngmd-video .../>` and paired
+// `<ngmd-video ...></ngmd-video>` (HTML5 parsers don't honour the
+// self-closing form for custom elements, so authoring docs use the
+// paired form). `s` flag lets attributes span multiple lines.
+const tagRule = /^<ngmd-video([^>]*?)(?:\/>|>\s*<\/ngmd-video>)/s;
 const srcRule = /src="([^"]*)"/;
 const titleRule = /title="([^"]*)"/;
 

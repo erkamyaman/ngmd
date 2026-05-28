@@ -37,7 +37,7 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
     For missing markdown affordances. Runtime extensions live under <code>src/marked-extensions/</code>.
   </ngmd-card>
   <ngmd-card icon="wrench" title="Build-pipeline improvements">
-    Smarter link guards, sitemap entries, page-meta hooks. The four Vite plugins are committed at the repo root.
+    Smarter link guards, sitemap entries, page-meta hooks. Three Vite plugins are committed at the repo root (<code>link-guard</code>, <code>page-meta</code>, <code>sitemap</code>); the external-link guard lives inline in <code>vite.config.ts</code>.
   </ngmd-card>
   <ngmd-card icon="file" title="Doc edits">
     Match the prose voice (no marketing fluff, terse, direct). Read the surrounding paragraphs first.

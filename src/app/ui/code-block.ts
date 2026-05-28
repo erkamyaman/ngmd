@@ -16,7 +16,7 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'ngmd-code-block',
   template: `
-    <div class="group relative my-6 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950">
+    <div class="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-950">
       @if (header()) {
         <div
           class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-xs text-zinc-500 dark:text-zinc-400"

@@ -67,7 +67,7 @@ export class NgmdStep {
   selector: 'ngmd-workflow',
   template: `
     <div
-      class="my-8 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:content-[''] [&_ngmd-step:not(:last-child)_.ngmd-step]:before:absolute [&_ngmd-step:not(:last-child)_.ngmd-step]:before:left-5 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:top-11 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:bottom-0 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:w-px [&_ngmd-step:not(:last-child)_.ngmd-step]:before:bg-zinc-200 dark:[&_ngmd-step:not(:last-child)_.ngmd-step]:before:bg-zinc-800"
+      class="[&_ngmd-step:not(:last-child)_.ngmd-step]:before:content-[''] [&_ngmd-step:not(:last-child)_.ngmd-step]:before:absolute [&_ngmd-step:not(:last-child)_.ngmd-step]:before:left-5 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:top-11 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:bottom-0 [&_ngmd-step:not(:last-child)_.ngmd-step]:before:w-px [&_ngmd-step:not(:last-child)_.ngmd-step]:before:bg-zinc-200 dark:[&_ngmd-step:not(:last-child)_.ngmd-step]:before:bg-zinc-800"
     >
       <ng-content></ng-content>
     </div>

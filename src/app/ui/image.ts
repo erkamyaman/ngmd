@@ -3,7 +3,7 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'ngmd-image',
   template: `
-    <figure class="my-6 mx-0" [style.max-width]="width()">
+    <figure class="mx-0" [style.max-width]="width()">
       <img
         [src]="src()"
         [alt]="alt()"

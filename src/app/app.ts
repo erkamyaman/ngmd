@@ -152,7 +152,7 @@ import { SiteFooter } from './components/site-footer';
       <div class="flex flex-1">
         @if (showSidebar()) {
           <aside
-            class="hidden lg:flex w-64 shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 p-4 overflow-y-auto sticky top-[57px] self-start h-[calc(100vh-57px)]"
+            class="ngmd-scroll-track-mini hidden lg:flex w-64 shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 p-4 overflow-y-auto sticky top-[57px] self-start h-[calc(100vh-57px)]"
           >
             <app-sidebar />
           </aside>
@@ -203,7 +203,7 @@ import { SiteFooter } from './components/site-footer';
 
         @if (showToc()) {
           <aside
-            class="hidden xl:block w-56 shrink-0 border-l border-zinc-200 dark:border-zinc-800 p-6 sticky top-[57px] self-start max-h-[calc(100vh-57px)] overflow-y-auto"
+            class="ngmd-scroll-track-mini hidden xl:block w-56 shrink-0 border-l border-zinc-200 dark:border-zinc-800 p-6 sticky top-[57px] self-start max-h-[calc(100vh-57px)] overflow-y-auto"
           >
             <p class="mb-3 text-sm font-semibold">On this page</p>
             <app-toc />

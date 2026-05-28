@@ -106,7 +106,7 @@ export class NgmdAccordionItem {
 @Component({
   selector: 'ngmd-accordion',
   template: `
-    <div class="my-6 flex flex-col gap-2">
+    <div class="flex flex-col gap-2">
       <ng-content></ng-content>
     </div>
   `,

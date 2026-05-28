@@ -53,7 +53,7 @@ Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20paid%20support">erka
 ## Reporting security issues
 
 <ngmd-alert severity="critical">
-  Do <strong>not</strong> open a public GitHub issue for security reports. Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20security%20report"><code>erkamyaman35&#64;gmail.com</code></a> directly so the issue can be triaged before disclosure. Alternatively, open a <a href="https://github.com/erkamyaman/ngmd/security/advisories/new" target="_blank" rel="noopener noreferrer">private security advisory on GitHub</a>.
+  Do <strong>not</strong> open a public GitHub issue for security reports. Email <a href="mailto:erkamyaman35@gmail.com?subject=NgMd%20security%20report">erkamyaman35&#64;gmail.com</a> directly so the issue can be triaged before disclosure. Alternatively, open a <a href="https://github.com/erkamyaman/ngmd/security/advisories/new" target="_blank" rel="noopener noreferrer">private security advisory on GitHub</a>.
 </ngmd-alert>
 
 ## Want to support the project?

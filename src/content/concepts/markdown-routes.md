@@ -24,7 +24,7 @@ A common pattern is a section parent at root plus children in a same-named folde
 - `src/content/help/contribute.md` → `/help/contribute`
 - `src/content/help/sponsor.md` → `/help/sponsor`
 
-The parent and its children are independent routes — no `index.md` convention needed.
+The parent and its children are independent routes. No `index.md` convention needed.
 
 One shared `src/app/pages/[...slug].page.ts` handles every prose route. It reads the slug from the URL, fetches the matching markdown body, and renders it with `&lt;analog-markdown [content]&gt;`. The pattern mirrors adev (angular.dev) where `docs.component.ts` serves every documentation page.
 
@@ -63,7 +63,7 @@ NgMd ships only the catch-all (`[...slug].page.ts`) to serve every prose route. 
 
 ## Layouts and nested routes
 
-Layouts are just Angular components rendered around the `<router-outlet>`. NgMd's [`app.ts`](https://github.com/erkamyaman/ngmd/blob/main/src/app/app.ts) is the default docs layout: header, sidebar accordion, breadcrumb, scroll-spy TOC, page footer. Replace or extend it like any other Angular component. The catch-all and component pages render inside its `<router-outlet>`.
+Layouts are just Angular components rendered around the `&lt;router-outlet&gt;`. NgMd's [`app.ts`](https://github.com/erkamyaman/ngmd/blob/main/src/app/app.ts) is the default docs layout: header, sidebar accordion, breadcrumb, scroll-spy TOC, page footer. Replace or extend it like any other Angular component. The catch-all and component pages render inside its `&lt;router-outlet&gt;`.
 
 ## Code highlighting
 
@@ -96,7 +96,7 @@ YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus 
   The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code> and <code>/route#fragment</code> markdown links must resolve to real headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
 </ngmd-alert>
 
-This is enforced by two Vite plugins: `internal-link-guard.plugin.ts` and the `externalLinkGuard` inside `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404.
+This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404.
 
 ## Importing code from real files
 
@@ -161,7 +161,7 @@ Unknown keywords (`*WrongName`) log a warning at build time and fall back to lit
   Mixed prose + components scale on the same page. Use components for the structured bits, markdown for the rest.
 </ngmd-alert>
 
-<ngmd-card-grid columns="2">
+<ngmd-card-grid columns="2" class="mt-2">
   <ngmd-card icon="box" title="Components" link="/concepts/components" cta="See all">
     Every NgmdUi component rendered in context.
   </ngmd-card>
@@ -170,7 +170,7 @@ Unknown keywords (`*WrongName`) log a warning at build time and fall back to lit
   </ngmd-card>
 </ngmd-card-grid>
 
-<ngmd-accordion>
+<ngmd-accordion class="mt-10">
   <ngmd-accordion-item title="What about per-page wrappers?">
     Drop a <code>.md</code> at the right path and the catch-all routes it. Write a named <code>.page.ts</code> only when the page needs a bespoke layout.
   </ngmd-accordion-item>
@@ -182,6 +182,26 @@ Unknown keywords (`*WrongName`) log a warning at build time and fall back to lit
 Status badges work inline: API stability tags like <ngmd-badge variant="beta">Beta</ngmd-badge> or <ngmd-badge variant="deprecated">Deprecated</ngmd-badge> sit next to text without breaking the line.
 
 `ngmd-video` and `ngmd-image` are wired separately as marked extensions (build-time HTML rewrites), so they work in markdown regardless of what the catch-all imports.
+
+## Per-instance spacing
+
+Every NgmdUi block component (`ngmd-accordion`, `ngmd-callout`, `ngmd-card-grid`, `ngmd-code-block`, `ngmd-image`, `ngmd-tabs`, `ngmd-video`, `ngmd-hero`, `ngmd-workflow`, `ngmd-alert`, `ngmd-pill-row`) defaults to `margin: 1.5rem 0` on the host. Override per instance with a Tailwind margin utility on the tag:
+
+```html
+<ngmd-callout class="mt-10">Bigger top gap</ngmd-callout>
+<ngmd-card-grid columns="2" class="mt-2">Tighter top</ngmd-card-grid>
+<ngmd-accordion class="my-0">No vertical margin</ngmd-accordion>
+```
+
+`mt-*`, `mb-*`, `my-*`, `mx-*` all work. The host rule lives in `@layer base`, so any utility class from `@layer utilities` wins on cascade.
+
+Tailwind v4 only scans source files for class names. `styles.css` opts the content tree in:
+
+```css
+@source "./content/**/*.md";
+```
+
+Skip this line and any margin utility you write in `.md` silently drops out of the bundle.
 
 ## Where to next
 

@@ -6,9 +6,29 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.0.10 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.0 <ngmd-badge variant="new">Latest</ngmd-badge>
 
-**Accordion rewrite.** `<ngmd-accordion-item>` no longer uses native `<details>/<summary>` — the browser's control over content visibility kept fighting CSS transitions. New shape is a signal-driven `<button>` + region `<div>` wired by hand: `aria-expanded` on the trigger, `aria-controls` pointing to the panel, `role="region"` + `aria-labelledby` on the panel. Pure CSS animations, no animation library.
+**Per-instance spacing on NgmdUi tags.** Every block authoring component (`&lt;ngmd-accordion&gt;`, `&lt;ngmd-callout&gt;`, `&lt;ngmd-card-grid&gt;`, `&lt;ngmd-code-block&gt;`, `&lt;ngmd-image&gt;`, `&lt;ngmd-tabs&gt;`, `&lt;ngmd-video&gt;`, `&lt;ngmd-hero&gt;`, `&lt;ngmd-workflow&gt;`, `&lt;ngmd-alert&gt;`, `&lt;ngmd-pill-row&gt;`) now accepts a Tailwind margin class on the markdown tag: `&lt;ngmd-callout class="mt-10"&gt;`, `&lt;ngmd-accordion class="my-0"&gt;`. Default `margin: 1.5rem 0` lives on the host in `@layer base`; `mt-*`, `mb-*`, `my-*`, `mx-*` from `@layer utilities` win on cascade. Inner template divs no longer carry the `my-X` they used to (it was trapped inside the flex/grid formatting context and unreachable from markdown).
+
+**Tailwind scans markdown.** Added `@source "./content/**/*.md"` to `styles.css`. Without this, any utility class written inside a `.md` body silently dropped from the bundle.
+
+**`&lt;ngmd-image&gt;` / `&lt;ngmd-video&gt;` paired-tag support.** Marked extensions' regexes only matched the self-closing `&lt;ngmd-image .../&gt;` form. 0.0.6 switched all source content to paired `&lt;ngmd-image&gt;&lt;/ngmd-image&gt;` tags ("HTML parsers don't honour self-closing custom elements"), which made the extensions silently fall through to literal-text rendering. Regexes now accept both forms, plus multi-line attributes.
+
+**Backtick angle-bracket leak fix.** Marked v15 + analog-markdown was rendering backtick-wrapped tags like `` `&lt;router-outlet&gt;` `` and `` `&lt;ngmd-callout&gt;` `` as real (empty) DOM elements inside the inline code chip, producing visible empty fuchsia chips. Manually escaped `&lt;` / `&gt;` across markdown-routes, changelog, theming.
+
+**Inline-code chip wrap fix.** Long backtick-wrapped paths (e.g. `` `src/app/register-elements.ts` ``) tore the fuchsia border when wrapping across lines. Added `box-decoration-break: clone` so each wrapped fragment gets a full border.
+
+**Scrollbar dimmer in dark mode.** Main page scrollbar thumb now uses `color-mix(in srgb, var(--muted) 45%, transparent)` so it reads as a quiet anchor instead of a too-bright zinc-400 against the near-black bg. Hover restores full `--muted`.
+
+**Email link styling.** Removed `&lt;code&gt;` wrapping from the security-report email in `get-help.md` so it renders as a plain accent link instead of an inline-code chip.
+
+**Fact-check sweep across all 13 markdown docs.** Plugin filename corrected (`link-guard.plugin.ts`, not `internal-link-guard.plugin.ts`), plugin count corrected ("three at repo root + one inline", not "four"), component breakdown math in `stack/overview.md` (13 named + 4 children = 17, not 14 + 4 = 18), and Shiki "pinned" wording softened (`^1.29.2` is held within 1.x, not strictly pinned). Em dashes swept across all docs in favour of periods, commas, or parens.
+
+**Docs.** New "Per-instance spacing" reference section in `concepts/markdown-routes.md` with the cascade rules and the `@source` directive caveat. Visual demo with three callouts at the bottom of `concepts/showcase.md`. Short header note on `concepts/components` linking back to the canonical pattern.
+
+## 0.0.10
+
+**Accordion rewrite.** `&lt;ngmd-accordion-item&gt;` no longer uses native `&lt;details&gt;` / `&lt;summary&gt;`. The browser's control over content visibility kept fighting CSS transitions. New shape is a signal-driven `&lt;button&gt;` + region `&lt;div&gt;` wired by hand: `aria-expanded` on the trigger, `aria-controls` pointing to the panel, `role="region"` + `aria-labelledby` on the panel. Pure CSS animations, no animation library.
 
 **Symmetric open / close.** Body reveal uses `grid-template-rows: minmax(0, 0fr) → minmax(0, 1fr)` paired with an opacity fade. Both directions move at the same rate because the row fr basis interpolates to the inner wrapper's actual height, not an arbitrary max-height ceiling. 300ms ease-out.
 
@@ -16,9 +36,9 @@ Release notes and version history for NgMd.
 
 **Focus rings suppressed** on the accordion trigger button so clicking doesn't paint a stray browser-default outline through the animation.
 
-**Help section route layout.** `src/content/help.md` moved to `src/content/help/get-help.md`; root `/help` route is gone. All three help links now live under `/help/get-help`, `/help/contribute`, `/help/sponsor` as siblings — no parent-child URL ambiguity that previously caused the sidebar's `/help` link to highlight when viewing any subpage.
+**Help section route layout.** `src/content/help.md` moved to `src/content/help/get-help.md`; root `/help` route is gone. All three help links now live under `/help/get-help`, `/help/contribute`, `/help/sponsor` as siblings, with no parent-child URL ambiguity that previously caused the sidebar's `/help` link to highlight when viewing any subpage.
 
-**Sidebar exact-match active state.** `[routerLinkActiveOptions]="{ exact: true }"` on every sidebar link so a link only highlights when the URL exactly matches its `href`, not when the URL merely starts with it.
+**Sidebar exact-match active state.** `[routerLinkActiveOptions]="{ exact: true }"` on every sidebar link, so a link only highlights when the URL exactly matches its `href`, not when the URL merely starts with it.
 
 **`prefers-reduced-motion`** zeroes the accordion transitions.
 
@@ -28,17 +48,17 @@ Release notes and version history for NgMd.
 
 **Home install picker.** The CTA section now has a tabbed install command box: npm (default) / pnpm / yarn / bun, each with its simpleicons brand logo. One command renders below at a time. Copy button on the right with a 1.5s "copied" check confirmation. Tab strip width is fixed so it doesn't reflow as you switch between commands.
 
-**Tab active state uses the accent.** Both the new home install picker and the existing `<ngmd-tabs>` component now color the active tab's label and underline with `var(--accent)` (fuchsia in the default theme). Hover-zinc is scoped to inactive tabs only so the active state isn't washed out when the cursor passes over.
+**Tab active state uses the accent.** Both the new home install picker and the existing `&lt;ngmd-tabs&gt;` component now color the active tab's label and underline with `var(--accent)` (fuchsia in the default theme). Hover-zinc is scoped to inactive tabs only so the active state isn't washed out when the cursor passes over.
 
-**Card icons go neutral.** Swapped Lucide icon color in `<ngmd-card>` and home features grid from `var(--accent)` to `var(--fg)`. Icons read as quiet anchors instead of competing with the brand accent that lives on text and active states.
+**Card icons go neutral.** Swapped Lucide icon color in `&lt;ngmd-card&gt;` and home features grid from `var(--accent)` to `var(--fg)`. Icons read as quiet anchors instead of competing with the brand accent that lives on text and active states.
 
-**Alert visibility in light mode.** Added a thin `zinc-200` border on the top, right, and bottom of `<ngmd-alert>` plus bumped the surface from `bg-zinc-50` to `bg-zinc-100`. Alerts now read as distinct surfaces against a white page instead of nearly-blending into it.
+**Alert visibility in light mode.** Added a thin `zinc-200` border on the top, right, and bottom of `&lt;ngmd-alert&gt;` plus bumped the surface from `bg-zinc-50` to `bg-zinc-100`. Alerts now read as distinct surfaces against a white page instead of nearly-blending into it.
 
 ## 0.0.8
 
-**Tabs gained `icon=` and `image=` inputs.** `<ngmd-tab>` now accepts the same `image="<url>"` brand-logo pattern as `<ngmd-card>`, plus `icon="<lucide-name>"` for the Lucide set (`book`, `box`, `code`, `compass`, `file`, `layers`, `lightbulb`, `palette`, `rocket`, `search`, `settings`, `shield`, `sparkles`, `terminal`, `wrench`, `zap`). Icon renders left of the tab label; image takes priority if both are set.
+**Tabs gained `icon=` and `image=` inputs.** `&lt;ngmd-tab&gt;` now accepts the same `image="&lt;url&gt;"` brand-logo pattern as `&lt;ngmd-card&gt;`, plus `icon="&lt;lucide-name&gt;"` for the Lucide set (`book`, `box`, `code`, `compass`, `file`, `layers`, `lightbulb`, `palette`, `rocket`, `search`, `settings`, `shield`, `sparkles`, `terminal`, `wrench`, `zap`). Icon renders left of the tab label; image takes priority if both are set.
 
-**Build-time code-group tabs gained `image=` too.** Fenced code blocks tagged with `group="install" name="pnpm" image="..."` now render a brand icon next to the tab label, no `<ngmd-tabs>` component needed. Used across welcome, showcase, markdown-routes, installation. Powered by `simpleicons.org/<slug>/<hex>` CDN URLs.
+**Build-time code-group tabs gained `image=` too.** Fenced code blocks tagged with `group="install" name="pnpm" image="..."` now render a brand icon next to the tab label, no `&lt;ngmd-tabs&gt;` component needed. Used across welcome, showcase, markdown-routes, installation. Powered by `simpleicons.org/&lt;slug&gt;/&lt;hex&gt;` CDN URLs.
 
 **Demo page renamed to Showcase.** `src/content/concepts/demo.md` → `src/content/concepts/showcase.md`, URL `/concepts/demo` → `/concepts/showcase`. Nav label and every cross-link follow. URL path now matches the doc title.
 
@@ -54,11 +74,11 @@ Release notes and version history for NgMd.
 
 **Help folder reorganised.** Section parent stays at root, children move under a same-named folder: `src/content/help.md` → `/help`, `src/content/help/contribute.md` → `/help/contribute`, `src/content/help/sponsor.md` → `/help/sponsor`. URL pattern now matches the nav grouping. README community links and cross-page links updated.
 
-**Marked parsing fix.** Backtick-wrapped custom-element references like `` `<ngmd-callout>` `` in prose were leaking out as real DOM elements through marked's parser, breaking page layouts. Angle brackets inside backticks now escape to `&lt;` / `&gt;` across the changelog, demo, markdown-routes, and technologies pages.
+**Marked parsing fix.** Backtick-wrapped custom-element references like `` `&lt;ngmd-callout&gt;` `` in prose were leaking out as real DOM elements through marked's parser, breaking page layouts. Angle brackets inside backticks now escape to `&lt;` / `&gt;` across the changelog, demo, markdown-routes, and technologies pages.
 
 **Code-copy scoped to markdown.** The `app-code-copy` DOM walker now targets `analog-markdown` / `analog-markdown-route` pres only, so it doesn't duplicate the copy button that `NgmdCodeBlock` ships internally on TS-page instances.
 
-**Code-block visibility fix.** The `:not(:defined)` flash-prevention CSS rule that hides custom elements until they upgrade was still listing `ngmd-code-block` after it was removed from `@angular/elements` registration in 0.0.6 — which left every code-block invisible forever. Rule entry removed.
+**Code-block visibility fix.** The `:not(:defined)` flash-prevention CSS rule that hides custom elements until they upgrade was still listing `ngmd-code-block` after it was removed from `@angular/elements` registration in 0.0.6, which left every code-block invisible forever. Rule entry removed.
 
 **Theming doc rewritten.** [/concepts/theming](/concepts/theming) now lists all six accent tokens with what each is for, shows the `text-[color:var(--accent)]` / `bg-[color:var(--accent-soft)]` consumption pattern, calls out the inline-style fallback for gradient images, and explains the `!` important modifier needed when an active state has to beat a static base utility.
 
@@ -82,7 +102,7 @@ Release notes and version history for NgMd.
 
 **Tabs work in markdown.** Rewrote `&lt;ngmd-tabs&gt;` / `&lt;ngmd-tab&gt;` so each tab is a real component (not a `&lt;ng-template ngmdTab&gt;` directive). Survives `@angular/elements` upgrade and renders inline in `.md` body.
 
-**Cards gained icon and image inputs.** Pass `icon="<lucide-name>"` for a Lucide glyph tinted fuchsia, or `image="<url>"` for a full-colour brand SVG. Card backgrounds and grid heights aligned across siblings.
+**Cards gained icon and image inputs.** Pass `icon="&lt;lucide-name&gt;"` for a Lucide glyph tinted fuchsia, or `image="&lt;url&gt;"` for a full-colour brand SVG. Card backgrounds and grid heights aligned across siblings.
 
 **Alerts redesigned to adev shape.** Severity icon + uppercase tag (`INFO`, `WARNING`, `CRITICAL`, `HELPFUL`, `IMPORTANT`) prefixed inline with the body prose. Same visual as `docs-callout`.
 
@@ -110,7 +130,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.0.10</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.1.0</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
