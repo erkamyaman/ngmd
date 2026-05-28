@@ -38,8 +38,8 @@ NgMd supports two patterns. Pick one per page.
 All seventeen components are barrelled from `src/app/ui/index.ts`. The catch-all (`src/app/pages/[...slug].page.ts`) already spreads `...NgmdUi` into its imports, so every component works inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
 
 ```ts
-import { Component } from '@angular/core';
-import { NgmdUi } from '../ui';
+import {Component} from '@angular/core';
+import {NgmdUi} from '../ui';
 
 @Component({
   selector: 'app-my-page',
@@ -51,14 +51,12 @@ export default class MyPage {}
 
 For lighter pages, import only what you use (`import { NgmdCallout } from '../ui';`).
 
-In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered components inline as raw HTML. (Code-block isn't one of them — use fenced ``` instead for code in prose.) The catch-all spreads `NgmdUi` into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering. `<ngmd-video>` and `<ngmd-image>` are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom `.page.ts` route).
+In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered components inline as raw HTML. (Code-block isn't one of them — use fenced ```instead for code in prose.) The catch-all spreads`NgmdUi`into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering.`<ngmd-video>`and`<ngmd-image>`are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom`.page.ts` route).
 
 ### `<ngmd-callout>` — bordered notice with coloured side stripe
 
 ```html
-<ngmd-callout type="info" title="Note">
-  Body. Inline code and links work.
-</ngmd-callout>
+<ngmd-callout type="info" title="Note"> Body. Inline code and links work. </ngmd-callout>
 ```
 
 - `type`: `info` (default, blue), `tip` (teal), `success` (emerald), `warning` (amber), `danger` (red).
@@ -68,9 +66,7 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 ### `<ngmd-alert>` — single-line banner, lighter weight than a callout
 
 ```html
-<ngmd-alert severity="warning">
-  Watch out, but the page still works.
-</ngmd-alert>
+<ngmd-alert severity="warning"> Watch out, but the page still works. </ngmd-alert>
 ```
 
 - `severity`: `info` (default), `warning`, `critical`, `helpful`, `important`.
@@ -115,15 +111,9 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 
 ```html
 <ngmd-workflow>
-  <ngmd-step title="Install">
-    Run <code>pnpm install</code>.
-  </ngmd-step>
-  <ngmd-step title="Configure">
-    Edit <code>src/ngmd.config.ts</code>.
-  </ngmd-step>
-  <ngmd-step title="Run">
-    Start the dev server.
-  </ngmd-step>
+  <ngmd-step title="Install"> Run <code>pnpm install</code>. </ngmd-step>
+  <ngmd-step title="Configure"> Edit <code>src/ngmd.config.ts</code>. </ngmd-step>
+  <ngmd-step title="Run"> Start the dev server. </ngmd-step>
 </ngmd-workflow>
 ```
 
@@ -157,11 +147,7 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 ### `<ngmd-code-block>` — runtime-highlighted code with header
 
 ```html
-<ngmd-code-block
-  header="src/main.ts"
-  language="ts"
-  code="bootstrapApplication(App);"
-/>
+<ngmd-code-block header="src/main.ts" language="ts" code="bootstrapApplication(App);" />
 ```
 
 - For author-supplied snippets in TypeScript pages where you need a header bar.
@@ -261,6 +247,7 @@ Import code from a real file so doc examples stay in sync with source:
 
 ````md
 ```ts file="src/app/pages/welcome.page.ts"
+
 ```
 ````
 
@@ -292,7 +279,7 @@ Append a brace list after the language to highlight matching lines:
 
 ````md
 ```ts {3-5}
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-hello',

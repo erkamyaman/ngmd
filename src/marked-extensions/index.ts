@@ -1,7 +1,7 @@
-import type { MarkedExtension } from 'marked';
-import { ngmdVideoExtension } from './ngmd-video';
-import { ngmdImageExtension } from './ngmd-image';
-import { ngmdKeywordsExtension } from './ngmd-keywords';
+import type {MarkedExtension} from 'marked';
+import {ngmdVideoExtension} from './ngmd-video';
+import {ngmdImageExtension} from './ngmd-image';
+import {ngmdKeywordsExtension} from './ngmd-keywords';
 
 /**
  * Marked extensions are split into two arrays.
@@ -29,15 +29,12 @@ export const ngmdRuntimeExtensions: MarkedExtension[] = [
 // never resolves their `node:fs` / `shiki` imports. The async getter is
 // called by `vite.config.ts` (Node context) only.
 export async function getBuildExtensions(): Promise<MarkedExtension[]> {
-  const [
-    { ngmdCodeImportExtension },
-    { ngmdCodeGroupExtension },
-    { ngmdCodeHighlightExtension },
-  ] = await Promise.all([
-    import('./ngmd-code-import'),
-    import('./ngmd-code-group'),
-    import('./ngmd-code-highlight'),
-  ]);
+  const [{ngmdCodeImportExtension}, {ngmdCodeGroupExtension}, {ngmdCodeHighlightExtension}] =
+    await Promise.all([
+      import('./ngmd-code-import'),
+      import('./ngmd-code-group'),
+      import('./ngmd-code-highlight'),
+    ]);
   return [
     ...ngmdRuntimeExtensions,
     ngmdCodeImportExtension,

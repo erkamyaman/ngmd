@@ -1,5 +1,5 @@
-import type { MarkedExtension } from 'marked';
-import { getHighlighter, LANGS, escapeHtml } from './shiki-shared';
+import type {MarkedExtension} from 'marked';
+import {getHighlighter, LANGS, escapeHtml} from './shiki-shared';
 
 /**
  * Adjacent fenced code blocks tagged with `group="..."` merge into a tabbed
@@ -49,7 +49,7 @@ async function renderCode(body: string, lang: string): Promise<string> {
   const highlighter = await getHighlighter();
   return highlighter.codeToHtml(body, {
     lang: safeLang,
-    themes: { light: 'github-light', dark: 'github-dark' },
+    themes: {light: 'github-light', dark: 'github-dark'},
     defaultColor: false,
   });
 }
@@ -58,10 +58,7 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
   hooks: {
     async preprocess(markdown: string): Promise<string> {
       const fences: Fence[] = [];
-      const re = new RegExp(
-        FENCE_WITH_GROUP_RE.source,
-        FENCE_WITH_GROUP_RE.flags,
-      );
+      const re = new RegExp(FENCE_WITH_GROUP_RE.source, FENCE_WITH_GROUP_RE.flags);
       let m: RegExpExecArray | null;
       while ((m = re.exec(markdown)) !== null) {
         fences.push({
@@ -124,8 +121,7 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
 
         const wrapper = `\n\n<div class="ngmd-code-group" data-group="${groupId}"><div class="ngmd-code-group__tabs">${tabs}</div>${panels}</div>\n\n`;
 
-        result =
-          result.slice(0, c[0].start) + wrapper + result.slice(c.at(-1)!.end);
+        result = result.slice(0, c[0].start) + wrapper + result.slice(c.at(-1)!.end);
       }
 
       return result;

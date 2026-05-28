@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import type { MarkedExtension } from 'marked';
-import { getHighlighter, LANGS, escapeHtml } from './shiki-shared';
+import {readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import type {MarkedExtension} from 'marked';
+import {getHighlighter, LANGS, escapeHtml} from './shiki-shared';
 import config from '../ngmd.config';
 
 /**
@@ -24,11 +24,10 @@ import config from '../ngmd.config';
  * self-contained HTML block — marked never sees the inner fence.
  */
 
-const FENCE_RE =
-  /^```([\w-]+)?[\t ]+file="([^"]+)"[^\n]*\n(?:([\s\S]*?)\n)?```$/gm;
+const FENCE_RE = /^```([\w-]+)?[\t ]+file="([^"]+)"[^\n]*\n(?:([\s\S]*?)\n)?```$/gm;
 const IGNORE_LINE_RE = /^.*\/\/\s*ngmd-ignore-line\s*$/;
 
-function loadFile(spec: string): { code: string; rangeFragment: string } {
+function loadFile(spec: string): {code: string; rangeFragment: string} {
   const [path, range] = spec.split('#');
   const full = resolve(process.cwd(), path);
   let content = readFileSync(full, 'utf8');
@@ -50,7 +49,7 @@ function loadFile(spec: string): { code: string; rangeFragment: string } {
     .filter((l) => !IGNORE_LINE_RE.test(l))
     .join('\n');
 
-  return { code: filtered.replace(/\n+$/, ''), rangeFragment };
+  return {code: filtered.replace(/\n+$/, ''), rangeFragment};
 }
 
 function githubBlobUrl(filePath: string, rangeFragment: string): string {
@@ -80,7 +79,7 @@ export const ngmdCodeImportExtension: MarkedExtension = {
         const lang = m[1] ?? '';
         const spec = m[2];
         try {
-          const { code, rangeFragment } = loadFile(spec);
+          const {code, rangeFragment} = loadFile(spec);
           matches.push({
             start: m.index,
             end: m.index + m[0].length,
@@ -101,7 +100,7 @@ export const ngmdCodeImportExtension: MarkedExtension = {
         const safeLang = LANGS.includes(mt.lang) ? mt.lang : 'text';
         const codeHtml = highlighter.codeToHtml(mt.code, {
           lang: safeLang,
-          themes: { light: 'github-light', dark: 'github-dark' },
+          themes: {light: 'github-light', dark: 'github-dark'},
           defaultColor: false,
         });
         const headerLabel = mt.filePath + (mt.rangeFragment || '');
@@ -112,8 +111,7 @@ export const ngmdCodeImportExtension: MarkedExtension = {
       let result = markdown;
       for (let i = matches.length - 1; i >= 0; i--) {
         const mt = matches[i];
-        result =
-          result.slice(0, mt.start) + `\n\n${renders[i]}\n\n` + result.slice(mt.end);
+        result = result.slice(0, mt.start) + `\n\n${renders[i]}\n\n` + result.slice(mt.end);
       }
       return result;
     },

@@ -1,7 +1,7 @@
-import { execSync } from 'node:child_process';
-import { readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
-import type { Plugin } from 'vite';
+import {execSync} from 'node:child_process';
+import {readdirSync, statSync} from 'node:fs';
+import {join, relative} from 'node:path';
+import type {Plugin} from 'vite';
 
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
@@ -26,15 +26,13 @@ function walkContentFiles(
   baseDir: string = dir,
   out: Array<[string, string]> = [],
 ): Array<[string, string]> {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  for (const entry of readdirSync(dir, {withFileTypes: true})) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       walkContentFiles(full, root, baseDir, out);
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       const rel = relative(root, full);
-      const fromContent = relative(baseDir, full)
-        .replace(/\\/g, '/')
-        .replace(/\.md$/, '');
+      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
       out.push([rel, '/' + fromContent]);
     }
   }
@@ -61,7 +59,7 @@ function gitDate(file: string, cwd: string): string {
 }
 
 function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  for (const entry of readdirSync(dir, {withFileTypes: true})) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       walkPageFiles(full, root, out);
@@ -73,9 +71,7 @@ function walkPageFiles(dir: string, root: string, out: string[] = []): string[] 
 }
 
 function routeFromPagePath(rel: string): string {
-  const trimmed = rel
-    .replace(/^src\/app\/pages\//, '')
-    .replace(/\.page\.ts$/, '');
+  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
   if (trimmed === 'index') return '/';
   if (trimmed.startsWith('[')) return ''; // catch-all / dynamic — skip
   return '/' + trimmed;
@@ -90,7 +86,7 @@ function escapeXml(s: string): string {
     .replace(/'/g, '&apos;');
 }
 
-export function sitemapPlugin(opts: { siteUrl: string }): Plugin {
+export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
   let root = process.cwd();
   const siteUrl = opts.siteUrl.replace(/\/+$/, '');
 
@@ -105,10 +101,7 @@ export function sitemapPlugin(opts: { siteUrl: string }): Plugin {
       const entries = new Map<string, string>();
 
       try {
-        const pageFiles = walkPageFiles(
-          join(root, 'src/app/pages'),
-          root,
-        );
+        const pageFiles = walkPageFiles(join(root, 'src/app/pages'), root);
         for (const rel of pageFiles) {
           const route = routeFromPagePath(rel);
           if (!route) continue;

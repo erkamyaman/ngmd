@@ -1,6 +1,7 @@
 ---
 title: Showcase
 description: Every NgmdUi component rendered inline from markdown, with realistic context.
+status: beta
 ---
 
 <ngmd-hero title="Setting up authentication" gradient>

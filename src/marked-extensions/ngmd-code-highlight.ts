@@ -1,5 +1,5 @@
-import type { MarkedExtension } from 'marked';
-import { getHighlighter, LANGS } from './shiki-shared';
+import type {MarkedExtension} from 'marked';
+import {getHighlighter, LANGS} from './shiki-shared';
 
 /**
  * Fenced code blocks tagged with `{1,3-5}` get the matching lines visually
@@ -26,12 +26,14 @@ import { getHighlighter, LANGS } from './shiki-shared';
 
 // Capture: lang, line ranges in {}, body. Skips fences whose info string
 // contains `group=` or `file=` so those routes own the fence.
-const FENCE_RE =
-  /^```([\w-]+)?[\t ]+\{([0-9,\-\s]+)\}[\t ]*\n([\s\S]*?)\n```$/gm;
+const FENCE_RE = /^```([\w-]+)?[\t ]+\{([0-9,\-\s]+)\}[\t ]*\n([\s\S]*?)\n```$/gm;
 
 function parseRanges(spec: string): Set<number> {
   const lines = new Set<number>();
-  for (const part of spec.split(',').map((s) => s.trim()).filter(Boolean)) {
+  for (const part of spec
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)) {
     const m = part.match(/^(\d+)(?:-(\d+))?$/);
     if (!m) continue;
     const start = parseInt(m[1], 10);
@@ -49,9 +51,7 @@ function applyHighlights(html: string, set: Set<number>): string {
   let lineNum = 0;
   return html.replace(/<span class="line"/g, () => {
     lineNum++;
-    return set.has(lineNum)
-      ? '<span class="line highlighted"'
-      : '<span class="line"';
+    return set.has(lineNum) ? '<span class="line highlighted"' : '<span class="line"';
   });
 }
 
@@ -61,7 +61,7 @@ export const ngmdCodeHighlightExtension: MarkedExtension = {
       // Quick negative check before scanning.
       if (!/^```[\w-]*[\t ]+\{[0-9,\-\s]+\}/m.test(markdown)) return markdown;
 
-      const matches: { start: number; end: number; lang: string; spec: string; body: string }[] = [];
+      const matches: {start: number; end: number; lang: string; spec: string; body: string}[] = [];
       const re = new RegExp(FENCE_RE.source, FENCE_RE.flags);
       let m: RegExpExecArray | null;
       while ((m = re.exec(markdown)) !== null) {
@@ -85,7 +85,7 @@ export const ngmdCodeHighlightExtension: MarkedExtension = {
           const safeLang = LANGS.includes(mt.lang) ? mt.lang : 'text';
           const raw = highlighter.codeToHtml(mt.body, {
             lang: safeLang,
-            themes: { light: 'github-light', dark: 'github-dark' },
+            themes: {light: 'github-light', dark: 'github-dark'},
             defaultColor: false,
           });
           return applyHighlights(raw, parseRanges(mt.spec));

@@ -1,9 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
-import { LucideAngularModule, Pencil, Code } from 'lucide-angular';
-import { pageMeta } from 'virtual:ngmd/page-meta';
+import {Component, computed, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter, map, startWith} from 'rxjs';
+import {LucideAngularModule, Pencil, Code} from 'lucide-angular';
+import {pageMeta} from 'virtual:ngmd/page-meta';
 
 /**
  * Top-right floating icon row showing two GitHub links per route:
@@ -56,7 +56,7 @@ export class SourceActions {
       map(() => this.router.url),
       startWith(this.router.url),
     ),
-    { initialValue: '/' },
+    {initialValue: '/'},
   );
 
   private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);

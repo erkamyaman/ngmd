@@ -1,10 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
-import { LucideAngularModule, ArrowLeft, ArrowRight } from 'lucide-angular';
-import { pageMeta } from 'virtual:ngmd/page-meta';
-import { navItems } from '../../ngmd.config';
+import {Component, computed, inject, signal} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router, RouterLink} from '@angular/router';
+import {filter, map, startWith} from 'rxjs';
+import {LucideAngularModule, ArrowLeft, ArrowRight} from 'lucide-angular';
+import {pageMeta} from 'virtual:ngmd/page-meta';
+import {navItems} from '../../ngmd.config';
 
 /**
  * Bottom-of-page frame shown under every docs route: previous/next sibling
@@ -25,7 +25,6 @@ import { navItems } from '../../ngmd.config';
       }
       -->
 
-
       @if (prev() || next()) {
         <nav class="mt-6 grid gap-3 sm:grid-cols-2">
           @if (prev(); as p) {
@@ -37,7 +36,9 @@ import { navItems } from '../../ngmd.config';
                 <i-lucide [img]="prevIcon" class="size-3.5"></i-lucide>
                 Previous
               </span>
-              <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{ p.label }}</span>
+              <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{
+                p.label
+              }}</span>
             </a>
           }
           @if (next(); as n) {
@@ -45,11 +46,15 @@ import { navItems } from '../../ngmd.config';
               [routerLink]="n.href"
               class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-[color:var(--accent)] transition-colors text-right sm:col-start-2"
             >
-              <span class="flex items-center justify-end gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+              <span
+                class="flex items-center justify-end gap-1.5 text-xs text-zinc-500 dark:text-zinc-400"
+              >
                 Next
                 <i-lucide [img]="nextIcon" class="size-3.5"></i-lucide>
               </span>
-              <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{ n.label }}</span>
+              <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{
+                n.label
+              }}</span>
             </a>
           }
         </nav>
@@ -69,11 +74,9 @@ export class PageFooter {
       map(() => this.router.url),
       startWith(this.router.url),
     ),
-    { initialValue: '/' },
+    {initialValue: '/'},
   );
-  private readonly cleanUrl = computed(
-    () => this.url().split('?')[0].split('#')[0],
-  );
+  private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
 
   private readonly meta = computed(() => pageMeta[this.cleanUrl()]);
   readonly editUrl = computed(() => this.meta()?.editUrl ?? '');
@@ -84,9 +87,7 @@ export class PageFooter {
     return y && m && d ? `${d}/${m}/${y}` : iso;
   });
 
-  private readonly index = computed(() =>
-    navItems.findIndex((n) => n.href === this.cleanUrl()),
-  );
+  private readonly index = computed(() => navItems.findIndex((n) => n.href === this.cleanUrl()));
   readonly prev = computed(() => {
     const i = this.index();
     return i > 0 ? navItems[i - 1] : null;

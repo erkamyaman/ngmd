@@ -1,30 +1,30 @@
-export { NgmdAccordion, NgmdAccordionItem } from './accordion';
-export { NgmdAlert } from './alert';
-export { NgmdBadge } from './badge';
-export { NgmdCallout } from './callout';
-export { NgmdCard } from './card';
-export { NgmdCardGrid } from './card-grid';
-export { NgmdCodeBlock } from './code-block';
-export { NgmdHero } from './hero';
-export { NgmdImage } from './image';
-export { NgmdPill, NgmdPillRow } from './pill';
-export { NgmdStep, NgmdWorkflow } from './workflow';
-export { NgmdTab, NgmdTabs } from './tabs';
-export { NgmdVideo } from './video';
+export {NgmdAccordion, NgmdAccordionItem} from './accordion';
+export {NgmdAlert} from './alert';
+export {NgmdBadge} from './badge';
+export {NgmdCallout} from './callout';
+export {NgmdCard} from './card';
+export {NgmdCardGrid} from './card-grid';
+export {NgmdCodeBlock} from './code-block';
+export {NgmdHero} from './hero';
+export {NgmdImage} from './image';
+export {NgmdPill, NgmdPillRow} from './pill';
+export {NgmdStep, NgmdWorkflow} from './workflow';
+export {NgmdTab, NgmdTabs} from './tabs';
+export {NgmdVideo} from './video';
 
-import { NgmdAccordion, NgmdAccordionItem } from './accordion';
-import { NgmdAlert } from './alert';
-import { NgmdBadge } from './badge';
-import { NgmdCallout } from './callout';
-import { NgmdCard } from './card';
-import { NgmdCardGrid } from './card-grid';
-import { NgmdCodeBlock } from './code-block';
-import { NgmdHero } from './hero';
-import { NgmdImage } from './image';
-import { NgmdPill, NgmdPillRow } from './pill';
-import { NgmdStep, NgmdWorkflow } from './workflow';
-import { NgmdTab, NgmdTabs } from './tabs';
-import { NgmdVideo } from './video';
+import {NgmdAccordion, NgmdAccordionItem} from './accordion';
+import {NgmdAlert} from './alert';
+import {NgmdBadge} from './badge';
+import {NgmdCallout} from './callout';
+import {NgmdCard} from './card';
+import {NgmdCardGrid} from './card-grid';
+import {NgmdCodeBlock} from './code-block';
+import {NgmdHero} from './hero';
+import {NgmdImage} from './image';
+import {NgmdPill, NgmdPillRow} from './pill';
+import {NgmdStep, NgmdWorkflow} from './workflow';
+import {NgmdTab, NgmdTabs} from './tabs';
+import {NgmdVideo} from './video';
 
 /**
  * Spread into a page's `imports` to get every authoring component in one go:

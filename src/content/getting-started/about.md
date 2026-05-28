@@ -1,5 +1,6 @@
 ---
 title: About & Credits
+status: stable
 ---
 
 <ngmd-hero title="About & Credits" gradient>

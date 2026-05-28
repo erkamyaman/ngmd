@@ -1,12 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 /**
  * Scans rendered markdown for <pre> code blocks and injects a copy button
@@ -16,7 +11,9 @@ import { filter } from 'rxjs';
   selector: 'app-code-copy',
   template: '',
   styles: `
-    :host { display: none; }
+    :host {
+      display: none;
+    }
   `,
 })
 export class CodeCopy implements AfterViewInit {

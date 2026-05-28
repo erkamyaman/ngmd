@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, computed, ElementRef, signal, viewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {AfterViewInit, Component, computed, ElementRef, signal, viewChild} from '@angular/core';
+import {RouterLink} from '@angular/router';
 import {
   LucideAngularModule,
   ArrowRight,
@@ -14,7 +14,7 @@ import {
   Search,
   Zap,
 } from 'lucide-angular';
-import { animate, stagger } from 'motion';
+import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
 
 @Component({
@@ -47,7 +47,10 @@ import siteConfig from '../../ngmd.config';
         </a>
 
         <h1 #hero class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
-          <span class="ngmd-hero-anim inline-block">The</span>&nbsp;<span class="ngmd-hero-anim inline-block">Angular</span>&nbsp;<span class="ngmd-hero-anim inline-block">docs</span>
+          <span class="ngmd-hero-anim inline-block">The</span>&nbsp;<span
+            class="ngmd-hero-anim inline-block"
+            >Angular</span
+          >&nbsp;<span class="ngmd-hero-anim inline-block">docs</span>
           <span
             class="ngmd-hero-anim block bg-clip-text text-transparent ngmd-hero-gradient pb-1"
             style="background-image: var(--accent-gradient)"
@@ -56,9 +59,11 @@ import siteConfig from '../../ngmd.config';
           </span>
         </h1>
 
-        <p class="mt-6 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          Drop a markdown file. Get a route. Beautifully branded out of the box,
-          powered by AnalogJS, Angular, Vite, Tailwind, and Shiki.
+        <p
+          class="mt-6 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed"
+        >
+          Drop a markdown file. Get a route. Beautifully branded out of the box, powered by
+          AnalogJS, Angular, Vite, Tailwind, and Shiki.
         </p>
 
         <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -93,24 +98,26 @@ import siteConfig from '../../ngmd.config';
             BUILT ON
           </p>
           <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          @for (tech of stack; track tech.name) {
-            <a
-              [href]="tech.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
-            >
-              <img [src]="tech.logo" [alt]="tech.name" class="size-5 object-contain" />
-              {{ tech.name }}
-            </a>
-          }
+            @for (tech of stack; track tech.name) {
+              <a
+                [href]="tech.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
+              >
+                <img [src]="tech.logo" [alt]="tech.name" class="size-5 object-contain" />
+                {{ tech.name }}
+              </a>
+            }
           </div>
         </div>
       </div>
     </section>
 
     <!-- Code preview -->
-    <section class="border-y border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20">
+    <section
+      class="border-y border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20"
+    >
       <div class="mx-auto max-w-5xl px-6 py-20">
         <div class="text-center mb-10">
           <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">Zero config to ship a page</h2>
@@ -202,7 +209,9 @@ NgMd is a modern Angular docs starter.
         <p class="mt-3 text-zinc-600 dark:text-zinc-400">
           One command, a few markdown files, and you've got a beautiful docs site.
         </p>
-        <div class="mt-8 inline-block w-[23rem] max-w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 overflow-hidden text-left">
+        <div
+          class="mt-8 inline-block w-[23rem] max-w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 overflow-hidden text-left"
+        >
           <div role="tablist" class="flex border-b border-zinc-200 dark:border-zinc-800">
             @for (cmd of installCommands; track cmd.pm) {
               <button
@@ -226,7 +235,10 @@ NgMd is a modern Angular docs starter.
               [attr.aria-label]="copied() === activeCmd() ? 'Copied' : 'Copy'"
               class="ml-auto inline-flex items-center justify-center size-7 rounded-md text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              <i-lucide [img]="copied() === activeCmd() ? checkIcon : copyIcon" class="size-3.5"></i-lucide>
+              <i-lucide
+                [img]="copied() === activeCmd() ? checkIcon : copyIcon"
+                class="size-3.5"
+              ></i-lucide>
             </button>
           </div>
         </div>
@@ -256,10 +268,18 @@ export default class Home implements AfterViewInit {
   readonly copied = signal('');
 
   readonly installCommands = [
-    { pm: 'npm', cmd: 'npm create ngmd@latest my-docs', logo: 'https://cdn.simpleicons.org/npm/CB3837' },
-    { pm: 'pnpm', cmd: 'pnpm create ngmd@latest my-docs', logo: 'https://cdn.simpleicons.org/pnpm/F69220' },
-    { pm: 'yarn', cmd: 'yarn create ngmd my-docs', logo: 'https://cdn.simpleicons.org/yarn/2C8EBB' },
-    { pm: 'bun', cmd: 'bun create ngmd my-docs', logo: 'https://cdn.simpleicons.org/bun/FBF0DF' },
+    {
+      pm: 'npm',
+      cmd: 'npm create ngmd@latest my-docs',
+      logo: 'https://cdn.simpleicons.org/npm/CB3837',
+    },
+    {
+      pm: 'pnpm',
+      cmd: 'pnpm create ngmd@latest my-docs',
+      logo: 'https://cdn.simpleicons.org/pnpm/F69220',
+    },
+    {pm: 'yarn', cmd: 'yarn create ngmd my-docs', logo: 'https://cdn.simpleicons.org/yarn/2C8EBB'},
+    {pm: 'bun', cmd: 'bun create ngmd my-docs', logo: 'https://cdn.simpleicons.org/bun/FBF0DF'},
   ];
 
   readonly activePM = signal('npm');
@@ -292,24 +312,33 @@ export default class Home implements AfterViewInit {
 
     animate(
       parts,
-      { opacity: [0, 1], transform: ['translateY(0.5em)', 'translateY(0)'] },
-      { duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1] },
+      {opacity: [0, 1], transform: ['translateY(0.5em)', 'translateY(0)']},
+      {duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1]},
     );
   }
 
   readonly stack = [
-    { name: 'Angular', url: 'https://angular.dev', logo: '/logos/angular.svg' },
-    { name: 'AnalogJS', url: 'https://analogjs.org', logo: 'https://analogjs.org/img/logos/analog-logo.svg' },
-    { name: 'Vite', url: 'https://vite.dev', logo: '/logos/vite.svg' },
-    { name: 'Tailwind', url: 'https://tailwindcss.com', logo: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
-    { name: 'Shiki', url: 'https://shiki.style', logo: 'https://shiki.style/logo.svg' },
+    {name: 'Angular', url: 'https://angular.dev', logo: '/logos/angular.svg'},
+    {
+      name: 'AnalogJS',
+      url: 'https://analogjs.org',
+      logo: 'https://analogjs.org/img/logos/analog-logo.svg',
+    },
+    {name: 'Vite', url: 'https://vite.dev', logo: '/logos/vite.svg'},
+    {
+      name: 'Tailwind',
+      url: 'https://tailwindcss.com',
+      logo: 'https://cdn.simpleicons.org/tailwindcss/06B6D4',
+    },
+    {name: 'Shiki', url: 'https://shiki.style', logo: 'https://shiki.style/logo.svg'},
   ];
 
   readonly features = [
     {
       icon: FileText,
       title: 'Markdown routes',
-      description: 'Drop a .md file in src/content, get a route. Powered by AnalogJS content collections.',
+      description:
+        'Drop a .md file in src/content, get a route. Powered by AnalogJS content collections.',
     },
     {
       icon: Palette,

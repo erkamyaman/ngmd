@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { LucideAngularModule, ArrowRight, ArrowUpRight } from 'lucide-angular';
+import {Component, computed, input} from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {LucideAngularModule, ArrowRight, ArrowUpRight} from 'lucide-angular';
 
 /**
  * Pill-shaped link. Internal hrefs route via `RouterLink`; external (http(s))

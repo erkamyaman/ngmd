@@ -49,8 +49,7 @@ export interface NgmdConfig {
 const config: NgmdConfig = {
   site: {
     name: 'NgMd',
-    description:
-      'Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind.',
+    description: 'Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind.',
     tagline: 'Angular docs starter',
     url: 'https://ngmd.netlify.app',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
@@ -74,38 +73,38 @@ const config: NgmdConfig = {
     {
       label: 'Getting Started',
       items: [
-        { label: 'Introduction', href: '/welcome' },
+        {label: 'Introduction', href: '/welcome'},
         // { label: 'Changelog', href: '/getting-started/changelog' }, // parked until 0.1.0
-        { label: 'About & Credits', href: '/getting-started/about' },
+        {label: 'About & Credits', href: '/getting-started/about'},
       ],
     },
     {
       label: 'Core Concepts',
       items: [
-        { label: 'Markdown Routes', href: '/concepts/markdown-routes' },
-        { label: 'Theming', href: '/concepts/theming' },
-        { label: 'Components', href: '/concepts/components' },
-        { label: 'Showcase', href: '/concepts/showcase' },
+        {label: 'Markdown Routes', href: '/concepts/markdown-routes'},
+        {label: 'Theming', href: '/concepts/theming'},
+        {label: 'Components', href: '/concepts/components'},
+        {label: 'Showcase', href: '/concepts/showcase'},
       ],
     },
     {
       label: 'AI',
-      items: [{ label: 'Agent Skills', href: '/ai/agent-skills' }],
+      items: [{label: 'Agent Skills', href: '/ai/agent-skills'}],
     },
     {
       label: 'Help',
       items: [
-        { label: 'Get help', href: '/help/get-help' },
-        { label: 'Contribute', href: '/help/contribute' },
-        { label: 'Support us', href: '/help/sponsor' },
+        {label: 'Get help', href: '/help/get-help'},
+        {label: 'Contribute', href: '/help/contribute'},
+        {label: 'Support us', href: '/help/sponsor'},
       ],
     },
     {
       label: 'Stack',
       items: [
-        { label: 'Overview', href: '/stack/overview' },
-        { label: 'Technologies', href: '/stack/technologies' },
-        { label: 'Installation', href: '/stack/installation' },
+        {label: 'Overview', href: '/stack/overview'},
+        {label: 'Technologies', href: '/stack/technologies'},
+        {label: 'Installation', href: '/stack/installation'},
       ],
     },
   ],

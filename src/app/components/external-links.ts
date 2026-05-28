@@ -1,12 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 /**
  * Adds `target="_blank" rel="noopener noreferrer"` to external anchors in
@@ -16,7 +11,9 @@ import { filter } from 'rxjs';
   selector: 'app-external-links',
   template: '',
   styles: `
-    :host { display: none; }
+    :host {
+      display: none;
+    }
   `,
 })
 export class ExternalLinks implements AfterViewInit {

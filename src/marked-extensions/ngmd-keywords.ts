@@ -1,4 +1,4 @@
-import type { MarkedExtension, Tokens } from 'marked';
+import type {MarkedExtension, Tokens} from 'marked';
 import config from '../ngmd.config';
 
 /**
@@ -68,9 +68,7 @@ export const ngmdKeywordsExtension: MarkedExtension = {
       renderer(token: Tokens.Generic) {
         const t = token as NgmdKeywordToken;
         const isExternal = /^https?:\/\//.test(t.url);
-        const targetAttrs = isExternal
-          ? ' target="_blank" rel="noopener noreferrer"'
-          : '';
+        const targetAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         return `<a href="${escapeAttr(t.url)}"${targetAttrs}>${t.keyword}</a>`;
       },
     },

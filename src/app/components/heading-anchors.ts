@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 /**
  * Scans rendered docs pages for h2/h3 with an id and appends a copy-link
@@ -12,7 +12,9 @@ import { filter } from 'rxjs';
   selector: 'app-heading-anchors',
   template: '',
   styles: `
-    :host { display: none; }
+    :host {
+      display: none;
+    }
   `,
 })
 export class HeadingAnchors implements AfterViewInit {

@@ -1,32 +1,23 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
-import {
-  LucideAngularModule,
-  Github,
-  Menu,
-  X,
-  Search,
-  Sun,
-  Moon,
-  SunMoon,
-} from 'lucide-angular';
-import { ThemeService } from './theme';
-import { LayoutMode } from './layout-mode.service';
+import {Component, computed, inject, OnInit, signal} from '@angular/core';
+import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {filter, map, startWith} from 'rxjs';
+import {LucideAngularModule, Github, Menu, X, Search, Sun, Moon, SunMoon} from 'lucide-angular';
+import {ThemeService} from './theme';
+import {LayoutMode} from './layout-mode.service';
 import siteConfig from '../ngmd.config';
-import { CommandPalette } from './components/command-palette';
-import { Sidebar } from './components/sidebar';
-import { Breadcrumb } from './components/breadcrumb';
-import { Toc } from './components/toc';
-import { CodeCopy } from './components/code-copy';
-import { ExternalLinks } from './components/external-links';
-import { HeadingAnchors } from './components/heading-anchors';
-import { CodeGroup } from './components/code-group';
-import { PageFooter } from './components/page-footer';
-import { SourceActions } from './components/source-actions';
-import { MediaEnhancer } from './components/media-enhancer';
-import { SiteFooter } from './components/site-footer';
+import {CommandPalette} from './components/command-palette';
+import {Sidebar} from './components/sidebar';
+import {Breadcrumb} from './components/breadcrumb';
+import {Toc} from './components/toc';
+import {CodeCopy} from './components/code-copy';
+import {ExternalLinks} from './components/external-links';
+import {HeadingAnchors} from './components/heading-anchors';
+import {CodeGroup} from './components/code-group';
+import {PageFooter} from './components/page-footer';
+import {SourceActions} from './components/source-actions';
+import {MediaEnhancer} from './components/media-enhancer';
+import {SiteFooter} from './components/site-footer';
 
 @Component({
   selector: 'app-root',
@@ -63,7 +54,10 @@ import { SiteFooter } from './components/site-footer';
           </button>
         }
 
-        <a routerLink="/" class="flex items-center gap-2 text-lg font-bold tracking-tight font-[Geist_Mono,ui-monospace,monospace]">
+        <a
+          routerLink="/"
+          class="flex items-center gap-2 text-lg font-bold tracking-tight font-[Geist_Mono,ui-monospace,monospace]"
+        >
           <img
             src="/logo-mark.svg"
             alt=""
@@ -137,11 +131,7 @@ import { SiteFooter } from './components/site-footer';
           >
             <i-lucide
               [img]="
-                theme.mode() === 'light'
-                  ? sunIcon
-                  : theme.mode() === 'dark'
-                  ? moonIcon
-                  : autoIcon
+                theme.mode() === 'light' ? sunIcon : theme.mode() === 'dark' ? moonIcon : autoIcon
               "
               class="size-5"
             ></i-lucide>
@@ -243,15 +233,12 @@ export class App implements OnInit {
       map(() => this.router.url),
       startWith(this.router.url),
     ),
-    { initialValue: '/' },
+    {initialValue: '/'},
   );
 
   private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
   private readonly isDocsRoute = computed(
-    () =>
-      this.cleanUrl() !== '/' &&
-      this.cleanUrl() !== '' &&
-      !this.layout.chromeHidden(),
+    () => this.cleanUrl() !== '/' && this.cleanUrl() !== '' && !this.layout.chromeHidden(),
   );
   readonly showSidebar = this.isDocsRoute;
   readonly showBreadcrumb = this.isDocsRoute;
@@ -264,7 +251,7 @@ export class App implements OnInit {
       this.drawerOpen.set(false);
       if (typeof window === 'undefined' || window.location.hash) return;
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
       }, 0);
     });
   }

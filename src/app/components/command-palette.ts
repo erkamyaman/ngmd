@@ -8,16 +8,10 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { injectContentFiles } from '@analogjs/content';
-import {
-  LucideAngularModule,
-  Search,
-  ArrowRight,
-  Hash,
-  FileText,
-} from 'lucide-angular';
-import { navItems } from '../../ngmd.config';
+import {Router} from '@angular/router';
+import {injectContentFiles} from '@analogjs/content';
+import {LucideAngularModule, Search, ArrowRight, Hash, FileText} from 'lucide-angular';
+import {navItems} from '../../ngmd.config';
 
 type ItemKind = 'page' | 'heading' | 'snippet';
 
@@ -35,7 +29,7 @@ interface IndexedFile {
   href: string;
   body: string;
   bodyLower: string;
-  headings: { text: string; slug: string }[];
+  headings: {text: string; slug: string}[];
 }
 
 function slugify(text: string): string {
@@ -104,7 +98,9 @@ function stripMarkdown(s: string): string {
             }
           </div>
 
-          <div class="flex items-center justify-end border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500">
+          <div
+            class="flex items-center justify-end border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500"
+          >
             esc to close
           </div>
         </div>
@@ -115,7 +111,7 @@ function stripMarkdown(s: string): string {
 export class CommandPalette {
   private readonly router = inject(Router);
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
-  private readonly contentFiles = injectContentFiles<{ title?: string }>();
+  private readonly contentFiles = injectContentFiles<{title?: string}>();
 
   readonly searchIcon = Search;
   readonly arrowIcon = ArrowRight;
@@ -261,14 +257,12 @@ export class CommandPalette {
       setTimeout(() => this.scrollToWhenReady(slug, attempt + 1), 50);
       return;
     }
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.scrollIntoView({behavior: 'smooth', block: 'start'});
     history.replaceState(null, '', `${location.pathname}#${slug}`);
   }
 
   private buildIndex(): IndexedFile[] {
-    const slugToNav = new Map(
-      navItems.map((item) => [item.href.split('/').pop() ?? '', item]),
-    );
+    const slugToNav = new Map(navItems.map((item) => [item.href.split('/').pop() ?? '', item]));
     const out: IndexedFile[] = [];
 
     for (const file of this.contentFiles) {
@@ -277,10 +271,10 @@ export class CommandPalette {
       const raw = typeof file.content === 'string' ? file.content : '';
       if (!raw) continue;
 
-      const headings: { text: string; slug: string }[] = [];
+      const headings: {text: string; slug: string}[] = [];
       for (const m of raw.matchAll(/^(##+)\s+(.+)$/gm)) {
         const text = m[2].trim();
-        headings.push({ text, slug: slugify(text) });
+        headings.push({text, slug: slugify(text)});
       }
 
       const body = stripMarkdown(raw);

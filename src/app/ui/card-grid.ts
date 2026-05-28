@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 
 /**
  * Grid container around `<ngmd-card>` (or any block children). Two- or
@@ -18,8 +18,7 @@ import { Component, computed, input } from '@angular/core';
 })
 export class NgmdCardGrid {
   readonly columns = input(2, {
-    transform: (v: number | string) =>
-      typeof v === 'string' ? parseInt(v, 10) || 2 : v,
+    transform: (v: number | string) => (typeof v === 'string' ? parseInt(v, 10) || 2 : v),
   });
 
   protected readonly colsClass = computed(() =>

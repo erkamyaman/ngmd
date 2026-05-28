@@ -1,10 +1,12 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {Component, computed, inject, input} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'ngmd-video',
   template: `
-    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+    <div
+      class="relative w-full aspect-video rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
+    >
       <iframe
         [src]="safeUrl()"
         [title]="title()"
@@ -22,9 +24,7 @@ export class NgmdVideo {
   readonly src = input.required<string>();
   readonly title = input<string>('Video player');
 
-  readonly safeUrl = computed(() =>
-    this.sanitizer.bypassSecurityTrustResourceUrl(this.embedUrl()),
-  );
+  readonly safeUrl = computed(() => this.sanitizer.bypassSecurityTrustResourceUrl(this.embedUrl()));
 
   private readonly embedUrl = computed(() => {
     const src = this.src();

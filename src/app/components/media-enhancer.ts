@@ -1,12 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 /**
  * Hydrates the placeholder divs emitted by the ngmd-video and ngmd-image
@@ -18,7 +13,11 @@ import { filter } from 'rxjs';
 @Component({
   selector: 'app-media-enhancer',
   template: '',
-  styles: `:host { display: none; }`,
+  styles: `
+    :host {
+      display: none;
+    }
+  `,
 })
 export class MediaEnhancer implements AfterViewInit {
   private readonly router = inject(Router);
@@ -57,10 +56,7 @@ export class MediaEnhancer implements AfterViewInit {
     const iframe = document.createElement('iframe');
     iframe.src = src;
     iframe.title = title;
-    iframe.setAttribute(
-      'allow',
-      'accelerometer; encrypted-media; gyroscope; picture-in-picture',
-    );
+    iframe.setAttribute('allow', 'accelerometer; encrypted-media; gyroscope; picture-in-picture');
     iframe.setAttribute('allowfullscreen', '');
     iframe.loading = 'lazy';
     el.appendChild(iframe);
