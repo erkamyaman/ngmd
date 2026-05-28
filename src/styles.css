@@ -281,7 +281,6 @@ ngmd-workflow:not(:defined) {
     display: block;
     color: var(--fg);
     line-height: 1.7;
-    word-wrap: break-word;
     overflow-wrap: break-word;
     /* Widen inter-word gaps slightly so inline-code chips don't kiss the
      * neighbouring word. Applies to all prose so the rhythm stays even. */

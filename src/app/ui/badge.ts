@@ -20,5 +20,13 @@ import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
 export class NgmdBadge {
   readonly variant = input<BadgeVariant>('new');
 
-  protected readonly variantClass = computed(() => BADGE_VARIANTS[this.variant()]);
+  /**
+   * `variant` comes through the Custom Element pipeline as a raw string
+   * attribute, so the BadgeVariant type cannot guard against typos at
+   * runtime. Fall back to `new` for any unknown value so the chip always
+   * renders rather than collapsing to an unstyled span.
+   */
+  protected readonly variantClass = computed(
+    () => BADGE_VARIANTS[this.variant()] ?? BADGE_VARIANTS.new,
+  );
 }

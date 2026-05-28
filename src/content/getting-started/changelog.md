@@ -18,6 +18,8 @@ Release notes and version history for NgMd.
 
 **Word-spacing on prose.** Inline-code chips were visually kissing the neighbouring words. Added `word-spacing: 0.05em` on `analog-markdown`, `analog-markdown-route`, and `.ngmd-prose` so the rhythm gets a touch of breathing room without changing chip-internal padding.
 
+**Sidebar keyboard focus restored.** Nav links previously suppressed both pointer and keyboard focus indicators. The pointer suppression stays (no flash on click), but `focus-visible` now paints an accent outline so keyboard users can see the focused row.
+
 **Email link styling.** Removed `&lt;code&gt;` wrapping around the security-report email in `get-help.md` so it renders as a plain accent link instead of an inline-code chip.
 
 **Prettier formatter.** Config mirrors the Angular monorepo `.prettierrc` byte-for-byte: single quotes, width 100, trailing comma all, no bracket spacing, HTML parsed as Angular templates. New scripts `pnpm format` (write) and `pnpm format:check` (CI). `.vscode/settings.json` opts the workspace into format-on-save with the Prettier extension. `src/content/**` and `create-ngmd/template/**` are excluded so prose line breaks and the scaffold-byte-for-byte copy stay untouched.
