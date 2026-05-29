@@ -50,28 +50,24 @@ const welcome$ = injectContent<{ title: string; order: number }>('slug');
 
 The `'slug'` argument names the route param that the catch-all populates with the URL path. For a named `.page.ts` that handles a specific file, pass `{ customFilename: 'welcome' }` instead.
 
-### Sidebar status badge
+## Sidebar status badges
 
-Add `status:` to a page's frontmatter and a coloured chip renders next to its entry in the sidebar:
+Add `status:` to any nav item in `ngmd.config.ts` and a coloured chip renders next to its sidebar label. Same pattern adev uses on its `NavigationItem`. Lives on the config so all the lifecycle markers for the site sit in one file.
 
-```md
----
-title: Showcase
-status: beta
----
+```ts file="src/ngmd.config.ts"
+{label: 'Search', href: '/concepts/search', status: 'new'},
 ```
 
-Five values are supported, each with its own colour so meaning is consistent across the docs:
+Six values are supported, each with its own colour so meaning is consistent across the docs:
 
 - <ngmd-badge variant="new">new</ngmd-badge> sky blue, for freshly shipped pages
+- <ngmd-badge variant="updated">updated</ngmd-badge> gold, for recently revised pages
 - <ngmd-badge variant="alpha">alpha</ngmd-badge> red, for pre-public exploratory surface
 - <ngmd-badge variant="beta">beta</ngmd-badge> amber, for unstable or in-progress areas
 - <ngmd-badge variant="stable">stable</ngmd-badge> emerald, for settled APIs
 - <ngmd-badge variant="deprecated">deprecated</ngmd-badge> zinc grey with strike-through
 
-The `page-meta.plugin.ts` Vite plugin parses the frontmatter at build time and exposes it via `virtual:ngmd/page-meta`. The sidebar imports the map and renders the chip for any page whose route has a status. Pages without a `status:` field render without a chip, which is the default. Editing the frontmatter triggers HMR so the chip updates without restarting the dev server.
-
-The same chip shape is available inline anywhere in prose via `&lt;ngmd-badge variant="..."&gt;`. See [Badge in the components reference](/concepts/components#badge) for copy-paste examples and how to add a new variant.
+Drop the `status` field to remove the chip. The same chip shape is available inline anywhere in prose via `&lt;ngmd-badge variant="..."&gt;`. See [Badge in the components reference](/concepts/components#badge) for copy-paste examples and how to add a new variant.
 
 ## Dynamic and catch-all routes
 

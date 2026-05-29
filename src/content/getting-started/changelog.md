@@ -6,7 +6,25 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.1 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.2 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Cmd+K search relevance pass.** Replaced the keyword-substring filter with [Orama](https://askorama.ai/) (BM25 ranking + length-scaled fuzzy tolerance + heading×3 / title×2 / body×1 boosts). A new `search-index.plugin.ts` Vite plugin walks `src/content/**/*.md` at build time, parses frontmatter, splits each page into page / section / snippet records, and emits the lot under the virtual module `virtual:ngmd/search-index`. HMR invalidates on any `.md` edit. Result rows now render `&lt;mark&gt;` highlights on matches.
+
+**Search backend abstraction.** Introduced a `SearchProvider` interface so the same palette UI runs against either local Orama or hosted Algolia DocSearch. Implementation lives behind `SearchService` (adev-style: debounced query, drops stale results, selects backend at runtime). Default is Orama. Drop `site.algolia: {appId, apiKey, indexName}` into `ngmd.config.ts` and install `algoliasearch` to swap. `algoliasearch/lite` is loaded via dynamic import so the package is tree-shaken from sites that don't opt in.
+
+**Search history in localStorage.** The palette's empty state now lists your last ten visited results, newest first, with a `Clear` action. Keyed `ngmd-search-history-v1` so a future schema bump won't collide.
+
+**`noIndex: true` frontmatter.** Set it on any page to skip it from the search index. Useful for stub pages, scaffold-only content, or 404 fallbacks.
+
+**Sidebar status badges moved to nav config.** The `status:` frontmatter pattern from 0.1.1 is gone. Status now lives on the `NavItem` in `ngmd.config.ts`: `{label: 'Search', href: '/concepts/search', status: 'new'}`. Matches adev's `NavigationItem.status` pattern. One file, all sidebar lifecycle markers visible at a glance. Pages that previously declared `status:` in frontmatter need that line removed (the field is silently ignored now).
+
+**New `updated` badge variant.** Gold, for recently revised pages. Joins `new` (sky), `alpha` (red), `beta` (amber), `stable` (emerald), and `deprecated` (zinc). All six values work on `NavItem.status` and on `&lt;ngmd-badge variant="..."&gt;`.
+
+**`<mark>` accent styling.** Search-result highlight tags now render with `var(--accent-soft)` background and `var(--accent-strong)` text, matching the rest of the brand. Replaces the browser default yellow flash.
+
+**New Search docs page.** [/concepts/search](/concepts/search) walks through the index pipeline, the two backends, the Algolia opt-in path, and the `noIndex` flag. Linked from the sidebar.
+
+## 0.1.1
 
 **Sidebar status badges.** A new `status:` field in any `.md` page's frontmatter renders a coloured chip next to its sidebar entry. Five values: `new`, `alpha`, `beta`, `stable`, `deprecated`. The `page-meta.plugin.ts` Vite plugin parses the frontmatter at build time and exposes the map via the existing `virtual:ngmd/page-meta` virtual module; the sidebar imports it and renders the chip inline. HMR invalidates the virtual module on any `.md` edit so badge changes show without a server restart.
 
@@ -150,7 +168,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.1.1</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.1.2</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
@@ -173,7 +191,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-accordion>
   <ngmd-accordion-item title="Next" open>
-    Cmd+K palette ranking improvements (fuzzy plus weighted), custom domain (<code>ngmd.dev</code>), OG image auto-generation per page.
+    Keyboard navigation polish for the Cmd+K palette (arrow / Enter), custom domain (<code>ngmd.dev</code>), OG image auto-generation per page.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="v1">
     Versioning, i18n, offline search index (Pagefind or Orama) with optional Algolia adapter, API reference auto-generation, published as <code>&#64;ngmd/core</code>, <code>&#64;ngmd/theme</code>, <code>&#64;ngmd/cli</code>.

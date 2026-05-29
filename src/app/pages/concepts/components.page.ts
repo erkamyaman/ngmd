@@ -249,12 +249,13 @@ import {NgmdCodeBlock} from '../../ui/code-block';
       <section>
         <h2 id="badge" class="text-2xl font-semibold tracking-tight">Badge</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Inline status pill. Five variants, each tied to a lifecycle meaning
+          Inline status pill. Six variants, each tied to a lifecycle meaning
           and a fixed colour so the signal reads the same way across every
           page.
         </p>
         <div class="mt-4 flex flex-wrap gap-2 items-center">
           <ngmd-badge variant="new">New</ngmd-badge>
+          <ngmd-badge variant="updated">Updated</ngmd-badge>
           <ngmd-badge variant="alpha">Alpha</ngmd-badge>
           <ngmd-badge variant="beta">Beta</ngmd-badge>
           <ngmd-badge variant="stable">Stable</ngmd-badge>
@@ -285,21 +286,22 @@ import {NgmdCodeBlock} from '../../ui/code-block';
             </p>
             <ngmd-code-block header="src/types/badge.ts" language="ts" [code]="badgeNewVariantCode" />
             <p class="mt-4">
-              The <code>BadgeVariant</code> type and the <code>status:</code>
-              frontmatter validator are derived from this map, so a new key is
-              accepted in <code>.md</code> files immediately.
+              The <code>BadgeVariant</code> type is derived from this map, so
+              new keys are accepted on <code>&lt;ngmd-badge&gt;</code> and on
+              <code>NavItem.status</code> in <code>ngmd.config.ts</code>
+              immediately.
             </p>
           </ngmd-accordion-item>
-          <ngmd-accordion-item title="Whole-page status (sidebar chip)">
+          <ngmd-accordion-item title="Sidebar chip via nav config">
             <p>
-              For an entire page rather than an inline mention, set
-              <code>status:</code> in the markdown frontmatter. The same chip
-              renders beside the page's sidebar entry. All five lifecycle
-              states above work as values.
+              For an entire page rather than an inline mention, add
+              <code>status:</code> to the nav item in <code>ngmd.config.ts</code>.
+              The same chip renders beside the page's sidebar entry. All six
+              variants work as values.
             </p>
-            <ngmd-code-block language="md" [code]="badgeStatusFrontmatterCode" />
+            <ngmd-code-block language="ts" [code]="badgeNavStatusCode" />
             <p class="mt-4">
-              See <a routerLink="/concepts/markdown-routes" fragment="sidebar-status-badge" class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]">page frontmatter</a> for the pipeline that wires this.
+              See <a routerLink="/concepts/markdown-routes" fragment="sidebar-status-badges" class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]">sidebar status badges</a> for the full list and colour mapping.
             </p>
           </ngmd-accordion-item>
         </ngmd-accordion>
@@ -417,11 +419,16 @@ export default class ComponentsPage {
     '<ngmd-badge variant="deprecated">Removed in v3</ngmd-badge>',
   ].join('\n');
 
-  readonly badgeStatusFrontmatterCode = [
-    '---',
-    'title: Showcase',
-    'status: beta',
-    '---',
+  readonly badgeNavStatusCode = [
+    'nav: [',
+    '  {',
+    "    label: 'Core Concepts',",
+    '    items: [',
+    "      {label: 'Search', href: '/concepts/search', status: 'new'},",
+    "      {label: 'Theming', href: '/concepts/theming', status: 'updated'},",
+    '    ],',
+    '  },',
+    '],',
   ].join('\n');
 
   readonly badgeNewVariantCode = [
@@ -432,6 +439,5 @@ export default class ComponentsPage {
     '',
     '// Derived automatically. No manual edit needed:',
     'export type BadgeVariant = keyof typeof BADGE_VARIANTS;',
-    'export type PageStatus = BadgeVariant;',
   ].join('\n');
 }

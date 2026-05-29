@@ -214,7 +214,7 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 <ngmd-badge variant="beta">Beta</ngmd-badge>
 ```
 
-- `variant`: `new` (sky, default), `alpha` (red), `beta` (amber), `stable` (emerald), `deprecated` (zinc, strikethrough).
+- `variant`: `new` (sky, default), `updated` (gold), `alpha` (red), `beta` (amber), `stable` (emerald), `deprecated` (zinc, strikethrough).
 - Label is whatever sits between the tags. Variant picks the colour, label picks the wording (`<ngmd-badge variant="new">Public preview</ngmd-badge>` is valid).
 - Variants are defined in one map: `BADGE_VARIANTS` in `src/types/badge.ts`. Adding a row there exposes a new variant to both inline badges and the sidebar status chip below.
 - Sits inline next to headings, in cards, or in prose. Doesn't break the text line.
@@ -304,15 +304,16 @@ Every prose page needs frontmatter at the top:
 ```md
 ---
 title: Page Title
-description: One-line summary used in meta tags and the command palette.
-status: beta
+description: One-line summary for downstream consumers.
 ---
 ```
 
 - `title` is consumed by `NgmdTitleStrategy` to set `<title>`. Without it, the route falls back to a generic title.
-- `description` is consumed by the page-meta plugin for `<meta name="description">` and social previews.
-- `status` (optional) renders a coloured chip next to the page's sidebar entry. Values match the `<ngmd-badge>` variants: `new`, `alpha`, `beta`, `stable`, `deprecated`. Build-time plugin reads it via `virtual:ngmd/page-meta`; HMR picks up edits live.
+- `description` is a recommended convention. It is not auto-injected into the page yet (the `<meta name="description">` tag in `index.html` is the static site-wide fallback); pull it with `injectContent<{ description: string }>(...)` if a custom `.page.ts` needs it.
+- `noIndex: true` (optional) excludes the page from the Cmd+K search index, which builds from each page's title, headings, and body. Use for stub pages, scaffold-only pages, or anything you don't want surfacing in search. Default is to index.
 - Add custom keys (`order: 1`, `tags: ['intro']`) and read them as a typed shape: `injectContent<{ title: string; order: number }>(...)`.
+
+Sidebar lifecycle chips (`new`, `updated`, `beta`, etc.) live on the nav item in `ngmd.config.ts`, not in frontmatter. Set `status: 'beta'` on the relevant `NavItem` to render a coloured pill next to the sidebar label. Matches adev's `NavigationItem.status` pattern.
 
 ### Per-instance spacing override
 

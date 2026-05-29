@@ -1,63 +1,43 @@
 import {
   Component,
-  computed,
-  effect,
   ElementRef,
   HostListener,
+  computed,
+  effect,
   inject,
   signal,
   viewChild,
 } from '@angular/core';
 import {Router} from '@angular/router';
-import {injectContentFiles} from '@analogjs/content';
-import {LucideAngularModule, Search, ArrowRight, Hash, FileText} from 'lucide-angular';
-import {navItems} from '../../ngmd.config';
+import {
+  LucideAngularModule,
+  Search,
+  ArrowRight,
+  Hash,
+  FileText,
+  Clock,
+  Trash2,
+} from 'lucide-angular';
+import type {SearchHit} from '../../types/search';
+import {SearchService} from '../services/search/search.service';
 
-type ItemKind = 'page' | 'heading' | 'snippet';
-
-interface PaletteItem {
-  kind: ItemKind;
-  label: string;
-  subtitle: string;
-  href: string;
-  hash?: string;
-}
-
-interface IndexedFile {
-  slug: string;
-  pageLabel: string;
-  href: string;
-  body: string;
-  bodyLower: string;
-  headings: {text: string; slug: string}[];
-}
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-/** Strip markdown syntax for cleaner snippet previews. */
-function stripMarkdown(s: string): string {
-  return s
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/[*_#>]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
+/**
+ * Cmd+K palette. The heavy lifting lives in `SearchService`; this component
+ * is the open / close / navigation shell on top of it.
+ *
+ * Empty state shows recent visits from localStorage. Typing kicks the
+ * service (debounced) and renders highlighted hits. Hover highlights a
+ * row, click navigates and records the visit. Esc closes. Keyboard
+ * navigation (arrow + Enter) is intentionally not wired yet — planned
+ * for a future polish pass.
+ */
 @Component({
   selector: 'app-command-palette',
   imports: [LucideAngularModule],
   template: `
     @if (open()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[10vh] bg-black/50 backdrop-blur-sm"
         (click)="close()"
       >
         <div
@@ -69,39 +49,80 @@ function stripMarkdown(s: string): string {
             <input
               #input
               type="text"
-              placeholder="Type a command or search..."
+              placeholder="Search documentation..."
+              aria-label="Search documentation"
               class="flex-1 bg-transparent text-lg outline-none placeholder:text-zinc-400"
-              [value]="query()"
+              [value]="search.query()"
               (input)="onInput($event)"
             />
+            @if (search.loading()) {
+              <span class="text-xs text-zinc-400">…</span>
+            }
           </div>
 
-          <div class="border-t border-zinc-200 dark:border-zinc-800 h-96 overflow-y-auto p-3">
-            @if (filtered().length === 0) {
-              <div class="py-12 text-center text-base text-zinc-500">No results.</div>
-            } @else {
-              @for (item of filtered(); track $index; let i = $index) {
+          <div class="ngmd-scroll-track-mini border-t border-zinc-200 dark:border-zinc-800 max-h-[60vh] overflow-y-auto p-3">
+            @if (showingHistory()) {
+              <div class="flex items-center justify-between px-4 py-2 text-xs uppercase tracking-wider text-zinc-500">
+                <span>Recent</span>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-300"
+                  (click)="search.clearHistory()"
+                >
+                  <i-lucide [img]="trashIcon" class="size-3"></i-lucide>
+                  Clear
+                </button>
+              </div>
+              @for (item of search.history(); track item.url; let i = $index) {
                 <button
                   type="button"
                   class="flex w-full cursor-pointer items-center gap-4 rounded-lg px-4 py-3 text-left"
                   [class]="i === active() ? 'bg-[color:var(--accent-soft)]' : ''"
                   (mouseenter)="active.set(i)"
-                  (click)="select()"
+                  (click)="selectHistory(item)"
                 >
-                  <i-lucide [img]="iconFor(item)" class="size-5 text-zinc-400"></i-lucide>
+                  <i-lucide [img]="clockIcon" class="size-5 text-zinc-400"></i-lucide>
                   <div class="flex-1 min-w-0">
-                    <div class="text-base font-semibold truncate">{{ item.label }}</div>
-                    <div class="text-sm text-zinc-500 truncate">{{ item.subtitle }}</div>
+                    <div class="text-base font-semibold truncate" [innerHTML]="item.labelHtml"></div>
+                    @if (item.subLabelHtml) {
+                      <div class="text-sm text-zinc-500 truncate" [innerHTML]="item.subLabelHtml"></div>
+                    }
                   </div>
                 </button>
               }
+            } @else if (search.hasNoResults()) {
+              <div class="py-12 text-center text-base text-zinc-500">No results.</div>
+            } @else if (search.results().length) {
+              @for (item of search.results(); track item.id; let i = $index) {
+                <button
+                  type="button"
+                  class="flex w-full cursor-pointer items-start gap-4 rounded-lg px-4 py-3 text-left"
+                  [class]="i === active() ? 'bg-[color:var(--accent-soft)]' : ''"
+                  (mouseenter)="active.set(i)"
+                  (click)="select(item)"
+                >
+                  <i-lucide [img]="iconFor(item)" class="mt-0.5 size-5 text-zinc-400"></i-lucide>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-base font-semibold truncate" [innerHTML]="item.labelHtml"></div>
+                    @if (item.subLabelHtml) {
+                      <div class="text-sm text-zinc-500 truncate" [innerHTML]="item.subLabelHtml"></div>
+                    }
+                    @if (item.contentHtml) {
+                      <div class="mt-1 text-sm text-zinc-500 line-clamp-2" [innerHTML]="item.contentHtml"></div>
+                    }
+                  </div>
+                </button>
+              }
+            } @else if (!search.query().trim() && !search.history().length) {
+              <div class="py-12 text-center text-base text-zinc-500">Start typing to search.</div>
             }
           </div>
 
           <div
-            class="flex items-center justify-end border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500"
+            class="flex items-center justify-end gap-3 border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500"
           >
-            esc to close
+            <kbd class="rounded border border-zinc-200 dark:border-zinc-700 px-1.5">esc</kbd>
+            <span>close</span>
           </div>
         </div>
       </div>
@@ -110,90 +131,40 @@ function stripMarkdown(s: string): string {
 })
 export class CommandPalette {
   private readonly router = inject(Router);
+  protected readonly search = inject(SearchService);
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
-  private readonly contentFiles = injectContentFiles<{title?: string}>();
 
   readonly searchIcon = Search;
   readonly arrowIcon = ArrowRight;
   readonly hashIcon = Hash;
   readonly fileIcon = FileText;
+  readonly clockIcon = Clock;
+  readonly trashIcon = Trash2;
 
   readonly open = signal(false);
-  readonly query = signal('');
-  readonly active = signal(0);
+  /** Mouse-hover highlight only. Arrow-key keyboard nav is intentionally
+   * not wired yet — the focus/scroll polish wasn't worth shipping rough. */
+  readonly active = signal(-1);
+
+  readonly showingHistory = computed(
+    () => !this.search.query().trim() && this.search.history().length > 0,
+  );
 
   constructor() {
     effect(() => {
       if (typeof document === 'undefined') return;
       document.body.style.overflow = this.open() ? 'hidden' : '';
     });
+    // Clear hover highlight whenever the visible list changes.
+    effect(() => {
+      this.search.results();
+      this.search.history();
+      this.active.set(-1);
+    });
   }
 
-  private readonly pageItems: PaletteItem[] = navItems.map((item) => ({
-    kind: 'page',
-    label: item.label,
-    subtitle: item.section,
-    href: item.href,
-  }));
-
-  private readonly index: IndexedFile[] = this.buildIndex();
-
-  readonly filtered = computed(() => {
-    const q = this.query().toLowerCase().trim();
-    if (!q) return this.pageItems;
-
-    const results: PaletteItem[] = [];
-    const seen = new Set<string>();
-    const push = (item: PaletteItem) => {
-      const key = `${item.kind}:${item.href}#${item.hash ?? ''}:${item.label}`;
-      if (seen.has(key)) return;
-      seen.add(key);
-      results.push(item);
-    };
-
-    // 1. Pages by label
-    for (const p of this.pageItems) {
-      if (p.label.toLowerCase().includes(q)) push(p);
-    }
-
-    // 2. Headings by text
-    for (const file of this.index) {
-      for (const h of file.headings) {
-        if (h.text.toLowerCase().includes(q)) {
-          push({
-            kind: 'heading',
-            label: h.text,
-            subtitle: file.pageLabel,
-            href: file.href,
-            hash: h.slug,
-          });
-        }
-      }
-    }
-
-    // 3. Body matches with snippet
-    for (const file of this.index) {
-      const idx = file.bodyLower.indexOf(q);
-      if (idx === -1) continue;
-      const start = Math.max(0, idx - 40);
-      const end = Math.min(file.body.length, idx + q.length + 60);
-      const snippet =
-        (start > 0 ? '…' : '') +
-        file.body.slice(start, end).trim() +
-        (end < file.body.length ? '…' : '');
-      push({
-        kind: 'snippet',
-        label: snippet,
-        subtitle: file.pageLabel,
-        href: file.href,
-      });
-    }
-
-    return results.slice(0, 30);
-  });
-
-  iconFor(item: PaletteItem) {
-    if (item.kind === 'heading') return this.hashIcon;
+  iconFor(item: SearchHit) {
+    if (item.kind === 'section') return this.hashIcon;
     if (item.kind === 'snippet') return this.fileIcon;
     return this.arrowIcon;
   }
@@ -205,7 +176,7 @@ export class CommandPalette {
       this.toggle();
       return;
     }
-    if (event.key === 'Escape' && this.open()) {
+    if (this.open() && event.key === 'Escape') {
       event.preventDefault();
       this.close();
     }
@@ -214,8 +185,8 @@ export class CommandPalette {
   toggle() {
     this.open.update((v) => !v);
     if (this.open()) {
-      this.query.set('');
-      this.active.set(0);
+      this.search.query.set('');
+      this.active.set(-1);
       queueMicrotask(() => this.input()?.nativeElement.focus());
     }
   }
@@ -225,28 +196,39 @@ export class CommandPalette {
   }
 
   onInput(event: Event) {
-    this.query.set((event.target as HTMLInputElement).value);
-    this.active.set(0);
+    this.search.query.set((event.target as HTMLInputElement).value);
   }
 
-  move(delta: number) {
-    const max = this.filtered().length - 1;
-    if (max < 0) return;
-    const next = (this.active() + delta + max + 1) % (max + 1);
-    this.active.set(next);
+  select(hit: SearchHit) {
+    this.search.recordVisit(hit);
+    this.navigateTo(hit.url);
   }
 
-  select() {
-    const item = this.filtered()[this.active()];
-    if (!item) return;
+  selectHistory(item: {id: string; url: string; labelHtml: string; subLabelHtml: string}) {
+    // Re-record so a re-visited recent moves to the top of the list.
+    this.search.recordVisit({
+      id: item.id,
+      kind: 'page',
+      url: item.url,
+      labelHtml: item.labelHtml,
+      subLabelHtml: item.subLabelHtml,
+    });
+    this.navigateTo(item.url);
+  }
+
+  private navigateTo(url: string): void {
     this.close();
-    if (!item.hash) {
-      this.router.navigateByUrl(item.href);
+    const [path, hash] = url.split('#');
+    const samePath = this.router.url.split('#')[0].split('?')[0] === path;
+    if (samePath) {
+      // Already on the target route. Skip the router round-trip and just
+      // scroll, otherwise Angular short-circuits and nothing happens.
+      if (hash) this.scrollToWhenReady(hash);
+      else window.scrollTo({top: 0, behavior: 'smooth'});
       return;
     }
-    // Navigate first, then poll for the heading to appear (markdown loads async).
-    this.router.navigateByUrl(item.href).then(() => {
-      this.scrollToWhenReady(item.hash!);
+    this.router.navigateByUrl(path).then(() => {
+      if (hash) this.scrollToWhenReady(hash);
     });
   }
 
@@ -259,35 +241,5 @@ export class CommandPalette {
     }
     el.scrollIntoView({behavior: 'smooth', block: 'start'});
     history.replaceState(null, '', `${location.pathname}#${slug}`);
-  }
-
-  private buildIndex(): IndexedFile[] {
-    const slugToNav = new Map(navItems.map((item) => [item.href.split('/').pop() ?? '', item]));
-    const out: IndexedFile[] = [];
-
-    for (const file of this.contentFiles) {
-      const navItem = slugToNav.get(file.slug);
-      if (!navItem) continue;
-      const raw = typeof file.content === 'string' ? file.content : '';
-      if (!raw) continue;
-
-      const headings: {text: string; slug: string}[] = [];
-      for (const m of raw.matchAll(/^(##+)\s+(.+)$/gm)) {
-        const text = m[2].trim();
-        headings.push({text, slug: slugify(text)});
-      }
-
-      const body = stripMarkdown(raw);
-      out.push({
-        slug: file.slug,
-        pageLabel: navItem.label,
-        href: navItem.href,
-        body,
-        bodyLower: body.toLowerCase(),
-        headings,
-      });
-    }
-
-    return out;
   }
 }
