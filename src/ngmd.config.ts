@@ -11,8 +11,9 @@ export interface NavItem {
   label: string;
   href: string;
   /** Optional lifecycle marker rendered as a coloured chip beside the
-   * sidebar label. Same five variants as `<ngmd-badge>` plus `updated`.
-   * Pattern mirrors adev's `NavigationItem.status`. */
+   * sidebar label. Accepts any value from the shared `BadgeVariant` set
+   * (`new`, `updated`, `alpha`, `beta`, `stable`, `deprecated`), so the
+   * sidebar chip and inline `<ngmd-badge>` always stay in sync. */
   status?: BadgeVariant;
 }
 

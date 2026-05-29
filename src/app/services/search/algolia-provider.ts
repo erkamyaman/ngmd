@@ -109,10 +109,26 @@ function toSearchHit(hit: AlgoliaHit): SearchHit {
   return {
     id: hit.objectID,
     kind,
-    url: hit.url,
+    url: toRelativeUrl(hit.url),
     labelHtml: lvl2 ?? lvl1 ?? hit.hierarchy.lvl0 ?? '',
     subLabelHtml: lvl2 ? (lvl1 ?? '') : '',
     contentHtml: snippet ?? undefined,
     score: undefined,
   };
+}
+
+/**
+ * Algolia's DocSearch crawler stores absolute URLs (`https://yoursite.com/path#frag`).
+ * The router only accepts in-app paths, so strip the origin and keep
+ * `pathname + search + hash` before handing the hit to the palette.
+ */
+function toRelativeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    // Already relative (or malformed). Pass through unchanged; the
+    // palette's `navigateTo` will report any genuine breakage.
+    return url;
+  }
 }
