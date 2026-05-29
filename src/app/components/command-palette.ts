@@ -23,11 +23,13 @@ import {SearchService} from '../services/search/search.service';
 
 /**
  * Cmd+K palette. The heavy lifting lives in `SearchService`; this component
- * is the keyboard / focus / navigation shell on top of it.
+ * is the open / close / navigation shell on top of it.
  *
  * Empty state shows recent visits from localStorage. Typing kicks the
- * service (debounced, deduped) and renders highlighted hits. Enter
- * navigates and records the visit. Esc closes.
+ * service (debounced) and renders highlighted hits. Hover highlights a
+ * row, click navigates and records the visit. Esc closes. Keyboard
+ * navigation (arrow + Enter) is intentionally not wired yet — planned
+ * for a future polish pass.
  */
 @Component({
   selector: 'app-command-palette',

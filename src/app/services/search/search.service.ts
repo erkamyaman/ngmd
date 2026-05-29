@@ -70,6 +70,11 @@ export class SearchService {
       const q = this.query().trim();
       if (this.debounceTimer) clearTimeout(this.debounceTimer);
       if (!q) {
+        // Reset lastQuery so any in-flight provider response (still
+        // working on the previously-typed query) is rejected by the
+        // stale-result guard in runQuery instead of repopulating the
+        // empty state.
+        this.lastQuery = '';
         this.resultsState.set([]);
         this.loading.set(false);
         return;

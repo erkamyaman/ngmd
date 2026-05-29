@@ -170,7 +170,7 @@ export function searchIndexPlugin(): Plugin {
 
         const slug = url.split('/').pop() || '';
         const pageTitle =
-          fm.title ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) ?? slug;
+          fm.title ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
         // page record: title-only. Body matches surface through snippet
         // records below, which carry their enclosing heading's anchor so
