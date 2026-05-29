@@ -74,7 +74,7 @@ The palette swaps backends on the next page load. Match highlighting works the s
 
 ## Search history
 
-Every successful navigation from the palette is appended to a `localStorage`-backed history (`ngmd-search-history-v1`), capped at ten entries. The empty-query state renders the list newest-first with a `Clear` action. Same pattern adev uses.
+Every successful navigation from the palette is appended to a `localStorage`-backed history (`ngmd-search-history-v1`), capped at ten entries. The empty-query state renders the list newest-first with a `Clear` action.
 
 ## Where to next
 

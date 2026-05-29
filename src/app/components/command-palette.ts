@@ -48,6 +48,7 @@ import {SearchService} from '../services/search/search.service';
               #input
               type="text"
               placeholder="Search documentation..."
+              aria-label="Search documentation"
               class="flex-1 bg-transparent text-lg outline-none placeholder:text-zinc-400"
               [value]="search.query()"
               (input)="onInput($event)"
@@ -201,7 +202,15 @@ export class CommandPalette {
     this.navigateTo(hit.url);
   }
 
-  selectHistory(item: {url: string}) {
+  selectHistory(item: {id: string; url: string; labelHtml: string; subLabelHtml: string}) {
+    // Re-record so a re-visited recent moves to the top of the list.
+    this.search.recordVisit({
+      id: item.id,
+      kind: 'page',
+      url: item.url,
+      labelHtml: item.labelHtml,
+      subLabelHtml: item.subLabelHtml,
+    });
     this.navigateTo(item.url);
   }
 

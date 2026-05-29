@@ -8,7 +8,7 @@ Release notes and version history for NgMd.
 
 ## 0.1.2 <ngmd-badge variant="new">Latest</ngmd-badge>
 
-**Cmd+K search relevance pass.** Replaced the keyword-substring filter with [Orama](https://askorama.ai/) (BM25 ranking + 1-edit fuzzy tolerance + heading×3 / title×2 / body×1 boosts). A new `search-index.plugin.ts` Vite plugin walks `src/content/**\/*.md` at build time, parses frontmatter, splits each page into page / section / snippet records, and emits the lot under the virtual module `virtual:ngmd/search-index`. HMR invalidates on any `.md` edit. Result rows now render `<mark>` highlights on matches.
+**Cmd+K search relevance pass.** Replaced the keyword-substring filter with [Orama](https://askorama.ai/) (BM25 ranking + length-scaled fuzzy tolerance + heading×3 / title×2 / body×1 boosts). A new `search-index.plugin.ts` Vite plugin walks `src/content/**/*.md` at build time, parses frontmatter, splits each page into page / section / snippet records, and emits the lot under the virtual module `virtual:ngmd/search-index`. HMR invalidates on any `.md` edit. Result rows now render `&lt;mark&gt;` highlights on matches.
 
 **Search backend abstraction.** Introduced a `SearchProvider` interface so the same palette UI runs against either local Orama or hosted Algolia DocSearch. Implementation lives behind `SearchService` (adev-style: debounced query, drops stale results, selects backend at runtime). Default is Orama. Drop `site.algolia: {appId, apiKey, indexName}` into `ngmd.config.ts` and install `algoliasearch` to swap. `algoliasearch/lite` is loaded via dynamic import so the package is tree-shaken from sites that don't opt in.
 

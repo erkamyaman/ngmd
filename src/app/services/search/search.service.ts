@@ -86,6 +86,13 @@ export class SearchService {
       // Drop stale results if the user kept typing.
       if (q !== this.lastQuery) return;
       this.resultsState.set(hits);
+    } catch (err) {
+      // Provider blew up (network, missing dep, etc.). Clear results
+      // for this query so the UI shows the empty state instead of stale
+      // hits, log for debugging, and let the finally branch clear the
+      // loading flag.
+      if (q === this.lastQuery) this.resultsState.set([]);
+      console.warn('[ngmd] search provider failed:', err);
     } finally {
       if (q === this.lastQuery) this.loading.set(false);
     }
