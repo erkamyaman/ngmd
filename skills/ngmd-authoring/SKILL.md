@@ -304,13 +304,13 @@ Every prose page needs frontmatter at the top:
 ```md
 ---
 title: Page Title
-description: One-line summary used in meta tags and the command palette.
+description: One-line summary for downstream consumers.
 ---
 ```
 
 - `title` is consumed by `NgmdTitleStrategy` to set `<title>`. Without it, the route falls back to a generic title.
-- `description` is consumed by the page-meta plugin for `<meta name="description">` and social previews.
-- `noIndex: true` (optional) excludes the page from the Cmd+K search index. Use for stub pages, scaffold-only pages, or anything you don't want surfacing in search. Default is to index.
+- `description` is a recommended convention. It is not auto-injected into the page yet (the `<meta name="description">` tag in `index.html` is the static site-wide fallback); pull it with `injectContent<{ description: string }>(...)` if a custom `.page.ts` needs it.
+- `noIndex: true` (optional) excludes the page from the Cmd+K search index, which builds from each page's title, headings, and body. Use for stub pages, scaffold-only pages, or anything you don't want surfacing in search. Default is to index.
 - Add custom keys (`order: 1`, `tags: ['intro']`) and read them as a typed shape: `injectContent<{ title: string; order: number }>(...)`.
 
 Sidebar lifecycle chips (`new`, `updated`, `beta`, etc.) live on the nav item in `ngmd.config.ts`, not in frontmatter. Set `status: 'beta'` on the relevant `NavItem` to render a coloured pill next to the sidebar label. Matches adev's `NavigationItem.status` pattern.
