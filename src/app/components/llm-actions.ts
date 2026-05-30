@@ -18,8 +18,9 @@ interface MenuItem {
   label: string;
   icon: typeof Copy;
   /** Either a click handler or a target URL — drives the `<button>` vs
-   * `<a>` rendering and what action fires. */
-  handler?: () => void | Promise<void>;
+   * `<a>` rendering and what action fires. Return value is ignored; the
+   * loose typing accommodates handlers that report success via boolean. */
+  handler?: () => void | Promise<unknown>;
   href?: string;
 }
 
@@ -213,7 +214,7 @@ export class LlmActions {
     this.open.set(false);
   }
 
-  async runAndClose(fn: () => void | Promise<void>): Promise<void> {
+  async runAndClose(fn: () => void | Promise<unknown>): Promise<void> {
     try {
       await fn();
     } finally {
