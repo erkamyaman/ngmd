@@ -2,6 +2,7 @@ import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs';
+import {ToastService} from '../services/toast/toast.service';
 
 /**
  * Scans rendered markdown for <pre> code blocks and injects a copy button
@@ -19,6 +20,7 @@ import {filter} from 'rxjs';
 export class CodeCopy implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
 
   ngAfterViewInit(): void {
     this.enhanceWithRetry();
@@ -50,7 +52,7 @@ export class CodeCopy implements AfterViewInit {
     button.type = 'button';
     button.setAttribute('aria-label', 'Copy code');
     button.className =
-      'absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white opacity-0 transition-opacity focus:opacity-100';
+      'absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-200/80 text-zinc-600 hover:bg-zinc-300 hover:text-zinc-900 dark:bg-zinc-800/80 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white opacity-0 transition-opacity focus:opacity-100';
     button.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
@@ -80,7 +82,7 @@ export class CodeCopy implements AfterViewInit {
           `;
         }, 1500);
       } catch {
-        // clipboard API not available, fall back silently
+        this.toast.error('Could not copy code.');
       }
     });
 

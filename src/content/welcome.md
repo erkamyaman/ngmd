@@ -43,7 +43,7 @@ npm create ngmd@latest my-docs
 yarn create ngmd my-docs
 ```
 
-```bash group="install" name="bun" image="https://cdn.simpleicons.org/bun/FBF0DF"
+```bash group="install" name="bun" image="https://bun.sh/logo.svg"
 bun create ngmd my-docs
 ```
 

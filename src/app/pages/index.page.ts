@@ -1,4 +1,12 @@
-import {AfterViewInit, Component, computed, ElementRef, signal, viewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {
   LucideAngularModule,
@@ -16,6 +24,7 @@ import {
 } from 'lucide-angular';
 import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
+import {ToastService} from '../services/toast/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -256,6 +265,7 @@ NgMd is a modern Angular docs starter.
   `,
 })
 export default class Home implements AfterViewInit {
+  private readonly toast = inject(ToastService);
   readonly hero = viewChild<ElementRef<HTMLElement>>('hero');
 
   readonly arrowIcon = ArrowRight;
@@ -279,7 +289,7 @@ export default class Home implements AfterViewInit {
       logo: 'https://cdn.simpleicons.org/pnpm/F69220',
     },
     {pm: 'yarn', cmd: 'yarn create ngmd my-docs', logo: 'https://cdn.simpleicons.org/yarn/2C8EBB'},
-    {pm: 'bun', cmd: 'bun create ngmd my-docs', logo: 'https://cdn.simpleicons.org/bun/FBF0DF'},
+    {pm: 'bun', cmd: 'bun create ngmd my-docs', logo: 'https://bun.sh/logo.svg'},
   ];
 
   readonly activePM = signal('npm');
@@ -294,7 +304,7 @@ export default class Home implements AfterViewInit {
       this.copied.set(cmd);
       setTimeout(() => this.copied.set(''), 1500);
     } catch {
-      // clipboard unavailable, silent fail
+      this.toast.error('Could not copy command.');
     }
   }
 

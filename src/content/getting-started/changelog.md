@@ -6,7 +6,15 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.3 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.4 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Toast notifications.** A new `ToastService` + `<app-toaster>` pair gives any component a non-blocking way to surface success / error / info messages. Stack renders fixed top-right, newest on top, slides in from the right (260ms ease-out) on appear and slides back out on dismiss. Auto-dismisses after 3s (or stays until clicked when `duration: 0`), and `prefers-reduced-motion` gets a plain fade instead. Service is a dumb queue; the `Toaster` component owns timing so the exit animation always plays before the entry is removed. Mounted once in `app.ts` so any service or component can `inject(ToastService)` and call `.success('Saved.')` / `.error('Network failed.')` / `.info('Heads up.')`.
+
+**LLM actions wired into the new system.** "Copy Markdown Link" now confirms with a `Link copied to clipboard.` toast on success and surfaces clipboard failures (previously a silent `console.warn`). "Copy Markdown" still uses the in-place "Copied!" flash on success but now surfaces fetch / clipboard failures through a toast instead of vanishing.
+
+**Code-copy + install picker upgraded.** The fenced-code copy buttons and the home install picker keep their in-place check-icon swap on success (lighter than a toast for actions you fire repeatedly) but now show a `Could not copy...` toast on clipboard failure instead of silently no-op'ing.
+
+## 0.1.3
 
 **LLM-friendly page actions.** Every prose route now has a "Copy Markdown" dropdown next to the existing edit / view-source icons. Five actions: copy the raw `.md` body to clipboard, copy a permalink to the raw `.md`, open in GitHub, or open the page in ChatGPT or Claude with a one-shot prompt. Pattern mirrors `react.dev` and the PrimeNG docs. Backed by a new `raw-md.plugin.ts` Vite plugin that serves the literal markdown at `<route>.md` in dev (middleware) and emits the same files as static assets in production. So `https://ngmd.netlify.app/concepts/theming.md` returns clean markdown for any LLM agent following the link.
 

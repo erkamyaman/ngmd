@@ -28,11 +28,7 @@ export class OramaSearchProvider implements SearchProvider {
         },
       });
       if (searchIndex.length) {
-        await insertMultiple(
-          db,
-          searchIndex as unknown as Array<Record<string, string>>,
-          50,
-        );
+        await insertMultiple(db, searchIndex as unknown as Array<Record<string, string>>, 50);
       }
       return db;
     })();

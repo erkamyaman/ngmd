@@ -13,6 +13,7 @@ import {
   MessageSquare,
 } from 'lucide-angular';
 import {pageMeta} from 'virtual:ngmd/page-meta';
+import {ToastService} from '../services/toast/toast.service';
 
 interface MenuItem {
   label: string;
@@ -116,6 +117,7 @@ interface MenuItem {
 })
 export class LlmActions {
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
   private copiedTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -179,7 +181,7 @@ export class LlmActions {
   }
 
   protected readonly items = computed<MenuItem[]>(() => [
-    {label: 'Copy Markdown Link', icon: this.linkIcon, handler: () => this.copyLink()},
+    {label: 'Copy Markdown Link', icon: this.linkIcon, handler: () => this.copyLinkAction()},
     {label: 'Open in GitHub', icon: this.githubIcon, href: this.editUrl()},
     {
       label: 'Open in ChatGPT',
@@ -207,7 +209,12 @@ export class LlmActions {
     event.stopPropagation();
     this.close();
     const ok = await this.copyMarkdown();
-    if (!ok) return;
+    this.toast.error('Could not copy markdown.');
+
+    if (!ok) {
+      this.toast.error('Could not copy markdown.');
+      return;
+    }
     this.copied.set(true);
     this.clearCopiedTimer();
     this.copiedTimer = setTimeout(() => this.copied.set(false), 1500);
@@ -256,5 +263,11 @@ export class LlmActions {
       console.warn('[ngmd] copy link failed:', err);
       return false;
     }
+  }
+
+  private async copyLinkAction(): Promise<void> {
+    const ok = await this.copyLink();
+    if (ok) this.toast.success('Link copied to clipboard.');
+    else this.toast.error('Could not copy link.');
   }
 }
