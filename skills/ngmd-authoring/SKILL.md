@@ -374,7 +374,32 @@ When asked to edit a page:
 - **Mixing prose and component patterns thoughtlessly.** Embedding a single `<ngmd-callout>` inside an otherwise prose-only page works (because most component pages import `NgmdUi` somewhere), but if you need three or more components, switch the whole page to the component pattern.
 - **Using raw `<a href>` for external links.** The link guard catches missing `target="_blank"` and fails the build. Prefer markdown `[label](url)`.
 
-## 10. Build before declaring done
+## 10. Toast notifications (service, not a component)
+
+`ToastService` is a runtime helper for inline feedback (success / error / info). It is **not** an authoring component and does **not** work inside `.md` files. Use it only when writing a custom `.page.ts` or a service that needs to surface a short message.
+
+```ts
+import {Component, inject} from '@angular/core';
+import {ToastService} from '../services/toast/toast.service';
+
+@Component({
+  selector: 'app-my-page',
+  template: `<button (click)="save()">Save</button>`,
+})
+export default class MyPage {
+  private readonly toast = inject(ToastService);
+
+  save() {
+    this.toast.success('Saved.');
+  }
+}
+```
+
+- The stack is mounted once in `app.ts` via `<app-toaster>`. Do not mount it again per page.
+- Default duration is 3 seconds. Pass 0 as the second arg to keep the toast until the user dismisses it: `this.toast.info('Heads up.', 0)`.
+- Already wired in NgMd's own UI for clipboard failures (code-copy, install picker, "Copy Markdown Link"). Don't add your own try/catch around `navigator.clipboard.*` calls in those components.
+
+## 11. Build before declaring done
 
 ```bash
 pnpm run build

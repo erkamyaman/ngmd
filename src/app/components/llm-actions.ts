@@ -209,8 +209,6 @@ export class LlmActions {
     event.stopPropagation();
     this.close();
     const ok = await this.copyMarkdown();
-    this.toast.error('Could not copy markdown.');
-
     if (!ok) {
       this.toast.error('Could not copy markdown.');
       return;
