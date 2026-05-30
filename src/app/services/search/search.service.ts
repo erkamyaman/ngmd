@@ -161,9 +161,7 @@ export class SearchService {
   toggleFavorite(url: string): void {
     if (!this.isBrowser) return;
     this.historyState.update((items) => {
-      const flipped = items.map((h) =>
-        h.url === url ? {...h, isFavorite: !h.isFavorite} : h,
-      );
+      const flipped = items.map((h) => (h.url === url ? {...h, isFavorite: !h.isFavorite} : h));
       const favorites = flipped.filter((h) => h.isFavorite);
       const recents = flipped.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
       return [...favorites, ...recents];

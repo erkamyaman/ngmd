@@ -1,7 +1,8 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
 import {NgmdCodeBlock} from '../../ui/code-block';
+import {ToastService} from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-components',
@@ -104,7 +105,7 @@ import {NgmdCodeBlock} from '../../ui/code-block';
             <ngmd-tab title="yarn" image="https://cdn.simpleicons.org/yarn/2C8EBB">
               <pre class="text-sm"><code>yarn create ngmd my-docs</code></pre>
             </ngmd-tab>
-            <ngmd-tab title="bun" image="https://cdn.simpleicons.org/bun/FBF0DF">
+            <ngmd-tab title="bun" image="https://bun.sh/logo.svg">
               <pre class="text-sm"><code>bun create ngmd my-docs</code></pre>
             </ngmd-tab>
           </ngmd-tabs>
@@ -247,11 +248,49 @@ import {NgmdCodeBlock} from '../../ui/code-block';
       </section>
 
       <section>
+        <h2 id="toast" class="text-2xl font-semibold tracking-tight">Toast</h2>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Non-blocking inline feedback for clipboard failures, save confirmations, link copies — any
+          short message that shouldn't take over the page. Inject <code>ToastService</code> anywhere
+          and call <code>.success()</code>, <code>.error()</code>, or <code>.info()</code>. The
+          stack renders top-right from the app-level <code>&lt;app-toaster&gt;</code>; nothing to
+          mount per-page.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2 items-center">
+          <button
+            type="button"
+            (click)="fireSuccess()"
+            class="rounded-md border border-emerald-200 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors"
+          >
+            Show success
+          </button>
+          <button
+            type="button"
+            (click)="fireError()"
+            class="rounded-md border border-red-200 dark:border-red-500/40 bg-red-50 dark:bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+          >
+            Show error
+          </button>
+          <button
+            type="button"
+            (click)="fireInfo()"
+            class="rounded-md border border-sky-200 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-500/10 px-3 py-1.5 text-sm font-medium text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-500/20 transition-colors"
+          >
+            Show info
+          </button>
+        </div>
+        <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+          Default duration is 3 seconds. Pass 0 as the second arg to keep a toast visible until the
+          user clicks the close icon.
+        </p>
+        <ngmd-code-block header="page.ts" language="ts" [code]="toastCode" />
+      </section>
+
+      <section>
         <h2 id="badge" class="text-2xl font-semibold tracking-tight">Badge</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Inline status pill. Six variants, each tied to a lifecycle meaning
-          and a fixed colour so the signal reads the same way across every
-          page.
+          Inline status pill. Six variants, each tied to a lifecycle meaning and a fixed colour so
+          the signal reads the same way across every page.
         </p>
         <div class="mt-4 flex flex-wrap gap-2 items-center">
           <ngmd-badge variant="new">New</ngmd-badge>
@@ -265,10 +304,9 @@ import {NgmdCodeBlock} from '../../ui/code-block';
         <ngmd-accordion>
           <ngmd-accordion-item title="Custom labels and variants">
             <p>
-              Two independent axes. The <code>variant</code> attribute picks
-              the <strong>colour</strong> (lifecycle meaning). Whatever sits
-              between the tags becomes the <strong>label</strong>, uppercased
-              automatically. Mix and match.
+              Two independent axes. The <code>variant</code> attribute picks the
+              <strong>colour</strong> (lifecycle meaning). Whatever sits between the tags becomes
+              the <strong>label</strong>, uppercased automatically. Mix and match.
             </p>
             <ngmd-code-block language="html" [code]="badgeCustomLabelCode" />
             <p class="mt-4">Renders:</p>
@@ -279,29 +317,39 @@ import {NgmdCodeBlock} from '../../ui/code-block';
             </div>
             <p class="mt-4">
               Need a new colour? Every variant lives in one map:
-              <code>BADGE_VARIANTS</code> in <code>src/types/badge.ts</code>.
-              Add a row and both the inline <code>&lt;ngmd-badge&gt;</code>
+              <code>BADGE_VARIANTS</code> in <code>src/types/badge.ts</code>. Add a row and both the
+              inline <code>&lt;ngmd-badge&gt;</code>
               and the whole-page sidebar chip pick it up. Example: a violet
               <code>preview</code> variant.
             </p>
-            <ngmd-code-block header="src/types/badge.ts" language="ts" [code]="badgeNewVariantCode" />
+            <ngmd-code-block
+              header="src/types/badge.ts"
+              language="ts"
+              [code]="badgeNewVariantCode"
+            />
             <p class="mt-4">
-              The <code>BadgeVariant</code> type is derived from this map, so
-              new keys are accepted on <code>&lt;ngmd-badge&gt;</code> and on
-              <code>NavItem.status</code> in <code>ngmd.config.ts</code>
+              The <code>BadgeVariant</code> type is derived from this map, so new keys are accepted
+              on <code>&lt;ngmd-badge&gt;</code> and on <code>NavItem.status</code> in
+              <code>ngmd.config.ts</code>
               immediately.
             </p>
           </ngmd-accordion-item>
           <ngmd-accordion-item title="Sidebar chip via nav config">
             <p>
               For an entire page rather than an inline mention, add
-              <code>status:</code> to the nav item in <code>ngmd.config.ts</code>.
-              The same chip renders beside the page's sidebar entry. All six
-              variants work as values.
+              <code>status:</code> to the nav item in <code>ngmd.config.ts</code>. The same chip
+              renders beside the page's sidebar entry. All six variants work as values.
             </p>
             <ngmd-code-block language="ts" [code]="badgeNavStatusCode" />
             <p class="mt-4">
-              See <a routerLink="/concepts/markdown-routes" fragment="sidebar-status-badges" class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]">sidebar status badges</a> for the full list and colour mapping.
+              See
+              <a
+                routerLink="/concepts/markdown-routes"
+                fragment="sidebar-status-badges"
+                class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
+                >sidebar status badges</a
+              >
+              for the full list and colour mapping.
             </p>
           </ngmd-accordion-item>
         </ngmd-accordion>
@@ -310,6 +358,40 @@ import {NgmdCodeBlock} from '../../ui/code-block';
   `,
 })
 export default class ComponentsPage {
+  private readonly toast = inject(ToastService);
+
+  fireSuccess(): void {
+    this.toast.success('Link copied to clipboard.');
+  }
+
+  fireError(): void {
+    this.toast.error('Could not copy link.');
+  }
+
+  fireInfo(): void {
+    this.toast.info('Markdown index rebuilt.');
+  }
+
+  readonly toastCode = [
+    "import {inject} from '@angular/core';",
+    "import {ToastService} from '../services/toast/toast.service';",
+    '',
+    'export class MyComponent {',
+    '  private readonly toast = inject(ToastService);',
+    '',
+    '  save() {',
+    "    this.toast.success('Saved.');",
+    '  }',
+    '',
+    '  failed() {',
+    "    this.toast.error('Network request failed.');",
+    '  }',
+    '',
+    '  // Pass 0 to keep the toast until the user dismisses it:',
+    "  // this.toast.info('Heads up.', 0);",
+    '}',
+  ].join('\n');
+
   readonly calloutCode = [
     '<ngmd-callout type="tip" title="Tip">',
     '  Pair with a code snippet.',

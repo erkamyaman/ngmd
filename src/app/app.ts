@@ -18,6 +18,7 @@ import {PageFooter} from './components/page-footer';
 import {SourceActions} from './components/source-actions';
 import {MediaEnhancer} from './components/media-enhancer';
 import {SiteFooter} from './components/site-footer';
+import {Toaster} from './components/toaster';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +38,7 @@ import {SiteFooter} from './components/site-footer';
     PageFooter,
     SourceActions,
     SiteFooter,
+    Toaster,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -208,6 +210,7 @@ import {SiteFooter} from './components/site-footer';
     <app-heading-anchors />
     <app-code-group />
     <app-media-enhancer />
+    <app-toaster />
   `,
 })
 export class App implements OnInit {

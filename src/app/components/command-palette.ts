@@ -266,7 +266,9 @@ import {SearchService} from '../services/search/search.service';
                   aria-hidden="true"
                   class="h-4 w-4"
                 />
-                <span class="font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">orama</span>
+                <span class="font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
+                  >orama</span
+                >
               </a>
             }
           </div>
