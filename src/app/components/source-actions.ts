@@ -4,6 +4,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {filter, map, startWith} from 'rxjs';
 import {LucideAngularModule, Pencil, Code} from 'lucide-angular';
 import {pageMeta} from 'virtual:ngmd/page-meta';
+import {LlmActions} from './llm-actions';
 
 /**
  * Top-right floating icon row showing two GitHub links per route:
@@ -16,10 +17,11 @@ import {pageMeta} from 'virtual:ngmd/page-meta';
  */
 @Component({
   selector: 'app-source-actions',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, LlmActions],
   template: `
     @if (editUrl(); as edit) {
-      <div class="flex justify-end gap-1 px-4 sm:px-8 pt-4">
+      <div class="flex items-center justify-end gap-2 px-4 sm:px-8 pt-4">
+        <app-llm-actions />
         <a
           [href]="edit"
           target="_blank"

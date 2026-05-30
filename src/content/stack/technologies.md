@@ -76,7 +76,7 @@ Vite plugins committed alongside `vite.config.ts`:
 
 | Package | Role |
 |---|---|
-| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.1.2`. |
+| <img class="pkg-icon" src="https://cdn.simpleicons.org/npm/CB3837" alt="" /> [create-ngmd](https://www.npmjs.com/package/create-ngmd) | The scaffolder. `pnpm create ngmd@latest my-docs`. Node 20 builtins, zero deps. Published as `0.1.3`. |
 
 ## Package management
 

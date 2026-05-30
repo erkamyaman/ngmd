@@ -19,13 +19,20 @@ import type {Plugin} from 'vite';
  * rule the rendered TOC uses, so dev-time and runtime stay in sync.
  */
 
+/**
+ * Heading slug. Matches the algorithm `toc.ts` uses at runtime to
+ * overwrite every rendered heading id, and the one `search-index.plugin.ts`
+ * uses to anchor search snippets, so all three stay in sync.
+ *
+ * Lowercase, collapse every run of non-alphanumeric characters (including
+ * `.`, `_`, `*`, spaces, etc.) into a single `-`, then trim outer hyphens.
+ */
 function slugify(s: string): string {
   return s
     .toLowerCase()
-    .replace(/[`*_~]/g, '')
-    .replace(/[^\w\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-');
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {

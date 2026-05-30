@@ -38,14 +38,20 @@ A markdown-first docs starter for Angular, built on AnalogJS. Drop a `.md` file 
   <ngmd-card image="https://shiki.style/logo.svg" title="Shiki" link="https://shiki.style">
     VS Code-grade syntax highlighting in markdown code blocks.
   </ngmd-card>
-  <ngmd-card image="https://cdn.simpleicons.org/markdown/FAFAFA" title="Marked" link="https://marked.js.org">
+  <ngmd-card image="https://cdn.simpleicons.org/markdown/000000/FAFAFA" title="Marked" link="https://marked.js.org">
     Markdown rendering pipeline.
   </ngmd-card>
   <ngmd-card image="https://cdn.simpleicons.org/lucide/F56565" title="Lucide" link="https://lucide.dev">
     Icon set used in the site frame.
   </ngmd-card>
-  <ngmd-card image="https://cdn.simpleicons.org/shadcnui/FAFAFA" title="shadcn/ui" link="https://ui.shadcn.com">
+  <ngmd-card image="https://cdn.simpleicons.org/shadcnui/000000/FAFAFA" title="shadcn/ui" link="https://ui.shadcn.com">
     Popularised the "own your components" idea that NgMd adopts.
+  </ngmd-card>
+  <ngmd-card image="https://docs.orama.com/logo/orama-logo.svg" title="Orama" link="https://docs.orama.com">
+    The Apache-licensed search engine powering the local Cmd+K palette: BM25 ranking, fuzzy matching, tokenisation.
+  </ngmd-card>
+  <ngmd-card image="https://cdn.simpleicons.org/algolia/003DFF" title="Algolia DocSearch" link="https://docsearch.algolia.com">
+    The hosted alternative the palette swaps to when <code>site.algolia</code> is configured. Free for open-source docs.
   </ngmd-card>
 </ngmd-card-grid>
 
