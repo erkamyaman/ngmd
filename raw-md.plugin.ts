@@ -1,5 +1,5 @@
-import {readFileSync, statSync} from 'node:fs';
-import {extname, join} from 'node:path';
+import {readdirSync, readFileSync, statSync} from 'node:fs';
+import {extname, join, relative} from 'node:path';
 import type {Plugin} from 'vite';
 
 /**
@@ -58,15 +58,13 @@ export function rawMdPlugin(): Plugin {
     generateBundle() {
       // Emit one `<route>.md` asset per markdown source so the same URL
       // works in production. Mirrors the dev middleware.
-      const {readdirSync} = require('node:fs') as typeof import('node:fs');
-      const {relative} = require('node:path') as typeof import('node:path');
       const contentDir = join(root, 'src/content');
 
-      const walk = (dir: string, base = contentDir): string[] => {
+      const walk = (dir: string): string[] => {
         const out: string[] = [];
         for (const entry of readdirSync(dir, {withFileTypes: true})) {
           const full = join(dir, entry.name);
-          if (entry.isDirectory()) out.push(...walk(full, base));
+          if (entry.isDirectory()) out.push(...walk(full));
           else if (entry.isFile() && entry.name.endsWith('.md')) out.push(full);
         }
         return out;

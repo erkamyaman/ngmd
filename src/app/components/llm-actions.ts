@@ -1,4 +1,4 @@
-import {Component, HostListener, computed, inject, signal} from '@angular/core';
+import {Component, DestroyRef, HostListener, computed, inject, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter, map, startWith} from 'rxjs';
@@ -43,7 +43,7 @@ interface MenuItem {
   selector: 'app-llm-actions',
   imports: [LucideAngularModule],
   template: `
-    @if (editUrl()) {
+    @if (hasMdSource()) {
       <div class="relative">
         <div
           class="inline-flex items-stretch rounded border border-zinc-200 dark:border-zinc-800 overflow-hidden text-xs text-zinc-600 dark:text-zinc-300"
@@ -115,6 +115,20 @@ interface MenuItem {
 })
 export class LlmActions {
   private readonly router = inject(Router);
+  private copiedTimer: ReturnType<typeof setTimeout> | null = null;
+
+  constructor() {
+    // Belt-and-braces: if the user navigates away mid-flash, kill the
+    // pending setTimeout so we don't tick a signal on a destroyed component.
+    inject(DestroyRef).onDestroy(() => this.clearCopiedTimer());
+  }
+
+  private clearCopiedTimer(): void {
+    if (this.copiedTimer != null) {
+      clearTimeout(this.copiedTimer);
+      this.copiedTimer = null;
+    }
+  }
 
   readonly copyIcon = Copy;
   readonly checkIcon = Check;
@@ -139,6 +153,16 @@ export class LlmActions {
   private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
 
   protected readonly editUrl = computed(() => pageMeta[this.cleanUrl()]?.editUrl ?? '');
+
+  /** True only for routes whose source is a `.md` file under `src/content/`.
+   * Routes backed by `.page.ts` (the home `index.page.ts`, the catch-all,
+   * the components reference page) don't have a corresponding raw markdown
+   * source, so the dropdown hides itself to avoid leading the user to a
+   * dead `.md` URL. */
+  protected readonly hasMdSource = computed(() => {
+    const edit = this.editUrl();
+    return !!edit && /\/src\/content\/.+\.md$/.test(edit);
+  });
 
   /** Permalink to the raw `.md`. Built from the current pathname + `.md`,
    * served by `raw-md.plugin.ts` in dev and emitted as a static asset in
@@ -174,12 +198,15 @@ export class LlmActions {
   }
 
   /** Main split-button action: copies the markdown directly and flashes a
-   * 1.5s "Copied!" confirmation in place of the label. No dropdown. */
+   * 1.5s "Copied!" confirmation in place of the label. Only flashes when
+   * the underlying fetch + clipboard write succeed. */
   async copyMarkdownAction(event: Event): Promise<void> {
     event.stopPropagation();
-    await this.copyMarkdown();
+    const ok = await this.copyMarkdown();
+    if (!ok) return;
     this.copied.set(true);
-    setTimeout(() => this.copied.set(false), 1500);
+    this.clearCopiedTimer();
+    this.copiedTimer = setTimeout(() => this.copied.set(false), 1500);
   }
 
   close(): void {
@@ -202,24 +229,28 @@ export class LlmActions {
     if (this.open()) this.close();
   }
 
-  private async copyMarkdown(): Promise<void> {
-    if (typeof window === 'undefined') return;
+  private async copyMarkdown(): Promise<boolean> {
+    if (typeof window === 'undefined') return false;
     try {
       const res = await fetch(this.mdUrl());
-      if (!res.ok) return;
+      if (!res.ok) return false;
       const text = await res.text();
       await navigator.clipboard.writeText(text);
+      return true;
     } catch (err) {
       console.warn('[ngmd] copy markdown failed:', err);
+      return false;
     }
   }
 
-  private async copyLink(): Promise<void> {
-    if (typeof window === 'undefined') return;
+  private async copyLink(): Promise<boolean> {
+    if (typeof window === 'undefined') return false;
     try {
       await navigator.clipboard.writeText(this.mdUrl());
+      return true;
     } catch (err) {
       console.warn('[ngmd] copy link failed:', err);
+      return false;
     }
   }
 }

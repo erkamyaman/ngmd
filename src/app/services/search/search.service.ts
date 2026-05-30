@@ -196,7 +196,14 @@ export class SearchService {
       const raw = localStorage.getItem(HISTORY_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw) as HistoryItem[];
-      if (Array.isArray(parsed)) this.historyState.set(parsed.slice(0, HISTORY_MAX));
+      if (!Array.isArray(parsed)) return;
+      // Preserve every favourite (never capped — users pinned them on
+      // purpose), only trim non-favourites to HISTORY_MAX. Otherwise a
+      // user with >10 pinned items would silently lose anything past
+      // the first 10 on the next page load.
+      const favourites = parsed.filter((h) => h.isFavorite);
+      const recents = parsed.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
+      this.historyState.set([...favourites, ...recents]);
     } catch {
       // Corrupt entry — wipe and move on.
       localStorage.removeItem(HISTORY_KEY);
