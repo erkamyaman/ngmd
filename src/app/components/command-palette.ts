@@ -142,7 +142,7 @@ import {SearchService} from '../services/search/search.service';
                     type="button"
                     class="rounded p-1.5 text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                     aria-label="Remove from history"
-                    (click)="search.removeFromHistory(item.url)"
+                    (click)="removeAt(item.url)"
                   >
                     <i-lucide [img]="closeIcon" class="size-4"></i-lucide>
                   </button>
@@ -368,6 +368,14 @@ export class CommandPalette {
       subLabelHtml: item.subLabelHtml,
     });
     this.navigateTo(item.url);
+  }
+
+  /** Drop a row and clear the hover highlight if it was on this URL.
+   * Without this, a later row that happens to share the URL would render
+   * pre-highlighted before the user moves the pointer over it. */
+  removeAt(url: string): void {
+    this.search.removeFromHistory(url);
+    if (this.hoverUrl() === url) this.hoverUrl.set(null);
   }
 
   private navigateTo(url: string): void {

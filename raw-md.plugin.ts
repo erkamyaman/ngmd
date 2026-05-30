@@ -46,8 +46,18 @@ export function rawMdPlugin(): Plugin {
     },
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const url = req.url?.split('?')[0] ?? '';
-        if (extname(url) !== '.md') return next();
+        const raw = req.url?.split('?')[0] ?? '';
+        if (extname(raw) !== '.md') return next();
+        // URL paths arrive percent-encoded (`/concepts/some%20page.md`),
+        // but the on-disk filename is `some page.md`. Decode before
+        // resolving so the lookup matches. Malformed sequences fall
+        // through to the next middleware.
+        let url: string;
+        try {
+          url = decodeURIComponent(raw);
+        } catch {
+          return next();
+        }
         const body = resolveMd(url);
         if (body == null) return next();
         res.setHeader('Content-Type', 'text/markdown; charset=utf-8');

@@ -145,7 +145,10 @@ export class SearchService {
       const favorites = others.filter((h) => h.isFavorite);
       const recents = others.filter((h) => !h.isFavorite);
       if (item.isFavorite) {
-        return [item, ...favorites, ...recents];
+        // Favourites are uncapped, but recents must still respect
+        // HISTORY_MAX so a corrupt / hand-edited localStorage entry
+        // doesn't perpetuate an oversized recents list.
+        return [item, ...favorites, ...recents.slice(0, HISTORY_MAX)];
       }
       return [...favorites, item, ...recents.slice(0, HISTORY_MAX - 1)];
     });
@@ -153,12 +156,18 @@ export class SearchService {
   }
 
   /** Toggle the pinned-favorite flag for an item already in history. No-op
-   * if the URL isn't there yet. */
+   * if the URL isn't there yet. Re-applies the recents cap so unpinning a
+   * batch of favourites can't leave the list oversized. */
   toggleFavorite(url: string): void {
     if (!this.isBrowser) return;
-    this.historyState.update((items) =>
-      items.map((h) => (h.url === url ? {...h, isFavorite: !h.isFavorite} : h)),
-    );
+    this.historyState.update((items) => {
+      const flipped = items.map((h) =>
+        h.url === url ? {...h, isFavorite: !h.isFavorite} : h,
+      );
+      const favorites = flipped.filter((h) => h.isFavorite);
+      const recents = flipped.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
+      return [...favorites, ...recents];
+    });
     this.persistHistory();
   }
 

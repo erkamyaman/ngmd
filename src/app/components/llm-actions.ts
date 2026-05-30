@@ -200,9 +200,12 @@ export class LlmActions {
 
   /** Main split-button action: copies the markdown directly and flashes a
    * 1.5s "Copied!" confirmation in place of the label. Only flashes when
-   * the underlying fetch + clipboard write succeed. */
+   * the underlying fetch + clipboard write succeed. Also closes the
+   * dropdown if it happened to be open — matches the behaviour of items
+   * inside the menu. */
   async copyMarkdownAction(event: Event): Promise<void> {
     event.stopPropagation();
+    this.close();
     const ok = await this.copyMarkdown();
     if (!ok) return;
     this.copied.set(true);
