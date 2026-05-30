@@ -678,24 +678,6 @@ ngmd-workflow:not(:defined) {
    *    (Firefox shipped only in 145, late 2025). See:
    *    https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows
    */
-  /* Cross-fade two stacked chevron icons. Closed shows the down arrow
-   * (inviting click to open), open shows the up arrow (inviting collapse). */
-  .ngmd-accordion-chevron .ngmd-accordion-chevron-down {
-    opacity: 1;
-  }
-
-  .ngmd-accordion-chevron .ngmd-accordion-chevron-up {
-    opacity: 0;
-  }
-
-  .ngmd-accordion-item.is-open .ngmd-accordion-chevron-down {
-    opacity: 0;
-  }
-
-  .ngmd-accordion-item.is-open .ngmd-accordion-chevron-up {
-    opacity: 1;
-  }
-
   /* Open-state button background. Token-driven so it follows the surface
    * palette in both modes (zinc-100 in light, zinc-900 in dark). */
   .ngmd-accordion-item.is-open > button {
@@ -726,8 +708,6 @@ ngmd-workflow:not(:defined) {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ngmd-accordion-chevron-down,
-    .ngmd-accordion-chevron-up,
     .ngmd-accordion-body {
       transition: none;
     }

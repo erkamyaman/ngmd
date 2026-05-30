@@ -73,7 +73,7 @@ Open follow-ups:
 - ✅ Algolia DocSearch integration (opt-in via `site.algolia` keys + `pnpm add algoliasearch`, 0.1.2)
 - ✅ Orama offline search index built at build time (`search-index.plugin.ts` → `virtual:ngmd/search-index`, 0.1.2)
 - ❌ Search result keyboard navigation (arrows + enter). Reverted in 0.1.2 pending a proper focus / scroll polish pass.
-- ✅ Recent searches (cap 10, `localStorage`, 0.1.2). Favorites still ❌.
+- ✅ Recent searches + ✅ favorites (`localStorage`, 0.1.2 recents / 0.1.3 favorites). Star toggle per row, split into Favorites + Recent sections.
 
 ## 5. Library-author features (where ng-doc beats us)
 

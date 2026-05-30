@@ -358,7 +358,8 @@ export default class Home implements AfterViewInit {
     {
       icon: Search,
       title: 'Cmd+K search',
-      description: 'Built-in command palette with keyboard navigation. Press ⌘K to try it.',
+      description:
+        'Local Orama index out of the box with optional Algolia swap-in. Fuzzy, ranked, with recents and favourites. Press ⌘K (or Ctrl+K on Windows / Linux) to try it.',
     },
     {
       icon: Zap,

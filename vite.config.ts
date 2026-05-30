@@ -9,6 +9,7 @@ import {pageMetaPlugin} from './page-meta.plugin';
 import {internalLinkGuard} from './link-guard.plugin';
 import {sitemapPlugin} from './sitemap.plugin';
 import {searchIndexPlugin} from './search-index.plugin';
+import {rawMdPlugin} from './raw-md.plugin';
 import config from './src/ngmd.config';
 
 /**
@@ -54,6 +55,7 @@ export default defineConfig(async () => ({
     internalLinkGuard(),
     pageMetaPlugin({repoUrl: config.site.githubUrl, branch: 'main'}),
     sitemapPlugin({siteUrl: config.site.url}),
+    rawMdPlugin(),
     searchIndexPlugin(),
     analog({
       content: {

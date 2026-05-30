@@ -6,7 +6,27 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.2 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.3 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**LLM-friendly page actions.** Every prose route now has a "Copy Markdown" dropdown next to the existing edit / view-source icons. Five actions: copy the raw `.md` body to clipboard, copy a permalink to the raw `.md`, open in GitHub, or open the page in ChatGPT or Claude with a one-shot prompt. Pattern mirrors `react.dev` and the PrimeNG docs. Backed by a new `raw-md.plugin.ts` Vite plugin that serves the literal markdown at `<route>.md` in dev (middleware) and emits the same files as static assets in production. So `https://ngmd.netlify.app/concepts/theming.md` returns clean markdown for any LLM agent following the link.
+
+**Search favorites.** Star any history row in the Cmd+K palette to pin it. Favorites render above recents in a dedicated section, persist across sessions in `localStorage`, and survive the `Clear` action on recents. The same star toggle on the row unpins. Pattern mirrors adev's recent / favorites split. `SearchService` exposes `favorites` and `recents` as derived signals plus `toggleFavorite(url)` and `clearRecents()` methods so any future UI shell can consume the same data.
+
+**`HistoryItem` gained `isFavorite?: boolean`.** Existing `localStorage` entries from 0.1.2 load without the flag (treated as not favorited) so the upgrade is transparent.
+
+**`link-guard.plugin.ts` slug aligned with the runtime.** The build-time link guard was using its own slug rule (`[^\w\s-]` strip) that disagreed with the runtime TOC and search-index plugin on any heading containing `.` or `_`. So fragment links pointing at a version heading like `## 0.1.2` would either falsely fail validation or pass through to a 404 at runtime (guard computed `012`, the actual DOM id was `0-1-2`). Now uses the same `toLowerCase` / `[^a-z0-9]+` / trim-outer-hyphens algorithm as `toc.ts` and `search-index.plugin.ts`.
+
+**Search service refactored to `resource()` + `linkedSignal()`.** Dropped the manual `runQuery` / `resultsState` / stale-result-guard plumbing in favour of Angular's resource API. Previous result batch stays visible while the next one is in flight so the palette no longer blinks between keystrokes. Clearing the query is still instant, debounce stays at 200ms.
+
+**Per-row X on history items.** Hover a row in the Cmd+K palette (favourites or recents) and an X button slides in to drop that single entry, no matter its pin state. The general "Clear" button on the Recent section header stays — it wipes the whole recents batch.
+
+**Backend attribution in palette footer.** When `site.algolia` is configured the palette renders the required "Search by Algolia" badge with the official logo. The default local backend gets a courtesy "Search by Orama" credit using Orama's official mark. `esc / close` hint stays on the left.
+
+**Accordion chevron simplified.** Replaced the dual `ChevronDown` / `ChevronUp` opacity crossfade with a single down-arrow that rotates 180° on open via `transition-transform`. Matches the new split-button chevron in the LLM actions dropdown. Drops the related CSS rules and the reduced-motion overrides for them.
+
+**Versions match.** Root `package.json` bumped to `0.1.3` so `pnpm dev` no longer prints `ngmd@0.0.0` and the script header lines up with the published `create-ngmd` version.
+
+## 0.1.2
 
 **Cmd+K search relevance pass.** Replaced the keyword-substring filter with [Orama](https://askorama.ai/) (BM25 ranking + length-scaled fuzzy tolerance + heading×3 / title×2 / body×1 boosts). A new `search-index.plugin.ts` Vite plugin walks `src/content/**/*.md` at build time, parses frontmatter, splits each page into page / section / snippet records, and emits the lot under the virtual module `virtual:ngmd/search-index`. HMR invalidates on any `.md` edit. Result rows now render `&lt;mark&gt;` highlights on matches.
 
@@ -168,7 +188,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.1.2</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@0.1.3</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.

@@ -1,5 +1,5 @@
 import {Component, effect, input, signal} from '@angular/core';
-import {LucideAngularModule, ChevronDown, ChevronUp} from 'lucide-angular';
+import {LucideAngularModule, ChevronDown} from 'lucide-angular';
 
 let idCounter = 0;
 
@@ -7,9 +7,7 @@ let idCounter = 0;
  * Disclosure / accordion item. Signal-driven open/close state, full ARIA
  * (`aria-expanded`, `aria-controls`, region role + `aria-labelledby`).
  *
- * Chevron: two stacked icons cross-fade via opacity. ChevronUp shows when
- * closed, ChevronDown shows when open. 200ms each. No rotation, no
- * possibility of going the long way around.
+ * Chevron: single down-arrow icon, rotated 180deg on open. 200ms ease.
  *
  * Body: outer wrapper is a CSS grid container animating `grid-template-rows`
  * from `0fr` (closed) to `1fr` (open) over 280ms. Inner wrapper has
@@ -47,18 +45,12 @@ let idCounter = 0;
           }
           <span>{{ title() }}</span>
         </span>
-        <span class="ngmd-accordion-chevron relative size-4 shrink-0 text-zinc-400">
-          <i-lucide
-            [img]="chevronDownIcon"
-            class="ngmd-accordion-chevron-down absolute inset-0 size-4 transition-opacity duration-200"
-            aria-hidden="true"
-          ></i-lucide>
-          <i-lucide
-            [img]="chevronUpIcon"
-            class="ngmd-accordion-chevron-up absolute inset-0 size-4 transition-opacity duration-200"
-            aria-hidden="true"
-          ></i-lucide>
-        </span>
+        <i-lucide
+          [img]="chevronIcon"
+          class="size-4 shrink-0 text-zinc-400 transition-transform duration-200"
+          [class.rotate-180]="expanded()"
+          aria-hidden="true"
+        ></i-lucide>
       </button>
       <div
         [id]="regionId"
@@ -78,8 +70,7 @@ let idCounter = 0;
   `,
 })
 export class NgmdAccordionItem {
-  protected readonly chevronDownIcon = ChevronDown;
-  protected readonly chevronUpIcon = ChevronUp;
+  protected readonly chevronIcon = ChevronDown;
 
   readonly title = input.required<string>();
   /** Optional brand logo / icon URL rendered as a 16×16 prefix to the title. */
