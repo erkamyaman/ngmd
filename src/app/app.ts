@@ -1,10 +1,10 @@
-import {Component, computed, inject, OnInit, signal} from '@angular/core';
-import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {filter, map, startWith} from 'rxjs';
+import {Component, DestroyRef, computed, inject, OnInit, signal} from '@angular/core';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {LucideAngularModule, Github, Menu, X, Search, Sun, Moon, SunMoon} from 'lucide-angular';
 import {ThemeService} from './theme';
 import {LayoutMode} from './layout-mode.service';
+import {RouteUrlService} from './services/route-url/route-url.service';
+import {onNavigation} from './utils/enhance-on-navigation';
 import siteConfig from '../ngmd.config';
 import {CommandPalette} from './components/command-palette';
 import {Sidebar} from './components/sidebar';
@@ -162,34 +162,36 @@ import {Toaster} from './components/toaster';
           }
         }
 
-        <main class="flex-1 min-w-0">
-          @if (showBreadcrumb()) {
-            <app-breadcrumb />
-          }
-          @if (showFooter()) {
-            <app-source-actions />
-          }
-          @if (showToc()) {
-            <details
-              class="xl:hidden mx-4 sm:mx-6 mt-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 group"
-            >
-              <summary
-                class="flex items-center justify-between cursor-pointer list-none px-4 py-2.5 text-sm font-semibold"
+        <main class="flex-1 min-w-0 flex flex-col">
+          <div class="flex-1">
+            @if (showBreadcrumb()) {
+              <app-breadcrumb />
+            }
+            @if (showFooter()) {
+              <app-source-actions />
+            }
+            @if (showToc()) {
+              <details
+                class="xl:hidden mx-4 sm:mx-6 mt-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 group"
               >
-                On this page
-                <span class="text-zinc-400 transition-transform group-open:rotate-180">▾</span>
-              </summary>
-              <div class="px-4 pb-4">
-                <app-toc [showActive]="false" />
+                <summary
+                  class="flex items-center justify-between cursor-pointer list-none px-4 py-2.5 text-sm font-semibold"
+                >
+                  On this page
+                  <span class="text-zinc-400 transition-transform group-open:rotate-180">▾</span>
+                </summary>
+                <div class="px-4 pb-4">
+                  <app-toc [showActive]="false" />
+                </div>
+              </details>
+            }
+            <router-outlet />
+            @if (showFooter()) {
+              <div class="mx-auto max-w-3xl px-4 sm:px-8">
+                <app-page-footer />
               </div>
-            </details>
-          }
-          <router-outlet />
-          @if (showFooter()) {
-            <div class="mx-auto max-w-3xl px-4 sm:px-8">
-              <app-page-footer />
-            </div>
-          }
+            }
+          </div>
           <app-site-footer />
         </main>
 
@@ -216,7 +218,9 @@ import {Toaster} from './components/toaster';
 export class App implements OnInit {
   readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
-  private readonly layout = inject(LayoutMode);
+  private readonly destroyRef = inject(DestroyRef);
+  protected readonly layout = inject(LayoutMode);
+  private readonly routeUrl = inject(RouteUrlService);
 
   readonly menuIcon = Menu;
   readonly closeIcon = X;
@@ -230,19 +234,10 @@ export class App implements OnInit {
 
   readonly drawerOpen = signal(false);
 
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url),
-      startWith(this.router.url),
-    ),
-    {initialValue: '/'},
-  );
-
-  private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
-  private readonly isDocsRoute = computed(
-    () => this.cleanUrl() !== '/' && this.cleanUrl() !== '' && !this.layout.chromeHidden(),
-  );
+  private readonly isDocsRoute = computed(() => {
+    const url = this.routeUrl.cleanUrl();
+    return url !== '/' && url !== '' && !this.layout.chromeHidden();
+  });
   readonly showSidebar = this.isDocsRoute;
   readonly showBreadcrumb = this.isDocsRoute;
   readonly showToc = this.isDocsRoute;
@@ -250,12 +245,10 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.theme.initFromStorage();
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
+    onNavigation(this.router, this.destroyRef, () => {
       this.drawerOpen.set(false);
       if (typeof window === 'undefined' || window.location.hash) return;
-      setTimeout(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      }, 0);
+      setTimeout(() => window.scrollTo({top: 0, behavior: 'smooth'}), 0);
     });
   }
 }

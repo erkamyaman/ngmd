@@ -10,6 +10,7 @@ import {
   QueryList,
   signal,
 } from '@angular/core';
+import {watchHostAttribute} from '../utils/watch-host-attribute';
 
 @Component({
   selector: 'ngmd-step',
@@ -44,26 +45,16 @@ export class NgmdStep {
     // markdown body, the workflow can't see this step via `ContentChildren`
     // because each `<ngmd-step>` is its own Custom Element host. The
     // workflow instead sets a `data-step-index` attribute on each child
-    // element, which we read here at construction and again on any later
-    // change via a MutationObserver. Component-pages (where ContentChildren
-    // works) still call `index.set(i)` directly; the attribute path is a
-    // no-op for them.
-    if (typeof MutationObserver === 'undefined') return;
-    const elementRef: ElementRef<HTMLElement> = inject(ElementRef);
-    const host = elementRef.nativeElement;
-    const sync = () => {
-      const a = host.getAttribute('data-step-index');
-      if (a === null) return;
-      const n = parseInt(a, 10);
+    // element; we read it here on setup and on every later change.
+    // Component-pages (where ContentChildren works) still call `index.set(i)`
+    // directly; the attribute path is a no-op for them.
+    const host = inject(ElementRef<HTMLElement>).nativeElement;
+    const stop = watchHostAttribute(host, 'data-step-index', (value) => {
+      if (value === null) return;
+      const n = parseInt(value, 10);
       if (!Number.isNaN(n)) this.index.set(n);
-    };
-    sync();
-    const observer = new MutationObserver(sync);
-    observer.observe(host, {
-      attributes: true,
-      attributeFilter: ['data-step-index'],
     });
-    inject(DestroyRef).onDestroy(() => observer.disconnect());
+    inject(DestroyRef).onDestroy(stop);
   }
 }
 

@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
+import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
 /**
  * Hydrates the placeholder divs emitted by the ngmd-video and ngmd-image
@@ -24,29 +23,18 @@ export class MediaEnhancer implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngAfterViewInit(): void {
-    this.enhanceWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.enhanceWithRetry());
-  }
-
-  private enhanceWithRetry(attempt = 0): void {
-    if (typeof document === 'undefined' || attempt > 20) return;
-    const videos = document.querySelectorAll<HTMLElement>(
+    enhanceOnNavigation(
+      this.router,
+      this.destroyRef,
       '.ngmd-video[data-video-src]:not([data-enhanced])',
+      (el) => this.enhanceVideo(el),
     );
-    const images = document.querySelectorAll<HTMLElement>(
+    enhanceOnNavigation(
+      this.router,
+      this.destroyRef,
       '.ngmd-image[data-image-src]:not([data-enhanced])',
+      (el) => this.enhanceImage(el),
     );
-    if (videos.length === 0 && images.length === 0) {
-      setTimeout(() => this.enhanceWithRetry(attempt + 1), 50);
-      return;
-    }
-    videos.forEach((el) => this.enhanceVideo(el));
-    images.forEach((el) => this.enhanceImage(el));
   }
 
   private enhanceVideo(el: HTMLElement): void {

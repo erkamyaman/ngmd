@@ -1,6 +1,4 @@
 import {Component, DestroyRef, effect, inject, signal} from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
-import {PLATFORM_ID} from '@angular/core';
 import {LucideAngularModule, CheckCircle2, AlertCircle, Info, X} from 'lucide-angular';
 import {ToastService, type Toast} from '../services/toast/toast.service';
 
@@ -53,7 +51,7 @@ const EXIT_MS = 220;
 })
 export class Toaster {
   private readonly toastService = inject(ToastService);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly isBrowser = typeof window !== 'undefined';
 
   readonly toasts = this.toastService.toasts;
 

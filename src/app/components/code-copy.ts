@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
 import {ToastService} from '../services/toast/toast.service';
+import {writeToClipboard} from '../utils/clipboard';
+import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
 /**
  * Scans rendered markdown for <pre> code blocks and injects a copy button
@@ -23,25 +23,12 @@ export class CodeCopy implements AfterViewInit {
   private readonly toast = inject(ToastService);
 
   ngAfterViewInit(): void {
-    this.enhanceWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.enhanceWithRetry());
-  }
-
-  private enhanceWithRetry(attempt = 0): void {
-    if (typeof document === 'undefined' || attempt > 20) return;
-    const pres = document.querySelectorAll(
+    enhanceOnNavigation(
+      this.router,
+      this.destroyRef,
       'analog-markdown-route pre:not([data-copy-enhanced]), analog-markdown pre:not([data-copy-enhanced])',
+      (pre) => this.enhance(pre),
     );
-    if (pres.length === 0) {
-      setTimeout(() => this.enhanceWithRetry(attempt + 1), 50);
-      return;
-    }
-    pres.forEach((pre) => this.enhance(pre as HTMLElement));
   }
 
   private enhance(pre: HTMLElement): void {
@@ -66,24 +53,24 @@ export class CodeCopy implements AfterViewInit {
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
       const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
-      try {
-        await navigator.clipboard.writeText(code);
+      const ok = await writeToClipboard(code);
+      if (!ok) {
+        this.toast.error('Could not copy code.');
+        return;
+      }
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      `;
+      setTimeout(() => {
         button.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
           </svg>
         `;
-        setTimeout(() => {
-          button.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-            </svg>
-          `;
-        }, 1500);
-      } catch {
-        this.toast.error('Could not copy code.');
-      }
+      }, 1500);
     });
 
     pre.appendChild(button);

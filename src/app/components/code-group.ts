@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
+import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
 /**
  * Wires tab-switching for `<div class="ngmd-code-group">` blocks emitted by
@@ -25,25 +24,12 @@ export class CodeGroup implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngAfterViewInit(): void {
-    this.enhanceWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.enhanceWithRetry());
-  }
-
-  private enhanceWithRetry(attempt = 0): void {
-    if (typeof document === 'undefined' || attempt > 20) return;
-    const groups = document.querySelectorAll<HTMLElement>(
+    enhanceOnNavigation(
+      this.router,
+      this.destroyRef,
       'main .ngmd-code-group:not([data-enhanced])',
+      (group) => this.enhance(group),
     );
-    if (groups.length === 0) {
-      setTimeout(() => this.enhanceWithRetry(attempt + 1), 50);
-      return;
-    }
-    groups.forEach((group) => this.enhance(group));
   }
 
   private enhance(group: HTMLElement): void {

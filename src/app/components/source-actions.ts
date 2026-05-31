@@ -1,10 +1,8 @@
 import {Component, computed, inject} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter, map, startWith} from 'rxjs';
 import {LucideAngularModule, Pencil, Code} from 'lucide-angular';
 import {pageMeta} from 'virtual:ngmd/page-meta';
 import {LlmActions} from './llm-actions';
+import {RouteUrlService} from '../services/route-url/route-url.service';
 
 /**
  * Top-right floating icon row showing two GitHub links per route:
@@ -47,21 +45,10 @@ import {LlmActions} from './llm-actions';
   `,
 })
 export class SourceActions {
-  private readonly router = inject(Router);
+  private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
 
   readonly editIcon = Pencil;
   readonly sourceIcon = Code;
-
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url),
-      startWith(this.router.url),
-    ),
-    {initialValue: '/'},
-  );
-
-  private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
 
   protected readonly editUrl = computed(() => pageMeta[this.cleanUrl()]?.editUrl ?? '');
   protected readonly sourceUrl = computed(() => this.editUrl().replace('/edit/', '/blob/'));

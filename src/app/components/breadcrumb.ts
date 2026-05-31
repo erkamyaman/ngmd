@@ -1,8 +1,7 @@
 import {Component, computed, inject} from '@angular/core';
-import {Router, NavigationEnd, RouterLink} from '@angular/router';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {filter, map, startWith} from 'rxjs';
+import {RouterLink} from '@angular/router';
 import {LucideAngularModule, ChevronRight, House} from 'lucide-angular';
+import {RouteUrlService} from '../services/route-url/route-url.service';
 
 interface Crumb {
   label: string;
@@ -21,7 +20,6 @@ const LABELS: Record<string, string> = {
   'markdown-routes': 'Markdown Routes',
   theming: 'Theming',
   components: 'Components',
-  support: 'Support',
 };
 
 @Component({
@@ -48,22 +46,14 @@ const LABELS: Record<string, string> = {
   `,
 })
 export class Breadcrumb {
-  private readonly router = inject(Router);
+  private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
   readonly home = House;
   readonly chevron = ChevronRight;
 
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url),
-      startWith(this.router.url),
-    ),
-    {initialValue: '/'},
-  );
-
   readonly crumbs = computed<Crumb[]>(() => {
-    const url = this.url().split('?')[0].split('#')[0];
-    const segments = url.split('/').filter((s) => s.length > 0);
+    const segments = this.cleanUrl()
+      .split('/')
+      .filter((s) => s.length > 0);
     return segments.map((segment, i) => ({
       label: LABELS[segment] ?? this.humanize(segment),
       href: '/' + segments.slice(0, i + 1).join('/'),

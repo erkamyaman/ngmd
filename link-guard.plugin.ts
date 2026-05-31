@@ -1,6 +1,7 @@
-import {readFileSync, readdirSync, statSync} from 'node:fs';
+import {readFileSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import type {Plugin} from 'vite';
+import {routeFromPagePath, slugify, walkContentFiles, walkPageFiles} from './plugin-utils';
 
 /**
  * Build-time guard that errors on broken internal links inside markdown files.
@@ -15,68 +16,9 @@ import type {Plugin} from 'vite';
  * External (`http(s)://`), mail (`mailto:`), and relative (`./foo`) links are
  * skipped; the existing externalLinkGuard covers raw HTML external anchors.
  *
- * Heading slugs are computed with the same lowercase + dash + strip-punct
- * rule the rendered TOC uses, so dev-time and runtime stay in sync.
+ * Heading slugs are computed with the same algorithm the rendered TOC uses
+ * (see `plugin-utils.slugify`), so dev-time and runtime stay in sync.
  */
-
-/**
- * Heading slug. Matches the algorithm `toc.ts` uses at runtime to
- * overwrite every rendered heading id, and the one `search-index.plugin.ts`
- * uses to anchor search snippets, so all three stay in sync.
- *
- * Lowercase, collapse every run of non-alphanumeric characters (including
- * `.`, `_`, `*`, spaces, etc.) into a single `-`, then trim outer hyphens.
- */
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkPageFiles(full, root, out);
-    } else if (entry.isFile() && entry.name.endsWith('.page.ts')) {
-      out.push(relative(root, full));
-    }
-  }
-  return out;
-}
-
-/**
- * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
- * Route mirrors the path under `src/content/` with the .md stripped.
- * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
- */
-function walkContentFiles(
-  dir: string,
-  root: string,
-  baseDir: string = dir,
-  out: Array<[string, string]> = [],
-): Array<[string, string]> {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkContentFiles(full, root, baseDir, out);
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const rel = relative(root, full);
-      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
-      out.push([rel, '/' + fromContent]);
-    }
-  }
-  return out;
-}
-
-function routeFromPagePath(rel: string): string {
-  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
-  if (trimmed === 'index') return '/';
-  if (trimmed.startsWith('[')) return '';
-  return '/' + trimmed;
-}
 
 function extractHeadings(markdown: string): Set<string> {
   const slugs = new Set<string>();

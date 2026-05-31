@@ -1,7 +1,4 @@
 import {Component, DestroyRef, HostListener, computed, inject, signal} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter, map, startWith} from 'rxjs';
 import {
   LucideAngularModule,
   ChevronDown,
@@ -14,6 +11,8 @@ import {
 } from 'lucide-angular';
 import {pageMeta} from 'virtual:ngmd/page-meta';
 import {ToastService} from '../services/toast/toast.service';
+import {RouteUrlService} from '../services/route-url/route-url.service';
+import {writeToClipboard} from '../utils/clipboard';
 
 interface MenuItem {
   label: string;
@@ -116,8 +115,8 @@ interface MenuItem {
   `,
 })
 export class LlmActions {
-  private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
   private copiedTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -143,17 +142,6 @@ export class LlmActions {
 
   readonly open = signal(false);
   readonly copied = signal(false);
-
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url),
-      startWith(this.router.url),
-    ),
-    {initialValue: '/'},
-  );
-
-  private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
 
   protected readonly editUrl = computed(() => pageMeta[this.cleanUrl()]?.editUrl ?? '');
 
@@ -243,24 +231,14 @@ export class LlmActions {
     try {
       const res = await fetch(this.mdUrl());
       if (!res.ok) return false;
-      const text = await res.text();
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch (err) {
-      console.warn('[ngmd] copy markdown failed:', err);
+      return writeToClipboard(await res.text());
+    } catch {
       return false;
     }
   }
 
   private async copyLink(): Promise<boolean> {
-    if (typeof window === 'undefined') return false;
-    try {
-      await navigator.clipboard.writeText(this.mdUrl());
-      return true;
-    } catch (err) {
-      console.warn('[ngmd] copy link failed:', err);
-      return false;
-    }
+    return writeToClipboard(this.mdUrl());
   }
 
   private async copyLinkAction(): Promise<void> {

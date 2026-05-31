@@ -1,7 +1,7 @@
-import {execSync} from 'node:child_process';
-import {readdirSync, statSync} from 'node:fs';
-import {join, relative} from 'node:path';
+import {statSync} from 'node:fs';
+import {join} from 'node:path';
 import type {Plugin} from 'vite';
+import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils';
 
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
@@ -15,68 +15,6 @@ import type {Plugin} from 'vite';
  * `robots.txt` is a one-liner pointing at the sitemap.
  */
 
-/**
- * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
- * Route mirrors the path under `src/content/` with the .md stripped.
- * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
- */
-function walkContentFiles(
-  dir: string,
-  root: string,
-  baseDir: string = dir,
-  out: Array<[string, string]> = [],
-): Array<[string, string]> {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkContentFiles(full, root, baseDir, out);
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const rel = relative(root, full);
-      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
-      out.push([rel, '/' + fromContent]);
-    }
-  }
-  return out;
-}
-
-function gitDate(file: string, cwd: string): string {
-  try {
-    const stamp = execSync(`git log -1 --format=%cs -- "${file}"`, {
-      cwd,
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .toString()
-      .trim();
-    if (stamp) return stamp;
-  } catch {
-    // fall through to mtime
-  }
-  try {
-    return statSync(join(cwd, file)).mtime.toISOString().slice(0, 10);
-  } catch {
-    return new Date().toISOString().slice(0, 10);
-  }
-}
-
-function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkPageFiles(full, root, out);
-    } else if (entry.isFile() && entry.name.endsWith('.page.ts')) {
-      out.push(relative(root, full));
-    }
-  }
-  return out;
-}
-
-function routeFromPagePath(rel: string): string {
-  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
-  if (trimmed === 'index') return '/';
-  if (trimmed.startsWith('[')) return ''; // catch-all / dynamic — skip
-  return '/' + trimmed;
-}
-
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -89,6 +27,7 @@ function escapeXml(s: string): string {
 export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
   let root = process.cwd();
   const siteUrl = opts.siteUrl.replace(/\/+$/, '');
+  const today = () => new Date().toISOString().slice(0, 10);
 
   return {
     name: 'ngmd-sitemap',
@@ -105,7 +44,7 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
         for (const rel of pageFiles) {
           const route = routeFromPagePath(rel);
           if (!route) continue;
-          entries.set(route, gitDate(rel, root));
+          entries.set(route, gitDate(rel, root, today));
         }
       } catch {
         // src/app/pages missing — fine
@@ -115,7 +54,7 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
       try {
         statSync(contentDir);
         for (const [rel, route] of walkContentFiles(contentDir, root)) {
-          entries.set(route, gitDate(rel, root));
+          entries.set(route, gitDate(rel, root, today));
         }
       } catch {
         // src/content missing — skip

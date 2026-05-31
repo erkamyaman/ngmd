@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {TitleStrategy, type RouterStateSnapshot} from '@angular/router';
 import siteConfig, {navLabels} from '../ngmd.config';
+import {stripUrl} from './services/route-url/route-url.service';
 
 /**
  * Custom title strategy. Every page renders as `NgMd | <Title>`, where
@@ -24,7 +25,7 @@ export class NgmdTitleStrategy extends TitleStrategy {
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const name = siteConfig.site.name;
-    const url = snapshot.url.split('?')[0].split('#')[0];
+    const url = stripUrl(snapshot.url);
 
     // Homepage uses the tagline, no pipe separator.
     if (url === '/' || url === '') {

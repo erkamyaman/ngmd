@@ -1,5 +1,5 @@
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {inject, Injectable, signal} from '@angular/core';
 
 type Mode = 'light' | 'dark' | 'auto';
 const STORAGE_KEY = 'ngmd-theme';
@@ -7,7 +7,7 @@ const STORAGE_KEY = 'ngmd-theme';
 @Injectable({providedIn: 'root'})
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly isBrowser = typeof window !== 'undefined';
 
   readonly mode = signal<Mode>(this.read());
 

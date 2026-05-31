@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
+import {onNavigation} from '../utils/enhance-on-navigation';
 
 interface Heading {
   id: string;
@@ -52,15 +51,10 @@ export class Toc implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.scanWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.headings.set([]);
-        this.scanWithRetry();
-      });
+    onNavigation(this.router, this.destroyRef, () => {
+      this.headings.set([]);
+      this.scanWithRetry();
+    });
     this.destroyRef.onDestroy(() => this.contentObserver?.disconnect());
   }
 

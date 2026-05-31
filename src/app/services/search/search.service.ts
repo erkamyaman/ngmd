@@ -2,14 +2,11 @@ import {
   Injectable,
   computed,
   effect,
-  inject,
   linkedSignal,
-  PLATFORM_ID,
   resource,
   signal,
   type Signal,
 } from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
 import config from '../../../ngmd.config';
 import type {SearchHit, SearchProvider} from '../../../types/search';
 import {OramaSearchProvider} from './orama-provider';
@@ -47,8 +44,7 @@ export interface HistoryItem {
  */
 @Injectable({providedIn: 'root'})
 export class SearchService {
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isBrowser = typeof window !== 'undefined';
 
   readonly query = signal('');
 
@@ -103,9 +99,6 @@ export class SearchService {
 
   /** Recently-visited items that aren't favorites. Capped at HISTORY_MAX. */
   readonly recents = computed(() => this.historyState().filter((h) => !h.isFavorite));
-
-  /** True when the query is empty and there's no history to show. */
-  readonly isEmpty = computed(() => !this.query().trim() && this.historyState().length === 0);
 
   /** True when we have an active query but no hits came back. */
   readonly hasNoResults = computed(
@@ -183,10 +176,31 @@ export class SearchService {
     this.persistHistory();
   }
 
-  /** Wipe everything, including pinned favorites. */
-  clearHistory(): void {
-    this.historyState.set([]);
-    this.persistHistory();
+  /** Increments every time `requestOpen` is called. `CommandPalette`
+   * watches this signal and opens itself whenever the value changes, so
+   * components like the 404 catch-all can pop the palette pre-filled
+   * with a starting query. */
+  private readonly openTickSignal = signal(0);
+  readonly openTick = this.openTickSignal.asReadonly();
+
+  /** Set the query and ping the palette to open. The catch-all uses this
+   * to drive its "Search the docs" button on the 404 view. */
+  requestOpen(query: string): void {
+    this.query.set(query);
+    this.openTickSignal.update((n) => n + 1);
+  }
+
+  /** One-shot search bypassing the reactive resource. The 404 view uses
+   * this to fetch a single best-guess suggestion for the failed URL
+   * without disturbing the palette's live query state. */
+  async searchOnce(query: string): Promise<SearchHit[]> {
+    if (!query.trim()) return [];
+    try {
+      return await this.provider.search(query);
+    } catch (err) {
+      console.warn('[ngmd] search provider failed:', err);
+      return [];
+    }
   }
 
   private pickProvider(): SearchProvider {

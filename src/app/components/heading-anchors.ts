@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
+import {writeToClipboard} from '../utils/clipboard';
+import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
 /**
  * Scans rendered docs pages for h2/h3 with an id and appends a copy-link
@@ -22,25 +22,12 @@ export class HeadingAnchors implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngAfterViewInit(): void {
-    this.enhanceWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => this.enhanceWithRetry());
-  }
-
-  private enhanceWithRetry(attempt = 0): void {
-    if (typeof document === 'undefined' || attempt > 20) return;
-    const headings = document.querySelectorAll<HTMLElement>(
+    enhanceOnNavigation(
+      this.router,
+      this.destroyRef,
       'main h1[id]:not([data-anchor-enhanced]), main h2[id]:not([data-anchor-enhanced]), main h3[id]:not([data-anchor-enhanced])',
+      (h) => this.enhance(h),
     );
-    if (headings.length === 0) {
-      setTimeout(() => this.enhanceWithRetry(attempt + 1), 50);
-      return;
-    }
-    headings.forEach((h) => this.enhance(h));
   }
 
   private enhance(heading: HTMLElement): void {
@@ -66,13 +53,9 @@ export class HeadingAnchors implements AfterViewInit {
       e.stopPropagation();
       const base = `${location.origin}${location.pathname}`;
       const url = isH1 ? base : `${base}#${heading.id}`;
-      try {
-        await navigator.clipboard.writeText(url);
-        button.innerHTML = this.checkIcon();
-        setTimeout(() => (button.innerHTML = this.linkIcon()), 1500);
-      } catch {
-        // clipboard API unavailable, no-op
-      }
+      if (!(await writeToClipboard(url))) return;
+      button.innerHTML = this.checkIcon();
+      setTimeout(() => (button.innerHTML = this.linkIcon()), 1500);
     });
 
     heading.appendChild(button);
