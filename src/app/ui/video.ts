@@ -14,6 +14,7 @@ import {DomSanitizer} from '@angular/platform-browser';
         allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen
         loading="lazy"
+        credentialless
       ></iframe>
     </div>
   `,

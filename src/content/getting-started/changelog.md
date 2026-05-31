@@ -6,7 +6,13 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.5 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.6 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Mobile sidebar polish.** The drawer is now always mounted so its slide-in / slide-out animation has something to transition against. Backdrop fades (200ms), drawer slides from `-translate-x-full` to `translate-x-0` (200ms ease-out), `inert` blocks touch and focus while closed. The sidebar also scrolls its active row into view on initial mount and after every navigation, so long Stack-style sections in either the mobile drawer or the desktop pane keep the current page in sight. Active rows now carry `aria-current="page"` via `routerLinkActive`'s built-in input — same accessibility win, used as the selector for the scroll lookup so it doesn't have to escape Tailwind's `var(--accent-soft)!` class.
+
+**Related pages.** Bottom of every docs route now shows a "More in <section>" grid above the prev / next nav, derived from `navItems` siblings in the same section (excluding the current page and the prev / next pair to avoid showing the same link twice). Capped at four. Empty when the section is small enough that prev / next already covers it.
+
+## 0.1.5
 
 **Shared plugin helpers.** New `plugin-utils.ts` at the repo root collects the helpers that `page-meta`, `sitemap`, `link-guard`, and `search-index` were each shipping verbatim: `gitDate`, `walkPageFiles`, `walkContentFiles`, `routeFromPagePath`, and `slugify`. ~120 lines of duplicated code collapsed into one module, so the next slug-rule alignment (like the 0.1.3 fix) lives in one place instead of four.
 

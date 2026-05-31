@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import {defineConfig, type Plugin} from 'vite';
+import {defineConfig} from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import {readFileSync} from 'node:fs';

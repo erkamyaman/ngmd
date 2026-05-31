@@ -101,9 +101,9 @@ const config: NgmdConfig = {
       items: [
         {label: 'Markdown Routes', href: '/concepts/markdown-routes'},
         {label: 'Theming', href: '/concepts/theming'},
-        {label: 'Components', href: '/concepts/components'},
+        {label: 'Components', href: '/concepts/components', status: 'updated'},
         {label: 'Search', href: '/concepts/search', status: 'new'},
-        {label: 'Showcase', href: '/concepts/showcase'},
+        {label: 'Showcase', href: '/concepts/showcase', status: 'updated'},
       ],
     },
     {

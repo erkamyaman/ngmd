@@ -97,7 +97,7 @@ export class NgmdTab {
     // Parent (`<ngmd-tabs>`) toggles `data-active` on each child host.
     // Server-side falls back to "inactive" — the parent will hydrate state
     // when the bundle runs on the client.
-    const host = inject(ElementRef<HTMLElement>).nativeElement;
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     const stop = watchHostAttribute(host, 'data-active', (value) =>
       this.active.set(value === 'true'),
     );
