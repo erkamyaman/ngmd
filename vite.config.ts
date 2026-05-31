@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import {defineConfig, type Plugin} from 'vite';
+import {defineConfig} from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import {readFileSync} from 'node:fs';
@@ -11,36 +11,6 @@ import {sitemapPlugin} from './sitemap.plugin';
 import {searchIndexPlugin} from './search-index.plugin';
 import {rawMdPlugin} from './raw-md.plugin';
 import config from './src/ngmd.config';
-
-/**
- * Vite middleware that stamps cross-origin isolation headers on every
- * dev / preview response. Needed for the StackBlitz embed: its iframe
- * spins up a WebContainer, which only works when the host page is
- * cross-origin isolated. `credentialless` (vs `require-corp`) keeps
- * cross-origin CDN images loading without per-asset CORP headers.
- *
- * Sits in front of AnalogJS's own dev middleware so the headers stick
- * even when other plugins write responses.
- */
-function crossOriginIsolation(): Plugin {
-  return {
-    name: 'ngmd-cross-origin-isolation',
-    configureServer(server) {
-      server.middlewares.use((_req, res, next) => {
-        res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
-        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-        next();
-      });
-    },
-    configurePreviewServer(server) {
-      server.middlewares.use((_req, res, next) => {
-        res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
-        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-        next();
-      });
-    },
-  };
-}
 
 /**
  * Build-time guard: errors when a markdown file in `src/content/` contains
@@ -81,7 +51,6 @@ export default defineConfig(async () => ({
     mainFields: ['module'],
   },
   plugins: [
-    crossOriginIsolation(),
     externalLinkGuard(),
     internalLinkGuard(),
     pageMetaPlugin({repoUrl: config.site.githubUrl, branch: 'main'}),

@@ -12,8 +12,6 @@ Release notes and version history for NgMd.
 
 **Related pages.** Bottom of every docs route now shows a "More in <section>" grid above the prev / next nav, derived from `navItems` siblings in the same section (excluding the current page and the prev / next pair to avoid showing the same link twice). Capped at four. Empty when the section is small enough that prev / next already covers it.
 
-**`<ngmd-stackblitz>` playground embed.** New `NgmdUi` component for inline Angular playgrounds. Takes `id="<project-id>"` for a published StackBlitz project or `repo="org/name"` to open a public GitHub repo through StackBlitz's importer. Optional `file="..."`, `view="preview|editor"`, and `height` inputs. Lazy-loads the iframe, footer has an "Open in StackBlitz" link to the full editor. Registered as a Custom Element so it works inline in `.md` bodies via the existing `@angular/elements` bridge.
-
 ## 0.1.5
 
 **Shared plugin helpers.** New `plugin-utils.ts` at the repo root collects the helpers that `page-meta`, `sitemap`, `link-guard`, and `search-index` were each shipping verbatim: `gitDate`, `walkPageFiles`, `walkContentFiles`, `routeFromPagePath`, and `slugify`. ~120 lines of duplicated code collapsed into one module, so the next slug-rule alignment (like the 0.1.3 fix) lives in one place instead of four.

@@ -196,10 +196,6 @@ export const authGuard: CanActivateFn = () => {
 
 <ngmd-video src="https://www.youtube.com/watch?v=_ZcHwv91Rmo" title="Angular intro"></ngmd-video>
 
-## A playground, because Angular
-
-<ngmd-stackblitz repo="angular-architects/flights42" file="src/app/app.ts" height="500"></ngmd-stackblitz>
-
 ## And an image, because docs
 
 <ngmd-image

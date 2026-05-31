@@ -21,7 +21,6 @@ import {
   Box,
   Search,
   Zap,
-  Play,
 } from 'lucide-angular';
 import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
@@ -375,12 +374,6 @@ export default class Home implements AfterViewInit {
       icon: Zap,
       title: 'AnalogJS-native',
       description: 'File-based routing, SSR/SSG, Vite dev server. The fast Angular stack.',
-    },
-    {
-      icon: Play,
-      title: 'Playgrounds',
-      description:
-        'Drop `<ngmd-stackblitz repo="org/name" />` into any page to embed a runnable Angular sandbox from a GitHub repo. Open in StackBlitz baked in.',
     },
   ];
 }
