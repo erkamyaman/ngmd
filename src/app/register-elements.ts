@@ -6,7 +6,6 @@ import {NgmdBadge} from './ui/badge';
 import {NgmdCallout} from './ui/callout';
 import {NgmdCard} from './ui/card';
 import {NgmdCardGrid} from './ui/card-grid';
-import {NgmdCodeBlock} from './ui/code-block';
 import {NgmdHero} from './ui/hero';
 import {NgmdImage} from './ui/image';
 import {NgmdPill, NgmdPillRow} from './ui/pill';
@@ -33,6 +32,13 @@ import {NgmdStep, NgmdWorkflow} from './ui/workflow';
  * SSR pre-rendering. The browser-only path is fine because Custom Elements
  * only matter once the markup is in a real document.
  *
+ * NOTE: `NgmdCodeBlock` is intentionally absent from this map. It exists
+ * in `NgmdUi` so `.page.ts` files can compose it directly, but in markdown
+ * the same affordance is reached through fenced ```` ``` ```` blocks that
+ * the Shiki marked extensions transform at build time. Adding it as a
+ * Custom Element would be dead wiring — no `.md` author would write
+ * `<ngmd-code-block>` by hand. Audits flagging this as "missing" are
+ * reading the absence as a bug; it's a deliberate exclusion.
  */
 const elementMap: Array<[string, Type<unknown>]> = [
   ['ngmd-accordion', NgmdAccordion],

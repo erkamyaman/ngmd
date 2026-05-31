@@ -368,7 +368,7 @@ When asked to edit a page:
 
 ## 9. Common mistakes to avoid
 
-- **Inventing components.** The eleven components listed in section 2 are the complete set. Do not write `<ngmd-button>`, `<ngmd-accordion>`, etc. If you need a new affordance, the user should add it as a real component first.
+- **Inventing components.** The seventeen components listed in section 2 are the complete set. Do not write `<ngmd-button>`, `<ngmd-dropdown>`, etc. If you need a new affordance, the user should add it as a real component first.
 - **Hardcoding URLs.** Use the `keywords` map in `ngmd.config.ts` for repeated external links so the URL changes in one place.
 - **Skipping frontmatter.** A `.md` file without `title:` will render but the page `<title>` and command palette entry will be wrong.
 - **Mixing prose and component patterns thoughtlessly.** Embedding a single `<ngmd-callout>` inside an otherwise prose-only page works (because most component pages import `NgmdUi` somewhere), but if you need three or more components, switch the whole page to the component pattern.

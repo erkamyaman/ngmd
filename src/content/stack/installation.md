@@ -143,13 +143,13 @@ From a scaffolded NgMd project, copy these directories into yours:
     Nav, brand, keyword auto-link map.
   </ngmd-card>
   <ngmd-card icon="wrench" title="*.plugin.ts at repo root">
-    page-meta, internal-link-guard, sitemap. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
+    page-meta, link-guard, sitemap, search-index, raw-md. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
   </ngmd-card>
 </ngmd-card-grid>
 
 ### 5. Wire the plugins in vite.config.ts
 
-Import and register the NgMd plugins next to the analog plugin: `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`.
+Import and register the NgMd plugins next to the analog plugin: `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`.
 
 ### 6. Deploy
 

@@ -30,8 +30,9 @@ Open `http://localhost:5173`.
 
 A working AnalogJS + Tailwind v4 + Shiki docs site with:
 
-- File-based markdown routes — drop `.md` under `src/app/pages/`, get a route
-- Authoring components: callout, alert, card, tabs, pill row, workflow, hero, code-block, video, image (all under `src/app/ui/`)
+- File-based markdown routes — drop `.md` under `src/content/`, get a route
+- Authoring components: accordion, alert, badge, callout, card, card-grid, code-block, hero, image, pill, pill-row, step, tab, tabs, video, workflow (all under `src/app/ui/`)
+- Toast notifications via `ToastService`
 - Sticky translucent header, sidebar, breadcrumb, scroll-spy TOC, Cmd+K palette
 - Per-page footer: prev/next navigation, edit-on-github, last-updated
 - Heading anchor copy buttons, code-block copy buttons

@@ -1,6 +1,7 @@
 import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, relative} from 'node:path';
 import type {Plugin} from 'vite';
+import {substituteMdVars} from './vars.plugin';
 
 /**
  * Serves the raw markdown body at the same URL plus a `.md` suffix.
@@ -33,7 +34,7 @@ export function rawMdPlugin(): Plugin {
       return null;
     }
     try {
-      return readFileSync(abs, 'utf8');
+      return substituteMdVars(readFileSync(abs, 'utf8'), root);
     } catch {
       return null;
     }
@@ -87,7 +88,7 @@ export function rawMdPlugin(): Plugin {
       }
       for (const file of walk(contentDir)) {
         const route = relative(contentDir, file).replace(/\\/g, '/');
-        const body = readFileSync(file, 'utf8');
+        const body = substituteMdVars(readFileSync(file, 'utf8'), root);
         this.emitFile({
           type: 'asset',
           fileName: route,

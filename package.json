@@ -1,6 +1,6 @@
 {
   "name": "ngmd",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind. Drop a markdown file, get a route.",
   "license": "MIT",
   "author": {

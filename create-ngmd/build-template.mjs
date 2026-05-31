@@ -9,12 +9,15 @@ import {fileURLToPath} from 'node:url';
  * relative to this file.
  *
  * What gets copied (the runtime project):
- *   src/, public/, index.html, vite.config.ts, *.plugin.ts, tsconfig*.json,
- *   angular.json, package.json, .gitignore
+ *   src/, public/, index.html, vite.config.ts, tsconfig*.json, angular.json,
+ *   package.json, .gitignore, and the build plugins that vite.config.ts
+ *   imports: page-meta, link-guard, sitemap, search-index, raw-md.
  *
- * What gets excluded:
+ * What gets excluded (NgMd-repo-only):
  *   node_modules/, dist/, .git/, .angular/, .vite/, pnpm-lock.yaml,
- *   BACKLOG.md, PLAN.md, README.md, create-ngmd/ itself.
+ *   BACKLOG.md, PLAN.md, README.md, create-ngmd/ itself, vars.plugin.ts
+ *   (substitutes {{ngmd-version}} from create-ngmd/package.json, which
+ *   doesn't exist in a scaffolded project).
  *
  * Post-copy edits:
  *   - package.json: drop "private", reset version, leave name as `ngmd` so
@@ -34,6 +37,8 @@ const INCLUDE = [
   'page-meta.plugin.ts',
   'link-guard.plugin.ts',
   'sitemap.plugin.ts',
+  'search-index.plugin.ts',
+  'raw-md.plugin.ts',
   'tsconfig.json',
   'tsconfig.app.json',
   'tsconfig.spec.json',

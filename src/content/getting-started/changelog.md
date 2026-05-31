@@ -6,7 +6,17 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.6 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.7 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Scaffolder template fix.** `create-ngmd@0.1.6`'s template imported `searchIndexPlugin` and `rawMdPlugin` from `./search-index.plugin` and `./raw-md.plugin`, but `build-template.mjs` was only copying three of the five required `.plugin.ts` files into the template. Anyone scaffolding with `create-ngmd@0.1.6` got a project that failed on first `pnpm dev` with `Cannot find module`. INCLUDE list now lists every plugin the template actually needs; the file-level docstring spells out which one (`vars.plugin.ts`) is intentionally repo-only and why.
+
+**StackBlitz playground removed.** The `<ngmd-stackblitz>` component shipped briefly in 0.1.6 and was ripped out before the npm release went live, but the component, its docs, and its surrounding chrome (Components reference section, Showcase playground, FAQ, about credit, home features grid, COEP plugin, `netlify.toml` headers, `Play` icon import) lived on in the source tree. All of it is gone. The repo and the published scaffold now match.
+
+**`{{ngmd-version}}` markdown token.** New `vars.plugin.ts` substitutes `{{ngmd-version}}` in any `.md` source with the current `create-ngmd/package.json` version at build time. The changelog and stack/technologies pages used to hand-track the published version in two places; they now reference the token so the next `pnpm publish` keeps them in sync without an edit. The substitution runs in both the rendered route and the raw-md "Copy Markdown" download so LLM consumers see the substituted text. Extend the `vars` map for more tokens (site URL, build date, etc.).
+
+**Docs accuracy sweep.** Five audit passes against components, content, skills, changelog, and landing pages surfaced six stale claims. Fixed: `0.1.3` create-ngmd version refs in `technologies.md` + `changelog.md` (now use the new token), the wrong plugin filename in `installation.md:146` (`internal-link-guard` → `link-guard`), the four-plugins-count claim in the same file and in `ngmd-new-site` skill (actual six), `ngmd-new-site` skill's wrong Toaster component path (`src/app/services/toast/` → `src/app/components/toaster.ts`), `ngmd-authoring` skill's "eleven components" contradiction with the rest of the document (now "seventeen"), and the `create-ngmd/README.md` component list (was ten, now sixteen). The auditing process itself surfaced a real dead-code find: a dangling `NgmdCodeBlock` import in `register-elements.ts` (the component intentionally isn't a Custom Element since fenced ``` blocks already cover it; docstring now spells out the deliberate exclusion so future audits don't re-flag it).
+
+## 0.1.6
 
 **Mobile sidebar polish.** The drawer is now always mounted so its slide-in / slide-out animation has something to transition against. Backdrop fades (200ms), drawer slides from `-translate-x-full` to `translate-x-0` (200ms ease-out), `inert` blocks touch and focus while closed. The sidebar also scrolls its active row into view on initial mount and after every navigation, so long Stack-style sections in either the mobile drawer or the desktop pane keep the current page in sight. Active rows now carry `aria-current="page"` via `routerLinkActive`'s built-in input — same accessibility win, used as the selector for the scroll lookup so it doesn't have to escape Tailwind's `var(--accent-soft)!` class.
 
@@ -222,7 +232,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@0.1.3</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd@{{ngmd-version}}</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.
