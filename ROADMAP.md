@@ -2,7 +2,7 @@
 
 What needs to land between 0.1.7 (current) and a 1.0 release. Companion to [BACKLOG.md](BACKLOG.md) (menu of every candidate feature) and [PLAN.md](PLAN.md) (concrete work plan for the next sprint).
 
-The framing: 1.0 is the release where NgMd stops being "the docs starter for Angular apps" and becomes "the docs starter for any Angular project, including the libraries". That means we ship four load-bearing features, declare the public surface stable, hit a real quality bar, and bundle the polish that every modern docs site is judged against.
+The framing: 1.0 is the release where NgMd stops being "the docs starter for Angular apps" and becomes "the docs starter for any Angular project, including the libraries". That means we ship three load-bearing features, declare the public surface stable, hit a real quality bar, and bundle the polish that every modern docs site is judged against.
 
 Estimated runway: 4-5 months of focused work.
 
@@ -10,7 +10,7 @@ Estimated runway: 4-5 months of focused work.
 
 ## 1. Load-bearing features
 
-The four things missing from 0.1.7 that block 1.0.
+The three things missing from 0.1.7 that block 1.0.
 
 ### 1.1 API reference auto-generation
 
@@ -47,16 +47,6 @@ Roughly half the projects evaluating a docs starter want multilingual support on
 - Locale-aware sitemap + canonical / hreflang tags.
 
 Estimate: 1-2 weeks. Pairs naturally with versioning since both reshape the routing layer; do them in the same sprint.
-
-### 1.4 OG image auto-generation
-
-Per-page social cards from title + section + accent. Every modern docs site has this. The day after NgMd starts showing up in shared links, the missing OG images become the first thing people notice.
-
-- Build-time generation via Satori + Resvg.
-- Per-page template that reads frontmatter title / description.
-- Frontmatter override for custom `og:image` per page.
-
-Estimate: 1 week.
 
 ---
 
@@ -125,7 +115,7 @@ Run axe-core over every NgmdUi component in isolation plus every site-chrome sur
 
 Ships with 1.0. Each one is small individually; together they close the gap to "feels like a serious 1.0 docs site".
 
-- **Frontmatter overrides** for `title`, `description`, `og:image`, `layout`. Authors expect this. (~1 day.)
+- **Frontmatter overrides** for `title`, `description`, `layout`. Authors expect this. (~1 day.)
 - **Mermaid rendering.** ` ```mermaid` blocks via a marked extension. (~1 day.)
 - **Math rendering.** KaTeX for ` ```math` blocks and `$...$` inline. (~1 day.)
 - **Diff view** via ` ```diff `. Shiki emits the tokens; needs CSS. (~half day.)
@@ -168,9 +158,9 @@ Versioned docs (1.2) + i18n locale routing (1.3) land together because both resh
 
 The headline 1.0 feature. Build the scope file format, the parser, the virtual route emitter, the page templates, the symbol index for palette search.
 
-### Sprint 3: OG image auto-generation + polish bundle (~3 weeks)
+### Sprint 3: polish bundle (~2 weeks)
 
-OG image generator first (depends on the frontmatter override format from the polish bundle landing in parallel). Then sweep the rest of the polish items.
+Frontmatter overrides first (everything else leans on the override format). Then sweep the rest of the polish items.
 
 ### Sprint 4: stability sweep (2 weeks)
 
@@ -184,7 +174,7 @@ Test coverage, Lighthouse pass, axe-core sweep. Land them in that order because 
 
 Migration guide, release blog post, BACKLOG.md cleanup, version bump, npm publish, push to main, announcement.
 
-Total: ~14-16 weeks.
+Total: ~13-15 weeks.
 
 ---
 
@@ -195,7 +185,6 @@ A release qualifies as 1.0 when all of the following are true.
 - [ ] API reference auto-generation shipped, with at least one real Angular library using it end-to-end as a smoke test
 - [ ] Versioned docs shipped (multi-version routing, switcher, sidebar configs)
 - [ ] i18n shipped (locale routing, switcher, sitemap)
-- [ ] OG image auto-generation shipped
 - [ ] NgmdUi inputs, CSS tokens, plugin signatures all frozen and documented as stable
 - [ ] Migration guide from 0.1.7 published
 - [ ] Test coverage on every NgmdUi component + integration on routing + Playwright golden path + API auto-gen fixtures
