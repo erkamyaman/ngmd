@@ -96,6 +96,9 @@ Open `http://localhost:5173`. You're running.
   <ngmd-accordion-item title="Is NgMd inspired by VitePress or Starlight?">
     Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts the pattern for Angular on AnalogJS.
   </ngmd-accordion-item>
+  <ngmd-accordion-item title="Can I embed runnable code samples?">
+    Yes. Drop <code>&lt;ngmd-stackblitz repo="angular-architects/flights42" file="src/app/app.ts"&gt;&lt;/ngmd-stackblitz&gt;</code> into any markdown page to embed a live <a href="https://stackblitz.com" target="_blank" rel="noopener noreferrer">StackBlitz</a> playground. <code>id="..."</code> works for already-published StackBlitz projects. angular.dev runs its own WebContainer-based playground; NgMd reaches for StackBlitz so any Angular project gets a runnable sandbox for free.
+  </ngmd-accordion-item>
   <ngmd-accordion-item title="Is this production-ready?">
     NgMd is in active early development <ngmd-badge variant="beta">Beta</ngmd-badge>. The core (markdown rendering, theming, navigation, build pipeline) is stable. Versioning, i18n, library-style API reference, and search adapters are on the roadmap.
   </ngmd-accordion-item>

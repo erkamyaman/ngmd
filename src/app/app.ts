@@ -149,17 +149,27 @@ import {Toaster} from './components/toaster';
             <app-sidebar />
           </aside>
 
-          @if (drawerOpen()) {
-            <div
-              class="lg:hidden fixed inset-0 z-40 bg-black/50"
-              (click)="drawerOpen.set(false)"
-            ></div>
-            <aside
-              class="lg:hidden fixed left-0 top-[57px] bottom-0 z-40 w-64 overflow-y-auto border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4"
-            >
-              <app-sidebar />
-            </aside>
-          }
+          <!-- Mobile drawer. Always mounted so its slide-in / slide-out
+               animation has something to transition against; pointer-events
+               and visibility flip off when closed so it can't intercept
+               touches while hidden. -->
+          <div
+            class="lg:hidden fixed inset-0 z-40 bg-black/50 transition-opacity duration-200"
+            [class.opacity-0]="!drawerOpen()"
+            [class.opacity-100]="drawerOpen()"
+            [class.pointer-events-none]="!drawerOpen()"
+            (click)="drawerOpen.set(false)"
+            aria-hidden="true"
+          ></div>
+          <aside
+            class="lg:hidden fixed left-0 top-[57px] bottom-0 z-40 w-64 overflow-y-auto border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 transform transition-transform duration-200 ease-out"
+            [class.-translate-x-full]="!drawerOpen()"
+            [class.translate-x-0]="drawerOpen()"
+            [attr.aria-hidden]="!drawerOpen()"
+            [attr.inert]="!drawerOpen() ? '' : null"
+          >
+            <app-sidebar />
+          </aside>
         }
 
         <main class="flex-1 min-w-0 flex flex-col">

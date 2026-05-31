@@ -53,6 +53,9 @@ A markdown-first docs starter for Angular, built on AnalogJS. Drop a `.md` file 
   <ngmd-card image="https://cdn.simpleicons.org/algolia/003DFF" title="Algolia DocSearch" link="https://docsearch.algolia.com">
     The hosted alternative the palette swaps to when <code>site.algolia</code> is configured. Free for open-source docs.
   </ngmd-card>
+  <ngmd-card image="https://cdn.simpleicons.org/stackblitz/1389FD" title="StackBlitz" link="https://stackblitz.com">
+    Powers the <code>&lt;ngmd-stackblitz&gt;</code> playground embed. Drop an <code>id</code> or a GitHub <code>repo</code> into the tag and a runnable Angular sandbox renders inline.
+  </ngmd-card>
 </ngmd-card-grid>
 
 Inspiration came from the docs sites of *VitePress, *Starlight, *Nextra, and *Docusaurus, which set the bar for what a modern docs starter should feel like.

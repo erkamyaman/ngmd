@@ -13,6 +13,36 @@ import {rawMdPlugin} from './raw-md.plugin';
 import config from './src/ngmd.config';
 
 /**
+ * Vite middleware that stamps cross-origin isolation headers on every
+ * dev / preview response. Needed for the StackBlitz embed: its iframe
+ * spins up a WebContainer, which only works when the host page is
+ * cross-origin isolated. `credentialless` (vs `require-corp`) keeps
+ * cross-origin CDN images loading without per-asset CORP headers.
+ *
+ * Sits in front of AnalogJS's own dev middleware so the headers stick
+ * even when other plugins write responses.
+ */
+function crossOriginIsolation(): Plugin {
+  return {
+    name: 'ngmd-cross-origin-isolation',
+    configureServer(server) {
+      server.middlewares.use((_req, res, next) => {
+        res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        next();
+      });
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use((_req, res, next) => {
+        res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        next();
+      });
+    },
+  };
+}
+
+/**
  * Build-time guard: errors when a markdown file in `src/content/` contains
  * a raw HTML `<a href="http(s)://...">` without `target="_blank"`. Raw HTML
  * anchors bypass the marked link renderer (which would add target=_blank
@@ -51,6 +81,7 @@ export default defineConfig(async () => ({
     mainFields: ['module'],
   },
   plugins: [
+    crossOriginIsolation(),
     externalLinkGuard(),
     internalLinkGuard(),
     pageMetaPlugin({repoUrl: config.site.githubUrl, branch: 'main'}),

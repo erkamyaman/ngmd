@@ -12,6 +12,18 @@
   # stay aligned. Bump together when the project upgrades.
   NODE_VERSION = "20.19.1"
 
+# Cross-origin isolation for StackBlitz playground embeds. WebContainers
+# need `SharedArrayBuffer`, which the browser only exposes when the page
+# is cross-origin isolated. Using `credentialless` instead of `require-corp`
+# so the cross-origin SVG / image CDNs used elsewhere (analogjs.org,
+# simpleicons, bun.sh, shiki.style, etc.) keep loading without needing
+# explicit `Cross-Origin-Resource-Policy` headers on each asset.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cross-Origin-Embedder-Policy = "credentialless"
+    Cross-Origin-Opener-Policy = "same-origin"
+
 # SPA fallback — last rule, status 200 (rewrite, not redirect) so the URL
 # in the browser bar stays correct while the SPA shell renders.
 [[redirects]]

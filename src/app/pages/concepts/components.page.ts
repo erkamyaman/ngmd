@@ -189,6 +189,21 @@ import {ToastService} from '../../services/toast/toast.service';
       </section>
 
       <section>
+        <h2 id="stackblitz" class="text-2xl font-semibold tracking-tight">StackBlitz</h2>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Embedded playground for Angular code samples. Pass <code>id="..."</code> for a published
+          StackBlitz project, or <code>repo="org/name"</code> to open a public GitHub repo through
+          StackBlitz's importer. Optional <code>file</code>, <code>view</code>, and
+          <code>height</code> inputs tune the embed. Footer carries an "Open in StackBlitz" link to
+          the full editor.
+        </p>
+        <div class="mt-4">
+          <ngmd-stackblitz repo="angular-architects/flights42" file="src/app/app.ts" [height]="500" />
+        </div>
+        <ngmd-code-block header="page.ts" language="html" [code]="stackblitzCode" />
+      </section>
+
+      <section>
         <h2 id="image" class="text-2xl font-semibold tracking-tight">Image</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Figure with optional caption. Lazy-loads, applies the standard rounded border so it sits
@@ -458,6 +473,14 @@ export default class ComponentsPage {
     '  src="https://www.youtube.com/watch?v=_ZcHwv91Rmo"',
     '  title="Angular intro"',
     '/>',
+  ].join('\n');
+
+  readonly stackblitzCode = [
+    '<!-- Public GitHub repo (recommended) -->',
+    '<ngmd-stackblitz repo="angular-architects/flights42" file="src/app/app.ts" />',
+    '',
+    '<!-- Published StackBlitz project -->',
+    '<ngmd-stackblitz id="<your-project-id>" file="src/main.ts" />',
   ].join('\n');
 
   readonly imageCode = [

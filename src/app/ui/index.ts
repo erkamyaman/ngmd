@@ -8,6 +8,7 @@ export {NgmdCodeBlock} from './code-block';
 export {NgmdHero} from './hero';
 export {NgmdImage} from './image';
 export {NgmdPill, NgmdPillRow} from './pill';
+export {NgmdStackBlitz} from './stackblitz';
 export {NgmdStep, NgmdWorkflow} from './workflow';
 export {NgmdTab, NgmdTabs} from './tabs';
 export {NgmdVideo} from './video';
@@ -22,6 +23,7 @@ import {NgmdCodeBlock} from './code-block';
 import {NgmdHero} from './hero';
 import {NgmdImage} from './image';
 import {NgmdPill, NgmdPillRow} from './pill';
+import {NgmdStackBlitz} from './stackblitz';
 import {NgmdStep, NgmdWorkflow} from './workflow';
 import {NgmdTab, NgmdTabs} from './tabs';
 import {NgmdVideo} from './video';
@@ -47,6 +49,7 @@ export const NgmdUi = [
   NgmdImage,
   NgmdPill,
   NgmdPillRow,
+  NgmdStackBlitz,
   NgmdStep,
   NgmdWorkflow,
   NgmdTab,

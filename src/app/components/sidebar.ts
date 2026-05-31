@@ -1,8 +1,9 @@
-import {Component, signal} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {AfterViewInit, Component, DestroyRef, ElementRef, inject, signal} from '@angular/core';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {LucideAngularModule, ChevronDown} from 'lucide-angular';
 import config from '../../ngmd.config';
 import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
+import {onNavigation} from '../utils/enhance-on-navigation';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,6 +33,7 @@ import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
                     [routerLink]="item.href"
                     routerLinkActive="bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium"
                     [routerLinkActiveOptions]="{exact: true}"
+                    ariaCurrentWhenActive="page"
                     class="flex items-center justify-between gap-2 rounded-md px-3 py-1.5 text-zinc-700 dark:text-zinc-300 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-2 focus-visible:outline focus-visible:outline-offset-[-2px] focus-visible:outline-[color:var(--accent)]"
                   >
                     <span class="min-w-0 truncate">{{ item.label }}</span>
@@ -52,7 +54,11 @@ import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
     </nav>
   `,
 })
-export class Sidebar {
+export class Sidebar implements AfterViewInit {
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly sections = config.nav;
   readonly chevron = ChevronDown;
   private readonly openSections = signal<Set<string>>(new Set(config.nav.map((s) => s.label)));
@@ -72,5 +78,24 @@ export class Sidebar {
 
   statusClass(status: BadgeVariant): string {
     return BADGE_VARIANTS[status];
+  }
+
+  ngAfterViewInit(): void {
+    // Scroll the active row into view on initial mount and after every
+    // navigation. Matters most on the mobile drawer (long sections push
+    // the current page well below the fold) and on long Stack sections
+    // in the desktop sidebar.
+    this.scrollActiveIntoView();
+    onNavigation(this.router, this.destroyRef, () => {
+      // `routerLinkActive` updates synchronously on NavigationEnd, so the
+      // class is already on the link by the time we read it.
+      this.scrollActiveIntoView();
+    });
+  }
+
+  private scrollActiveIntoView(): void {
+    if (typeof document === 'undefined') return;
+    const active = this.host.nativeElement.querySelector<HTMLElement>('a[aria-current="page"]');
+    active?.scrollIntoView({block: 'nearest', behavior: 'instant'});
   }
 }

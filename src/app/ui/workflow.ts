@@ -48,7 +48,7 @@ export class NgmdStep {
     // element; we read it here on setup and on every later change.
     // Component-pages (where ContentChildren works) still call `index.set(i)`
     // directly; the attribute path is a no-op for them.
-    const host = inject(ElementRef<HTMLElement>).nativeElement;
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     const stop = watchHostAttribute(host, 'data-step-index', (value) => {
       if (value === null) return;
       const n = parseInt(value, 10);
