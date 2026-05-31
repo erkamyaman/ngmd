@@ -70,7 +70,9 @@ export class NgmdStackBlitz {
   readonly height = input<number>(500);
 
   /** URL pointing at the embedded edit view. `id` wins over `repo` if both
-   * are passed (rare but well-defined). */
+   * are passed (rare but well-defined). Falls back to `about:blank` when
+   * neither is set so an empty `src` doesn't resolve to the current page
+   * and recursively self-embed. */
   private readonly embedUrl = computed(() => {
     const id = this.id().trim();
     const repo = this.repo().trim();
@@ -79,7 +81,7 @@ export class NgmdStackBlitz {
       : repo
         ? `https://stackblitz.com/github/${repo}`
         : '';
-    if (!base) return '';
+    if (!base) return 'about:blank';
     // `view=default` is StackBlitz's split editor + preview shape; only
     // emit the param when a specific single pane is requested.
     const params = new URLSearchParams({embed: '1', hideExplorer: '0'});
