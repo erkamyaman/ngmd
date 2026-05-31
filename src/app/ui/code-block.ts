@@ -1,5 +1,6 @@
 import {Component, DestroyRef, effect, inject, input, signal} from '@angular/core';
 import {DomSanitizer, type SafeHtml} from '@angular/platform-browser';
+import {writeToClipboard} from '../utils/clipboard';
 
 /**
  * Code block with a header bar and shiki syntax highlighting at runtime.
@@ -119,14 +120,9 @@ export class NgmdCodeBlock {
   protected readonly copied = signal(false);
 
   protected async copy(): Promise<void> {
-    if (typeof navigator === 'undefined' || !navigator.clipboard) return;
-    try {
-      await navigator.clipboard.writeText(this.code());
-      this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 1500);
-    } catch {
-      // clipboard unavailable, silent fail
-    }
+    if (!(await writeToClipboard(this.code()))) return;
+    this.copied.set(true);
+    setTimeout(() => this.copied.set(false), 1500);
   }
 
   protected readonly codeClass = () => (this.language() ? `language-${this.language()}` : '');

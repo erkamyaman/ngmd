@@ -317,6 +317,16 @@ export class CommandPalette {
       this.search.history();
       this.active.set(-1);
     });
+    // External components (404 catch-all, etc.) can pop the palette open
+    // pre-filled by calling `search.requestOpen(query)`. The initial tick
+    // value of 0 fires once at startup; ignore it so we don't auto-open.
+    effect(() => {
+      const tick = this.search.openTick();
+      if (tick === 0) return;
+      this.open.set(true);
+      this.active.set(-1);
+      queueMicrotask(() => this.input()?.nativeElement.focus());
+    });
   }
 
   iconFor(item: SearchHit) {

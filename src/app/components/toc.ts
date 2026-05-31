@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
+import {Router} from '@angular/router';
+import {onNavigation} from '../utils/enhance-on-navigation';
 
 interface Heading {
   id: string;
@@ -52,16 +51,34 @@ export class Toc implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.scanWithRetry();
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.headings.set([]);
-        this.scanWithRetry();
-      });
-    this.destroyRef.onDestroy(() => this.contentObserver?.disconnect());
+    onNavigation(this.router, this.destroyRef, () => {
+      this.headings.set([]);
+      this.scanWithRetry();
+    });
+
+    // Bottom-of-page guard. Registered once here; reads the live
+    // `headings` signal so each scroll tick picks up the current last
+    // heading without re-binding. Previously this lived inside
+    // `setupObserver` which fires on every navigation, leaking a stale
+    // handler each time.
+    if (typeof window !== 'undefined') {
+      const onScroll = () => {
+        const list = this.headings();
+        if (list.length === 0) return;
+        const scrolled = window.innerHeight + window.scrollY;
+        const fullHeight = document.documentElement.scrollHeight;
+        if (scrolled >= fullHeight - 100) {
+          this.active.set(list[list.length - 1].id);
+        }
+      };
+      window.addEventListener('scroll', onScroll, {passive: true});
+      this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
+    }
+
+    this.destroyRef.onDestroy(() => {
+      this.contentObserver?.disconnect();
+      this.observer?.disconnect();
+    });
   }
 
   scrollToHeading(id: string, event: MouseEvent): void {
@@ -159,21 +176,7 @@ export class Toc implements AfterViewInit {
       {rootMargin: '0px 0px -70% 0px', threshold: 0},
     );
     nodes.forEach((node) => this.observer!.observe(node));
-
-    // Bottom-of-page guard: when the user scrolls within ~100px of the
-    // bottom of the document, force-activate the last heading. The
-    // IntersectionObserver alone can't reach this state because the last
-    // heading never enters the top 30% of the viewport if there's not
-    // enough content below it.
-    const last = nodes[nodes.length - 1];
-    const onScroll = () => {
-      const scrolled = window.innerHeight + window.scrollY;
-      const fullHeight = document.documentElement.scrollHeight;
-      if (scrolled >= fullHeight - 100) {
-        this.active.set(last.id);
-      }
-    };
-    window.addEventListener('scroll', onScroll, {passive: true});
-    this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
+    // The bottom-of-page scroll guard lives in `ngAfterViewInit` so it
+    // registers exactly once across the component's lifetime.
   }
 }

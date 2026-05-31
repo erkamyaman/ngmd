@@ -1,7 +1,8 @@
-import {readdirSync, readFileSync, statSync} from 'node:fs';
-import {join, relative} from 'node:path';
+import {readFileSync, statSync} from 'node:fs';
+import {join} from 'node:path';
 import type {Plugin} from 'vite';
 import type {IndexDoc, SearchHitKind} from './src/types/search';
+import {slugify, walkContentFiles} from './plugin-utils';
 
 /**
  * Build-time search index. Walks `src/content/**\/*.md` and emits a flat list
@@ -39,14 +40,6 @@ function parseFrontmatter(text: string): {fm: Frontmatter; body: string} {
   return {fm, body: match[2]};
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
 const ENTITIES: Record<string, string> = {
   '&lt;': '<',
   '&gt;': '>',
@@ -69,19 +62,6 @@ function stripMarkdown(s: string): string {
     .replace(/&(?:lt|gt|amp|quot|apos|nbsp|#39|#64);/g, (m) => ENTITIES[m] ?? m)
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-function walkMd(dir: string, baseDir: string, out: Array<[string, string]> = []) {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkMd(full, baseDir, out);
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
-      out.push([full, '/' + fromContent]);
-    }
-  }
-  return out;
 }
 
 /** Split raw markdown body into sections delimited by `##`+ headings.
@@ -158,10 +138,10 @@ export function searchIndexPlugin(): Plugin {
         return `export const searchIndex = [];`;
       }
 
-      for (const [absPath, url] of walkMd(contentDir, contentDir)) {
+      for (const [rel, url] of walkContentFiles(contentDir, contentDir)) {
         let raw: string;
         try {
-          raw = readFileSync(absPath, 'utf8');
+          raw = readFileSync(join(contentDir, rel), 'utf8');
         } catch {
           continue;
         }

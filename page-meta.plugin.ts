@@ -1,7 +1,7 @@
-import {execSync} from 'node:child_process';
-import {readdirSync, statSync} from 'node:fs';
-import {join, relative} from 'node:path';
+import {statSync} from 'node:fs';
+import {join} from 'node:path';
 import type {Plugin} from 'vite';
+import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils';
 
 /**
  * Build-time map of page URL → { editUrl, lastUpdated }.
@@ -23,69 +23,6 @@ export interface PageMeta {
 
 const VIRTUAL_ID = 'virtual:ngmd/page-meta';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
-
-function gitDate(file: string, cwd: string): string {
-  try {
-    const stamp = execSync(`git log -1 --format=%cs -- "${file}"`, {
-      cwd,
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .toString()
-      .trim();
-    if (stamp) return stamp;
-  } catch {
-    // fall through to mtime
-  }
-  try {
-    return statSync(join(cwd, file)).mtime.toISOString().slice(0, 10);
-  } catch {
-    return '';
-  }
-}
-
-function walkPageFiles(dir: string, root: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkPageFiles(full, root, out);
-    } else if (entry.isFile() && entry.name.endsWith('.page.ts')) {
-      out.push(relative(root, full));
-    }
-  }
-  return out;
-}
-
-function routeFromPagePath(rel: string): string {
-  // src/app/pages/foo/bar.page.ts → /foo/bar; index.page.ts → /
-  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
-  if (trimmed === 'index') return '/';
-  if (trimmed.startsWith('[')) return ''; // dynamic / catch-all: skip
-  return '/' + trimmed;
-}
-
-/**
- * Walk `src/content/**\/*.md` and return `[relativePath, route]` pairs.
- * Route mirrors the path under `src/content/` with the .md stripped.
- * Example: `src/content/concepts/theming.md` → `/concepts/theming`.
- */
-function walkContentFiles(
-  dir: string,
-  root: string,
-  baseDir: string = dir,
-  out: Array<[string, string]> = [],
-): Array<[string, string]> {
-  for (const entry of readdirSync(dir, {withFileTypes: true})) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkContentFiles(full, root, baseDir, out);
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const rel = relative(root, full);
-      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
-      out.push([rel, '/' + fromContent]);
-    }
-  }
-  return out;
-}
 
 export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin {
   const branch = opts.branch ?? 'main';

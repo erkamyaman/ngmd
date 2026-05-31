@@ -1,32 +1,22 @@
-import {Component, computed, inject, signal} from '@angular/core';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {NavigationEnd, Router, RouterLink} from '@angular/router';
-import {filter, map, startWith} from 'rxjs';
+import {Component, computed, inject} from '@angular/core';
+import {RouterLink} from '@angular/router';
 import {LucideAngularModule, ArrowLeft, ArrowRight} from 'lucide-angular';
-import {pageMeta} from 'virtual:ngmd/page-meta';
 import {navItems} from '../../ngmd.config';
+import {RouteUrlService} from '../services/route-url/route-url.service';
 
 /**
- * Bottom-of-page frame shown under every docs route: previous/next sibling
- * pages derived from `ngmd.config.ts`, an "Edit on GitHub" link, and the
- * page's last-updated date (commit cs from `git log`, baked at build time
- * via the page-meta vite plugin).
+ * Bottom-of-page frame shown under every docs route: previous / next
+ * sibling pages derived from `ngmd.config.ts`. The "Edit on GitHub" link
+ * lives in `<app-source-actions>` at the top of the article; the
+ * last-updated stamp is retired.
  */
 @Component({
   selector: 'app-page-footer',
   imports: [RouterLink, LucideAngularModule],
   template: `
-    <footer class="mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-5 pb-10 text-sm">
-      <!-- Last-updated stamp parked for now. Uncomment to re-enable.
-      @if (lastUpdated(); as date) {
-        <div class="text-zinc-500 dark:text-zinc-400">
-          Last updated: {{ date }}
-        </div>
-      }
-      -->
-
-      @if (prev() || next()) {
-        <nav class="mt-6 grid gap-3 sm:grid-cols-2">
+    @if (prev() || next()) {
+      <footer class="mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-5 pb-10 text-sm">
+        <nav class="grid gap-3 sm:grid-cols-2">
           @if (prev(); as p) {
             <a
               [routerLink]="p.href"
@@ -58,34 +48,15 @@ import {navItems} from '../../ngmd.config';
             </a>
           }
         </nav>
-      }
-    </footer>
+      </footer>
+    }
   `,
 })
 export class PageFooter {
-  private readonly router = inject(Router);
+  private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
 
   readonly prevIcon = ArrowLeft;
   readonly nextIcon = ArrowRight;
-
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url),
-      startWith(this.router.url),
-    ),
-    {initialValue: '/'},
-  );
-  private readonly cleanUrl = computed(() => this.url().split('?')[0].split('#')[0]);
-
-  private readonly meta = computed(() => pageMeta[this.cleanUrl()]);
-  readonly editUrl = computed(() => this.meta()?.editUrl ?? '');
-  readonly lastUpdated = computed(() => {
-    const iso = this.meta()?.lastUpdated;
-    if (!iso) return '';
-    const [y, m, d] = iso.split('-');
-    return y && m && d ? `${d}/${m}/${y}` : iso;
-  });
 
   private readonly index = computed(() => navItems.findIndex((n) => n.href === this.cleanUrl()));
   readonly prev = computed(() => {

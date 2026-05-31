@@ -7,6 +7,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import {watchHostAttribute} from '../utils/watch-host-attribute';
 import {
   LucideAngularModule,
   type LucideIconData,
@@ -93,21 +94,14 @@ export class NgmdTab {
   readonly active = signal(false);
 
   constructor() {
-    if (typeof MutationObserver === 'undefined') {
-      // Server-side: leave inactive; the parent will hydrate state once
-      // the bundle runs on the client.
-      return;
-    }
-    const elementRef: ElementRef<HTMLElement> = inject(ElementRef);
-    const host = elementRef.nativeElement;
-    const sync = () => this.active.set(host.getAttribute('data-active') === 'true');
-    sync();
-    const observer = new MutationObserver(sync);
-    observer.observe(host, {
-      attributes: true,
-      attributeFilter: ['data-active'],
-    });
-    inject(DestroyRef).onDestroy(() => observer.disconnect());
+    // Parent (`<ngmd-tabs>`) toggles `data-active` on each child host.
+    // Server-side falls back to "inactive" — the parent will hydrate state
+    // when the bundle runs on the client.
+    const host = inject(ElementRef<HTMLElement>).nativeElement;
+    const stop = watchHostAttribute(host, 'data-active', (value) =>
+      this.active.set(value === 'true'),
+    );
+    inject(DestroyRef).onDestroy(stop);
   }
 }
 

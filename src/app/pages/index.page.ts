@@ -25,6 +25,7 @@ import {
 import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
 import {ToastService} from '../services/toast/toast.service';
+import {writeToClipboard} from '../utils/clipboard';
 
 @Component({
   selector: 'app-home',
@@ -298,14 +299,12 @@ export default class Home implements AfterViewInit {
   );
 
   async copyCmd(cmd: string): Promise<void> {
-    if (typeof navigator === 'undefined' || !navigator.clipboard) return;
-    try {
-      await navigator.clipboard.writeText(cmd);
-      this.copied.set(cmd);
-      setTimeout(() => this.copied.set(''), 1500);
-    } catch {
+    if (!(await writeToClipboard(cmd))) {
       this.toast.error('Could not copy command.');
+      return;
     }
+    this.copied.set(cmd);
+    setTimeout(() => this.copied.set(''), 1500);
   }
 
   ngAfterViewInit(): void {

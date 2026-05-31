@@ -6,7 +6,27 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.1.4 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.1.5 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Shared plugin helpers.** New `plugin-utils.ts` at the repo root collects the helpers that `page-meta`, `sitemap`, `link-guard`, and `search-index` were each shipping verbatim: `gitDate`, `walkPageFiles`, `walkContentFiles`, `routeFromPagePath`, and `slugify`. ~120 lines of duplicated code collapsed into one module, so the next slug-rule alignment (like the 0.1.3 fix) lives in one place instead of four.
+
+**Shared clipboard helper.** `src/app/utils/clipboard.ts` wraps `navigator.clipboard.writeText` with an SSR-safety check and try/catch, returning `Promise<boolean>`. Six call sites (`code-copy`, `ui/code-block`, `heading-anchors`, `llm-actions` × 2, the home install picker) collapse to one-liners. Each call site keeps its own UX (in-place flash or toast) but the clipboard mechanics are shared.
+
+**Better 404.** The catch-all's "Page not found" panel now has a "Search the docs" CTA that opens the Cmd+K palette pre-filled with an alpha-only term pulled from the failed URL's last segment, plus the standard "Go home". `SearchService` gains `requestOpen(query)` so any component can drive the palette externally. adev silently redirects 404s home; NgMd keeps the explicit page so readers know the URL was bad and have a way out.
+
+**App layout stretches site-footer to viewport bottom.** Main becomes a flex column with the page content in a `flex-1` inner div and `<app-site-footer>` after. Short pages (404, narrow landing sections) pin the footer to the bottom instead of leaving an awkward gap; tall pages behave exactly the same since the inner div just grows to its natural height.
+
+**Shared `RouteUrlService`.** Six files (`app.ts`, `page-footer`, `source-actions`, `llm-actions`, `breadcrumb`, the catch-all) were each repeating the same `toSignal(router.events.pipe(filter(NavigationEnd), map, startWith))` ladder plus a `cleanUrl = computed(() => url().split('?')[0].split('#')[0])`. One root-provided service now owns both signals; consumers just `inject(RouteUrlService).cleanUrl`. `NgmdTitleStrategy` reads the same `stripUrl` helper instead of inlining the split chain. ~50 lines net dropped.
+
+**Shared `enhanceOnNavigation()` helper.** Five DOM-walker components (`code-copy`, `code-group`, `external-links`, `heading-anchors`, `media-enhancer`) had an identical skeleton: `ngAfterViewInit` runs a query, retries up to 20 times with a 50ms delay if the markdown hasn't flushed, then subscribes to `NavigationEnd` to re-run the same loop after every route change. The helper takes `(router, destroyRef, selector, enhanceEach)` and each component collapses to a single call. The TOC and the root `App` use a sibling `onNavigation(router, destroyRef, fn)` helper for their bespoke per-navigation work (state clear + scan, drawer close + scroll reset). ~80 lines net dropped.
+
+**Shared `watchHostAttribute()` helper.** `NgmdStep` and `NgmdTab` both wrap a Custom-Element host and sync a single `data-*` attribute into a signal via `MutationObserver`. Each had ~10 lines of identical SSR check + ElementRef + sync fn + observer + DestroyRef wiring. One helper now owns the pattern; the components express their intent in a single call.
+
+**SSR-check consistency.** `ThemeService`, `Toaster`, and `SearchService` swapped Angular's `isPlatformBrowser` injection for the lighter runtime check that the rest of the codebase already used. Same behaviour, one idiom across all 11 call sites.
+
+**Dead code dropped.** `SearchService.isEmpty` and `clearHistory` were declared but never read or called anywhere; `clearRecents` is the one the palette actually uses. Three `console.warn` lines that sat next to `toast.error` in `llm-actions` (leftovers from before toasts) absorbed into the clipboard refactor. Removed `src/app/pages/analog-welcome.ts` (271 lines of scaffold residue from before NgMd's own home page replaced it), `PageFooter.editUrl` + `lastUpdated` + `meta` computeds (the template had stopped reading them; "Edit on GitHub" lives in `<app-source-actions>`), a stale `support: 'Support'` entry in the breadcrumb labels map (the `/support` route was split into `/help/...` back in 0.0.5), and the `src/server/routes/api/v1/hello.ts` AnalogJS demo endpoint plus the now-empty `src/server/` tree (no route consumes it). `tsconfig.app.json` lost its dangling `src/server/middleware/**/*.ts` glob in the same pass. Also dropped `public/analog.svg` + `public/vite.svg` (the live copies live at `analogjs.org/img/logos/analog-logo.svg` and `public/logos/vite.svg`; the root-level files were unreferenced scaffold duplicates), and renamed the `angular.json` project from the scaffold default `my-app` to `ngmd` so CLI output matches the actual repo.
+
+## 0.1.4
 
 **Toast notifications.** A new `ToastService` + `<app-toaster>` pair gives any component a non-blocking way to surface success / error / info messages. Stack renders fixed top-right, newest on top, slides in from the right (260ms ease-out) on appear and slides back out on dismiss. Auto-dismisses after 3s (or stays until clicked when `duration: 0`), and `prefers-reduced-motion` gets a plain fade instead. Service is a dumb queue; the `Toaster` component owns timing so the exit animation always plays before the entry is removed. Mounted once in `app.ts` so any service or component can `inject(ToastService)` and call `.success('Saved.')` / `.error('Network failed.')` / `.info('Heads up.')`.
 
