@@ -42,7 +42,6 @@ The Angular ecosystem has no canonical docs-site starter comparable to:
 
 The Angular space:
 
-- **ng-doc** (319 stars) — closest match. Full docs framework but single-maintainer (919 commits by one person, recent bugs sitting weeks with no response), heavy DX (`*.page.ts` descriptor + `.md` file per page), Nunjucks templating (foreign to Angular devs), Angular CLI locked, no versioning / i18n / MDX, branding moderately flexible.
 - **AnalogJS** (3.1k stars) — has the foundation (Vite + markdown routes) but ships no docs template. Public discussion (#779) explicitly asked "should we ship a Starlight-style template?" — answer still no.
 - **Scully** (2.5k stars) — dormant since Aug 2023.
 - **Compodoc** (4.1k stars) — API reference generator only, not narrative docs.
@@ -83,7 +82,7 @@ Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 - **Spartan UI** — Tailwind-driven, shadcn-style copy/paste Angular components. CSS-variable theming. Combo is proven (spartan.ng's own docs are AnalogJS-based).
 - **Tailwind v4** — styling layer Spartan rides on.
 - **Tailwind Typography** — `prose` for markdown styling.
-- **Shiki** — code highlighting (same as adev, VitePress, ng-doc).
+- **Shiki** — code highlighting (same as adev, VitePress).
 - **Marked** — markdown engine (same as adev). Custom renderer adds `target="_blank"` to external links, anchor handling.
 - **pnpm** — recommended package manager. **npm**, **yarn**, and **bun** are also supported; install snippets and the future CLI will ship examples for each.
 
@@ -96,7 +95,7 @@ Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 - Cmd+K command palette with content-aware search
 - Code highlighting (Shiki)
 - Theming (light/dark, CSS-variable rebrand)
-- Landing-page primitives (hero, feature grid) — addresses a gap ng-doc leaves open
+- Landing-page primitives (hero, feature grid) — addresses a gap most Angular docs tooling leaves open
 - Versioning + i18n (built-in by v2, not bolted on)
 
 ### Explicitly punted on (rev'd Spartan-only migration, May 2026)
@@ -109,20 +108,6 @@ Runtime stays **AnalogJS** for file routing, markdown routes, SSR/SSG.
 - WebContainers / interactive playgrounds
 - Tutorial infrastructure
 - DocViewer-style pre-rendered HTML hydration
-
-## Differentiation vs ng-doc
-
-| Dimension            | ng-doc                         | NgMd                           |
-| -------------------- | ------------------------------ | ------------------------------ |
-| Build system         | Angular CLI lock-in            | AnalogJS / Vite, composable    |
-| Page authoring       | `*.page.ts` descriptor + `.md` | Pure file-based `.md`          |
-| In-markdown dynamism | Nunjucks templating            | Angular components inline      |
-| Branding             | CSS vars, moderate             | Tailwind tokens, very flexible |
-| Component ownership  | Library API                    | Copy/paste, own the source     |
-| Versioning           | None                           | Built-in                       |
-| i18n                 | None                           | Built-in                       |
-| Landing primitives   | Missing                        | Hero / feature grid / etc.     |
-| Bus factor           | 1 maintainer                   | Community-owned from day one   |
 
 ## v0 scope (built)
 
@@ -196,7 +181,7 @@ src/
 
 - **Spartan is pre-v1** (`0.0.1-alpha.694` as of 2026-05). Breaking changes possible. Mitigation: pin to a specific alpha, copy helm components into our repo rather than depending on the package directly.
 - **AnalogJS team could ship their own starter.** They've discussed it publicly (#779). If they do, NgMd's wedge narrows. Mitigation: ship faster, focus on what they explicitly said no to (opinionated theme, branding-first).
-- **ng-doc could fix its DX issues** and grow community. Mitigation: lean into the differentiation (AnalogJS-native, file-based markdown, Tailwind tokens, copy/paste UI).
+- **A competitor could fix their DX issues** and grow community. Mitigation: lean into the differentiation (AnalogJS-native, file-based markdown, Tailwind tokens, copy/paste UI).
 - **Bus factor.** Mitigation: open the org early, accept contributions, document everything from day one.
 
 ## Open questions

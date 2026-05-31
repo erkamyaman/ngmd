@@ -1,6 +1,6 @@
 # NgMd — Feature Backlog
 
-A comprehensive list of features we could add. Pulled from adev, ng-doc, VitePress, Starlight, Nextra, Docusaurus. Not all of these will ship. Use this as a menu to pick from.
+A comprehensive list of features we could add. Pulled from adev, VitePress, Starlight, Nextra, Docusaurus. Not all of these will ship. Use this as a menu to pick from.
 
 Status legend: ✅ done · 🟡 partial · ❌ not done
 
@@ -75,9 +75,9 @@ Open follow-ups:
 - ❌ Search result keyboard navigation (arrows + enter). Reverted in 0.1.2 pending a proper focus / scroll polish pass.
 - ✅ Recent searches + ✅ favorites (`localStorage`, 0.1.2 recents / 0.1.3 favorites). Star toggle per row, split into Favorites + Recent sections.
 
-## 5. Library-author features (where ng-doc beats us)
+## 5. Library-author features
 
-- ❌ API reference auto-generation from JSDoc / ts-morph (the BIG ng-doc feature — explicitly punted)
+- ❌ API reference auto-generation from JSDoc / ts-morph (the headline library-author feature, explicitly punted to a future release)
 - ✅ Keyword auto-linking — page-tier via `*Keyword` (API-tier deferred, depends on auto-gen above)
 - ❌ Symbol search in palette
 - ❌ Component playgrounds with editable code + Stackblitz launcher
