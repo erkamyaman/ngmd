@@ -1,4 +1,4 @@
-import {execSync} from 'node:child_process';
+import {execFileSync} from 'node:child_process';
 import {readdirSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 
@@ -70,7 +70,7 @@ export function routeFromPagePath(rel: string): string {
  */
 export function gitDate(file: string, cwd: string, mtimeFallback: () => string = () => ''): string {
   try {
-    const stamp = execSync(`git log -1 --format=%cs -- "${file}"`, {
+    const stamp = execFileSync('git', ['log', '-1', '--format=%cs', '--', file], {
       cwd,
       stdio: ['ignore', 'pipe', 'ignore'],
     })
