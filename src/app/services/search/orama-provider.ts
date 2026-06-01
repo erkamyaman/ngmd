@@ -1,6 +1,8 @@
 import {create, insertMultiple, search as oramaSearch, type AnyOrama} from '@orama/orama';
 import {searchIndex} from 'virtual:ngmd/search-index';
+import {apiIndex} from 'virtual:ngmd/api-index';
 import type {IndexDoc, SearchHit, SearchHitKind, SearchProvider} from '../../../types/search';
+import type {SymbolRecord} from '../../../types/api';
 
 /**
  * Default search backend. Builds an in-memory Orama index once on init,
@@ -27,8 +29,18 @@ export class OramaSearchProvider implements SearchProvider {
           body: 'string',
         },
       });
-      if (searchIndex.length) {
-        await insertMultiple(db, searchIndex as unknown as Array<Record<string, string>>, 50);
+      // Dedupe by id so a collision between an API symbol and a content
+      // page (or between two symbols re-exported under the same name)
+      // doesn't blow up Orama's insert.
+      const allDocs: IndexDoc[] = [];
+      const seenIds = new Set<string>();
+      for (const doc of [...searchIndex, ...apiIndex.map(symbolToIndexDoc)]) {
+        if (seenIds.has(doc.id)) continue;
+        seenIds.add(doc.id);
+        allDocs.push(doc);
+      }
+      if (allDocs.length) {
+        await insertMultiple(db, allDocs as unknown as Array<Record<string, string>>, 50);
       }
       return db;
     })();
@@ -67,7 +79,12 @@ export class OramaSearchProvider implements SearchProvider {
 function toSearchHit(doc: IndexDoc, query: string, score: number): SearchHit {
   const url = doc.anchor ? `${doc.url}#${doc.anchor}` : doc.url;
   const label = pickLabel(doc);
-  const sub = doc.kind === 'page' ? '' : doc.pageTitle;
+  const sub =
+    doc.kind === 'page'
+      ? ''
+      : doc.kind === 'symbol'
+        ? doc.heading // "class FooService" — disambiguates from prose pages
+        : doc.pageTitle;
   return {
     id: doc.id,
     kind: doc.kind as SearchHitKind,
@@ -80,7 +97,7 @@ function toSearchHit(doc: IndexDoc, query: string, score: number): SearchHit {
 }
 
 function pickLabel(doc: IndexDoc): string {
-  if (doc.kind === 'page') return doc.pageTitle;
+  if (doc.kind === 'page' || doc.kind === 'symbol') return doc.pageTitle;
   if (doc.kind === 'section') return doc.heading;
   // snippet: prefer the enclosing heading so the row reads
   //   "<heading>"
@@ -114,4 +131,23 @@ function escapeHtml(s: string): string {
 
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Project a SymbolRecord into the IndexDoc shape so API symbols and content
+ * pages share one Orama index and one ranking pass. The `kind` value is
+ * `'symbol'`, which the palette renderer treats like a page row with an
+ * API icon (rendering polish lives in the palette UI). `body` is the
+ * JSDoc description so prose queries can pull symbols in too.
+ */
+function symbolToIndexDoc(sym: SymbolRecord): IndexDoc {
+  return {
+    id: `symbol:${sym.group}/${sym.name}`,
+    url: `/api/${encodeURIComponent(sym.group)}/${sym.name}`,
+    anchor: '',
+    kind: 'symbol',
+    pageTitle: sym.name,
+    heading: `${sym.kind} ${sym.name}`,
+    body: sym.description || sym.signature,
+  };
 }

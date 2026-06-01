@@ -149,7 +149,7 @@ From a scaffolded NgMd project, copy these directories into yours:
 
 ### 5. Wire the plugins in vite.config.ts
 
-Import and register the NgMd plugins next to the analog plugin: `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`.
+Import and register the NgMd plugins next to the analog plugin: `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`.
 
 ### 6. Deploy
 

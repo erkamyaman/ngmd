@@ -19,6 +19,7 @@ import {SourceActions} from './components/source-actions';
 import {MediaEnhancer} from './components/media-enhancer';
 import {SiteFooter} from './components/site-footer';
 import {Toaster} from './components/toaster';
+import {VersionSwitcher} from './components/version-switcher';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ import {Toaster} from './components/toaster';
     SourceActions,
     SiteFooter,
     Toaster,
+    VersionSwitcher,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
@@ -85,6 +87,7 @@ import {Toaster} from './components/toaster';
         </nav>
 
         <div class="ml-auto flex items-center gap-2">
+          <app-version-switcher></app-version-switcher>
           <button
             type="button"
             (click)="palette.toggle()"

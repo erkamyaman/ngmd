@@ -21,6 +21,8 @@ import {
   Box,
   Search,
   Zap,
+  GitBranch,
+  BookOpen,
 } from 'lucide-angular';
 import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
@@ -374,6 +376,18 @@ export default class Home implements AfterViewInit {
       icon: Zap,
       title: 'AnalogJS-native',
       description: 'File-based routing, SSR/SSG, Vite dev server. The fast Angular stack.',
+    },
+    {
+      icon: GitBranch,
+      title: 'Multi-version docs',
+      description:
+        'Header version switcher in the adev / PrimeNG model. Each version is its own deployment, the switcher is a flat registry of external sibling URLs, and a status banner nudges visitors stuck on a next / rc / deprecated build toward the current stable.',
+    },
+    {
+      icon: BookOpen,
+      title: 'API reference auto-gen',
+      description:
+        'Drop an `ngmd.api.ts` scope file at the repo root. The api-gen plugin walks your TypeScript through ts-morph, emits a virtual symbol index, and serves it at `/api`. Cmd+K palette searches symbols alongside content pages.',
     },
   ];
 }

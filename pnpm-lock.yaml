@@ -92,6 +92,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.4
         version: 4.3.0
+      ts-morph:
+        specifier: ^28.0.0
+        version: 28.0.0
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -2261,6 +2264,9 @@ packages:
   '@ts-morph/common@0.22.0':
     resolution: {integrity: sha512-HqNBuV/oIlMKdkLshXd1zKBqNQCsuPEsgQOkfFQ/eUKjRlwndXW1AjN9LVkBEIukm00gGXSRmfkl0Wv5VXLnlw==}
 
+  '@ts-morph/common@0.29.0':
+    resolution: {integrity: sha512-35oUmphHbJvQ/+UTwFNme/t2p3FoKiGJ5auTjjpNTop2dyREspirjMy82PLSC1pnDJ8ah1GU98hwpVt64YXQsg==}
+
   '@tufjs/canonical-json@2.0.0':
     resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -2648,6 +2654,9 @@ packages:
 
   code-block-writer@12.0.0:
     resolution: {integrity: sha512-q4dMFMlXtKR3XNBHyMHt/3pwYNA69EDk00lloMOaaUMKPUXBw6lpXtbu3MMVG6/uOihGnRDOlkyqsONEUj60+w==}
+
+  code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -4519,6 +4528,9 @@ packages:
 
   ts-morph@21.0.1:
     resolution: {integrity: sha512-dbDtVdEAncKctzrVZ+Nr7kHpHkv+0JDJb2MjjpBaj8bFeCkePU9rHfMklmhuLFnpeq/EJZk2IhStY6NzqgjOkg==}
+
+  ts-morph@28.0.0:
+    resolution: {integrity: sha512-Wp3tnZ2bzwxyTZMtgWVzXDfm7lB1Drz+y9DmmYH/L702PQhPyVrp3pkou3yIz4qjS14GY9kcpmLiOOMvl8oG1g==}
 
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
@@ -6740,6 +6752,12 @@ snapshots:
       mkdirp: 3.0.1
       path-browserify: 1.0.1
 
+  '@ts-morph/common@0.29.0':
+    dependencies:
+      minimatch: 10.2.5
+      path-browserify: 1.0.1
+      tinyglobby: 0.2.16
+
   '@tufjs/canonical-json@2.0.0': {}
 
   '@tufjs/models@4.1.0':
@@ -7169,6 +7187,8 @@ snapshots:
   cluster-key-slot@1.1.2: {}
 
   code-block-writer@12.0.0: {}
+
+  code-block-writer@13.0.3: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -9295,6 +9315,11 @@ snapshots:
     dependencies:
       '@ts-morph/common': 0.22.0
       code-block-writer: 12.0.0
+
+  ts-morph@28.0.0:
+    dependencies:
+      '@ts-morph/common': 0.29.0
+      code-block-writer: 13.0.3
 
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:

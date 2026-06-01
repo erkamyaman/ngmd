@@ -53,6 +53,9 @@ A markdown-first docs starter for Angular, built on AnalogJS. Drop a `.md` file 
   <ngmd-card image="https://cdn.simpleicons.org/algolia/003DFF" title="Algolia DocSearch" link="https://docsearch.algolia.com">
     The hosted alternative the palette swaps to when <code>site.algolia</code> is configured. Free for open-source docs.
   </ngmd-card>
+  <ngmd-card image="https://cdn.simpleicons.org/typescript/3178C6" title="ts-morph" link="https://ts-morph.com">
+    The TypeScript AST wrapper powering API reference auto-generation. <code>api-gen.plugin.ts</code> globs sources declared in <code>ngmd.api.ts</code>, walks each one through ts-morph, and emits a `SymbolRecord` per exported declaration for the <code>/api</code> routes and palette symbol search.
+  </ngmd-card>
 </ngmd-card-grid>
 
 Inspiration came from the docs sites of *VitePress, *Starlight, *Nextra, and *Docusaurus, which set the bar for what a modern docs starter should feel like.

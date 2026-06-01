@@ -11,6 +11,7 @@ import {sitemapPlugin} from './sitemap.plugin';
 import {searchIndexPlugin} from './search-index.plugin';
 import {rawMdPlugin} from './raw-md.plugin';
 import {varsPlugin} from './vars.plugin';
+import {apiGenPlugin} from './api-gen.plugin';
 import config from './src/ngmd.config';
 
 /**
@@ -59,6 +60,7 @@ export default defineConfig(async () => ({
     sitemapPlugin({siteUrl: config.site.url}),
     rawMdPlugin(),
     searchIndexPlugin(),
+    apiGenPlugin(),
     analog({
       content: {
         highlighter: 'shiki',

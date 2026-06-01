@@ -6,11 +6,15 @@ import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plu
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
  *
- * Discovery mirrors the page-meta plugin: walks `src/app/pages/*.page.ts` and
- * `src/content/**\/*.md` (each markdown file's path becomes its route), pulls
- * each file's last commit date via `git log -1 --format=%cs` to populate
- * `<lastmod>`, falls back to mtime for uncommitted files, and writes both
- * files via Rollup's `emitFile` so they land at the client root.
+ * Discovery mirrors the page-meta plugin: walks `src/app/pages/*.page.ts`
+ * and `src/content/**\/*.md`, pulls each file's last commit date via
+ * `git log -1 --format=%cs` to populate `<lastmod>`, falls back to mtime
+ * for uncommitted files.
+ *
+ * Versioned content authored under `src/content/v/<slug>/...` keeps its
+ * authored path verbatim; the plugin doesn't synthesise version variants
+ * because each variant is a real file on disk and the walker already
+ * picks them up.
  *
  * `robots.txt` is a one-liner pointing at the sitemap.
  */
@@ -35,8 +39,7 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
     configResolved(cfg) {
       root = cfg.root;
     },
-    generateBundle(_outputOptions, _bundle) {
-      // Collect route → lastmod, .md takes precedence (more useful for prose)
+    generateBundle() {
       const entries = new Map<string, string>();
 
       try {

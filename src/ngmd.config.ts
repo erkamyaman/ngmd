@@ -22,6 +22,41 @@ export interface NavSection {
   items: NavItem[];
 }
 
+/**
+ * Lifecycle marker for a documentation version. Drives the chip rendered
+ * beside the version label in the switcher and the banner shown above
+ * content when this deployment isn't the current stable release.
+ *
+ *   - `current`: the production stable. Most visitors should land here.
+ *   - `next`: the upcoming release, served from a `next.*` subdomain.
+ *   - `rc`: release candidate, served from an `rc.*` subdomain.
+ *   - `deprecated`: older stable that's been superseded.
+ */
+export type VersionStatus = 'current' | 'next' | 'rc' | 'deprecated';
+
+export interface VersionEntry {
+  /** Switcher label, e.g. `v17`, `v18`, `next`. */
+  label: string;
+  /** External deployment URL. NgMd follows the adev / PrimeNG model of
+   *  per-version subdomains (`v17.example.com`, `next.example.com`). The
+   *  live deployment renders one version of the docs; other entries link
+   *  out via `<a href target="_blank">`. */
+  url: string;
+  /** Lifecycle marker. */
+  status: VersionStatus;
+}
+
+export interface VersionsConfig {
+  /** Label of the entry that represents THIS deployment. The switcher
+   *  marks it as the active row (no external link), and the content
+   *  banner reads its status to decide whether to nudge visitors toward
+   *  the current stable. */
+  self: string;
+  /** Ordered list rendered in the version switcher dropdown. Newest at
+   *  the top is the convention adev and PrimeNG both follow. */
+  list: VersionEntry[];
+}
+
 export interface SiteConfig {
   /** Brand name shown in the header next to the logo. */
   name: string;
@@ -62,6 +97,12 @@ export interface NgmdConfig {
    * follows.
    */
   keywords?: Record<string, string>;
+  /**
+   * Documentation version registry. When set, the version switcher renders
+   * in the header and content authored under `src/content/v/<slug>/` serves
+   * at `/v/<slug>/...`. Leave undefined for single-version sites.
+   */
+  versions?: VersionsConfig;
 }
 
 const config: NgmdConfig = {
@@ -127,6 +168,17 @@ const config: NgmdConfig = {
       ],
     },
   ],
+
+  // Versioning follows the adev / PrimeNG model: each major version is
+  // its own deployment, the switcher is a flat registry of external URLs.
+  // The live deployment renders one version; clicking a non-self entry
+  // opens its deployment in a new tab.
+  versions: {
+    self: 'v0.2.0',
+    list: [
+      {label: 'v0.2.0', url: 'https://ngmd.netlify.app', status: 'current'},
+    ],
+  },
 };
 
 export default config;
