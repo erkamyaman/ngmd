@@ -15,6 +15,7 @@ import {LucideAngularModule, Search, ArrowRight} from 'lucide-angular';
 import {LayoutMode} from '../layout-mode.service';
 import {SearchService} from '../services/search/search.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
+import {ContentBanners} from '../components/content-banners';
 
 /**
  * Catch-all route for every markdown page.
@@ -44,7 +45,7 @@ const NOT_FOUND = '__ngmd-not-found__';
 @Component({
   selector: 'app-doc',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideAngularModule],
+  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideAngularModule, ContentBanners],
   template: `
     @if (content$ | async; as doc) {
       @if (doc.content === notFound) {
@@ -94,6 +95,7 @@ const NOT_FOUND = '__ngmd-not-found__';
         </section>
       } @else {
         <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
+          <app-content-banners />
           <analog-markdown [content]="doc.content" />
         </article>
       }
@@ -104,7 +106,8 @@ export default class DocPage implements OnDestroy {
   private readonly layout = inject(LayoutMode);
   private readonly router = inject(Router);
   private readonly search = inject(SearchService);
-  private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
+  private readonly route = inject(RouteUrlService);
+  private readonly cleanUrl = this.route.cleanUrl;
   protected readonly notFound = NOT_FOUND;
 
   readonly searchIcon = Search;

@@ -119,7 +119,7 @@ export default class LoginPage {
 </ngmd-alert>
 
 ```ts
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 

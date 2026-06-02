@@ -71,6 +71,9 @@ Vite plugins committed alongside `vite.config.ts`:
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `internalLinkGuard` | Errors on broken in-page and cross-page anchor fragments. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `pageMetaPlugin` | Emits `virtual:ngmd/page-meta` with `editUrl` + `lastUpdated` per route, derived from `git log`. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `sitemapPlugin` | Writes `sitemap.xml` and `robots.txt` into the client bundle. |
+| <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `rawMdPlugin` | Serves every `.md` body at `<route>.md` so LLM consumers can fetch clean markdown. |
+| <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `searchIndexPlugin` | Builds the Orama search index at build time, exposed as `virtual:ngmd/search-index`. |
+| <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `apiGenPlugin` | Parses TypeScript sources via ts-morph based on `ngmd.api.ts` and exposes `virtual:ngmd/api-index` for the `/api` routes and palette symbol search. |
 
 ## Distribution
 

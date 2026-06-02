@@ -76,6 +76,12 @@ Open `http://localhost:5173`. You're running.
   <ngmd-card icon="sparkles" title="Agent skills" link="/ai/agent-skills" cta="Read">
     <code>ngmd-new-site</code> and <code>ngmd-authoring</code> ship in <code>skills/</code> for Claude Code, Gemini CLI, Antigravity, and other agentic tools.
   </ngmd-card>
+  <ngmd-card icon="git-branch" title="Multi-version docs">
+    Header version switcher modelled on adev / PrimeNG. Each version is its own deployment, the switcher is a flat registry of external sibling URLs from <code>ngmd.config.ts &gt; versions</code>, and a status-aware banner above content nudges visitors on a <code>next</code> / <code>rc</code> / <code>deprecated</code> deployment back to the current stable.
+  </ngmd-card>
+  <ngmd-card icon="book-open" title="API reference auto-gen">
+    Drop an <code>ngmd.api.ts</code> scope file at the repo root. The <code>api-gen</code> Vite plugin walks your TypeScript through ts-morph, emits a virtual symbol index, and serves it at <code>/api</code> with per-symbol pages at <code>/api/&lt;group&gt;/&lt;name&gt;</code>. Cmd+K palette indexes symbols alongside content pages.
+  </ngmd-card>
 </ngmd-card-grid>
 
 ## FAQ
@@ -97,7 +103,7 @@ Open `http://localhost:5173`. You're running.
     Yes. The "drop markdown, get a docs site" pattern comes from VitePress, Starlight, Nextra, and Docusaurus. NgMd adapts the pattern for Angular on AnalogJS.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Is this production-ready?">
-    NgMd is in active early development <ngmd-badge variant="beta">Beta</ngmd-badge>. The core (markdown rendering, theming, navigation, build pipeline) is stable. Versioning, i18n, library-style API reference, and search adapters are on the roadmap.
+    NgMd is in active early development <ngmd-badge variant="beta">Beta</ngmd-badge>. The core (markdown rendering, theming, navigation, build pipeline, Cmd+K search with Algolia DocSearch as an opt-in adapter, header version switcher, and API reference auto-generation scaffold) is stable. Test coverage, a stability declaration freezing the NgmdUi inputs and CSS tokens, and a polish bundle (Mermaid, math, diff highlighting, print stylesheet) remain on the path to 1.0. See <a href="https://github.com/erkamyaman/ngmd/blob/main/ROADMAP.md" target="_blank" rel="noopener noreferrer">ROADMAP.md</a> for the full plan.
   </ngmd-accordion-item>
 </ngmd-accordion>
 

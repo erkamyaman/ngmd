@@ -12,8 +12,9 @@
 
 /** Hierarchy level. Mirrors Algolia DocSearch's `lvl0`-`lvl6` so the same
  * UI works against either backend. `page` is the doc title, `section` is a
- * heading, `snippet` is a body excerpt. */
-export type SearchHitKind = 'page' | 'section' | 'snippet';
+ * heading, `snippet` is a body excerpt, `symbol` is an API-reference entry
+ * surfaced from the build-time `virtual:ngmd/api-index` virtual module. */
+export type SearchHitKind = 'page' | 'section' | 'snippet' | 'symbol';
 
 export interface SearchHit {
   /** Stable identifier for keying / dedup. */

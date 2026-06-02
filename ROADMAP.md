@@ -10,43 +10,68 @@ Estimated runway: 4-5 months of focused work.
 
 ## 1. Load-bearing features
 
-The three things missing from 0.1.7 that block 1.0.
+The two things missing from 0.1.7 that block 1.0.
 
 ### 1.1 API reference auto-generation
 
 The single biggest missing capability for library authors. NgMd can render their guides today; it can't render their type surface.
 
-- Opt-in `ngmd.api.ts` scope file globs TS sources.
-- Parse via `ts-morph` or the Angular compiler API.
-- Emit virtual `.page.ts` routes per class / interface / function / signal-input / standalone-component.
-- Render `@deprecated` / `@experimental` / `@beta` JSDoc tags as inline status badges.
-- Symbol search in the Cmd+K palette.
-- Sidebar group per package / module with `status:` chips reflecting the inline badges.
-- API-tier `*Keyword` auto-linking once the symbol index exists.
+**Config shape.** New file at repo root:
 
-Estimate: 3 weeks.
+```ts
+// ngmd.api.ts
+import {defineApi} from 'ngmd/api';
+
+export default defineApi({
+  scope: ['packages/*/src/lib/**/*.ts'],
+  exclude: ['**/*.spec.ts', '**/internal/**'],
+  basePath: '/api',
+  groupBy: 'package',
+  badgesFromJsDoc: ['deprecated', 'experimental', 'beta'],
+});
+```
+
+**Pipeline.** New Vite plugin `api-gen.plugin.ts` runs in `buildStart`:
+
+1. Load `ngmd.api.ts` via Vite's module loader (errors if the file is missing → API gen is silently off, no scope errors).
+2. Glob `scope` minus `exclude`, run each file through ts-morph (`Project.addSourceFileAtPath`).
+3. For each exported symbol, build a `SymbolRecord`: kind (`class | interface | function | const | type | enum | signal-input | standalone-component`), name, JSDoc, signature, source file, source line, status badges parsed from JSDoc tags.
+4. Emit one virtual route per symbol via Vite's virtual-module mechanism (`virtual:ngmd/api/<group>/<name>.page`), wired into AnalogJS's catch-all so the routes appear without touching `src/app/pages/`.
+5. Emit an aggregated symbol index for the Cmd+K palette (`virtual:ngmd/api-index`).
+
+**Rendering.** New components under `src/app/ui/api/`:
+
+- `<api-signature>` – type signature with syntax highlighting + clickable type links.
+- `<api-prop-table>` – method/property tables with name + type + description + status.
+- `<api-jsdoc>` – formatted JSDoc body (markdown rendered).
+- `<api-related>` – cross-references to related symbols by kind.
+
+Each emitted page composes those four primitives.
+
+**Decisions to lock before coding.**
+
+- Parser: ts-morph or Angular's compiler API? Lean ts-morph (lighter, simpler) for v1; revisit if signal-input / standalone-component shapes need the Angular compiler.
+- Re-exports: follow them to the original definition or surface as alias? Follow to original, mark as `@reexport from <path>`.
+- Generic parameters: render inline (`Foo<T extends Bar>`) or expanded (one row per type param)? Inline.
+- Tag for hidden-from-API symbols: `@internal` in JSDoc → omit entirely.
+
+**Edge cases.**
+
+- Files outside `scope` that get re-exported through a barrel inside scope: include them, marked as out-of-scope source.
+- Multiple symbols with the same name (overloads): merge into one page with grouped signatures.
+- Markdown in JSDoc: render through the same marked pipeline as `.md` pages, including code fence Shiki highlighting.
+
+**Pairs with.** Symbol search in the palette (1.4 in BACKLOG section 4). The API index emitted here is the palette's input; do both in the same sprint to avoid re-emitting twice.
+
+Estimate: 3 weeks. Risk: ts-morph performance on large monorepos (mitigation: incremental parse cache keyed on file mtime).
 
 ### 1.2 Versioned docs
 
 Without this you can't host any post-1.0 project's docs that ever introduces a breaking change. Listed as "v2 territory" in BACKLOG; realistically that's denial.
 
-- `v1/` / `v2/` content folders, or frontmatter-driven version field.
-- Version switcher in the header.
-- Per-version sidebar config in `ngmd.config.ts`.
-- Default version routing + 301 redirects from unversioned paths.
+A switcher of external deployments, no in-repo historical content — the model adev (`v17.angular.dev`, `next.angular.dev`) and PrimeNG (`v18.primeng.org`) actually ship. Each version of the docs is its own deployment built from its own git ref; the live site renders one version and the header switcher is a flat registry of external URLs you click through to (opening in a new tab). `ngmd.config.ts` gains a `versions` block — a `self` label naming this deployment plus a `list` of `{label, url, status}` entries (status one of `current` / `next` / `rc` / `deprecated`). When `self`'s status isn't `current`, a banner above the article points visitors at the current stable. No `/v/<slug>/` routing, no `src/content/<version>/` folders, no per-version sitemap or search index. See VERSION-SWITCHER-PLAN.md for the concrete type shapes and execution order.
 
-Estimate: 1-2 weeks.
-
-### 1.3 i18n / locale routing
-
-Roughly half the projects evaluating a docs starter want multilingual support on day one.
-
-- Locale-prefixed routes (`/en/`, `/tr/`).
-- Header locale dropdown.
-- Translation memory file or source-of-truth tracking so translators see what's drifted.
-- Locale-aware sitemap + canonical / hreflang tags.
-
-Estimate: 1-2 weeks. Pairs naturally with versioning since both reshape the routing layer; do them in the same sprint.
+Estimate: ~2 hours (config + service swap, no routing rework).
 
 ---
 
@@ -150,9 +175,9 @@ Explicitly not in scope. Documented here so they stop being asked about for 1.0.
 
 Suggested order. Items in the same sprint can be parallelised by a single maintainer over their respective weeks; the boundaries between sprints are barriers because each leans on the previous.
 
-### Sprint 1: routing rework (3-4 weeks)
+### Sprint 1: versioned docs (1-2 weeks)
 
-Versioned docs (1.2) + i18n locale routing (1.3) land together because both reshape the same routing layer. Doing them in series would mean ripping the same code apart twice.
+Rework the catch-all to parse `/v/<version>/` prefixes. Add the version switcher, version-aware sidebar (`navByVersion`), archived banner, redirect from unversioned URLs, and per-version sitemap entries.
 
 ### Sprint 2: API reference auto-generation (3 weeks)
 
@@ -174,7 +199,7 @@ Test coverage, Lighthouse pass, axe-core sweep. Land them in that order because 
 
 Migration guide, release blog post, BACKLOG.md cleanup, version bump, npm publish, push to main, announcement.
 
-Total: ~13-15 weeks.
+Total: ~11-13 weeks.
 
 ---
 
@@ -184,7 +209,6 @@ A release qualifies as 1.0 when all of the following are true.
 
 - [ ] API reference auto-generation shipped, with at least one real Angular library using it end-to-end as a smoke test
 - [ ] Versioned docs shipped (multi-version routing, switcher, sidebar configs)
-- [ ] i18n shipped (locale routing, switcher, sitemap)
 - [ ] NgmdUi inputs, CSS tokens, plugin signatures all frozen and documented as stable
 - [ ] Migration guide from 0.1.7 published
 - [ ] Test coverage on every NgmdUi component + integration on routing + Playwright golden path + API auto-gen fixtures
