@@ -68,6 +68,10 @@ export interface SiteConfig {
   url: string;
   /** Repository URL. Powers the GitHub icon in the header. */
   githubUrl: string;
+  /** Default branch used to build GitHub blob/edit links (e.g. the
+   *  "view source" link on API symbol pages). Defaults to `main` when
+   *  omitted. Set this if the repo's default branch isn't `main`. */
+  githubBranch?: string;
   /** Optional social / community links rendered in the header. */
   links?: {
     twitter?: string;
@@ -98,9 +102,11 @@ export interface NgmdConfig {
    */
   keywords?: Record<string, string>;
   /**
-   * Documentation version registry. When set, the version switcher renders
-   * in the header and content authored under `src/content/v/<slug>/` serves
-   * at `/v/<slug>/...`. Leave undefined for single-version sites.
+   * Documentation version registry. When set with more than one entry, the
+   * version switcher renders in the header. Each entry is a separate
+   * deployment (its own URL); the live site renders one version and the
+   * switcher links out to the others — the adev / PrimeNG model, no in-repo
+   * historical content. Leave undefined for single-version sites.
    */
   versions?: VersionsConfig;
 }
@@ -175,9 +181,7 @@ const config: NgmdConfig = {
   // opens its deployment in a new tab.
   versions: {
     self: 'v0.2.0',
-    list: [
-      {label: 'v0.2.0', url: 'https://ngmd.netlify.app', status: 'current'},
-    ],
+    list: [{label: 'v0.2.0', url: 'https://ngmd.netlify.app', status: 'current'}],
   },
 };
 

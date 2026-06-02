@@ -141,9 +141,13 @@ function escapeRegex(s: string): string {
  * JSDoc description so prose queries can pull symbols in too.
  */
 function symbolToIndexDoc(sym: SymbolRecord): IndexDoc {
+  // Encode both segments consistently so reserved characters in a symbol
+  // name (or raw slashes in a group) never leak into the id or url.
+  const encGroup = encodeURIComponent(sym.group);
+  const encName = encodeURIComponent(sym.name);
   return {
-    id: `symbol:${sym.group}/${sym.name}`,
-    url: `/api/${encodeURIComponent(sym.group)}/${sym.name}`,
+    id: `symbol:${encGroup}/${encName}`,
+    url: `/api/${encGroup}/${encName}`,
     anchor: '',
     kind: 'symbol',
     pageTitle: sym.name,

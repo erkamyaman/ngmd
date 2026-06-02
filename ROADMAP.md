@@ -69,58 +69,9 @@ Estimate: 3 weeks. Risk: ts-morph performance on large monorepos (mitigation: in
 
 Without this you can't host any post-1.0 project's docs that ever introduces a breaking change. Listed as "v2 territory" in BACKLOG; realistically that's denial.
 
-**URL shape.** `/v/<version>/<route>` with `/v/latest` as a permanent alias to the current default version. Unversioned paths (`/concepts/components`) 301 to `/v/latest/concepts/components` so existing bookmarks survive a version cut.
+A switcher of external deployments, no in-repo historical content — the model adev (`v17.angular.dev`, `next.angular.dev`) and PrimeNG (`v18.primeng.org`) actually ship. Each version of the docs is its own deployment built from its own git ref; the live site renders one version and the header switcher is a flat registry of external URLs you click through to (opening in a new tab). `ngmd.config.ts` gains a `versions` block — a `self` label naming this deployment plus a `list` of `{label, url, status}` entries (status one of `current` / `next` / `rc` / `deprecated`). When `self`'s status isn't `current`, a banner above the article points visitors at the current stable. No `/v/<slug>/` routing, no `src/content/<version>/` folders, no per-version sitemap or search index. See VERSION-SWITCHER-PLAN.md for the concrete type shapes and execution order.
 
-**Content layout.** Versioned content lives under `src/content/<version>/`:
-
-```
-src/content/
-  v1.0/
-    welcome.md
-    concepts/...
-  v2.0/
-    welcome.md
-    concepts/...
-  shared/                  // version-agnostic pages (legal, about)
-    privacy.md
-```
-
-Frontmatter-driven versioning was the alternative; folders won because they make "diff between v1 and v2" a real `git diff src/content/v1.0 src/content/v2.0` instead of a frontmatter-scan exercise, and because the catch-all route already maps URL to folder cleanly.
-
-**Config shape.** `ngmd.config.ts` gains a `versions` block:
-
-```ts
-versions: {
-  current: 'v2.0',
-  list: [
-    {label: 'v2.0', slug: 'v2.0', status: 'current'},
-    {label: 'v1.0', slug: 'v1.0', status: 'maintenance'},
-    {label: 'v0.x', slug: 'v0.x', status: 'archived'},
-  ],
-  navByVersion: {
-    'v2.0': [...],
-    'v1.0': [...],
-  },
-}
-```
-
-Sidebar, breadcrumb, prev/next, palette all key off the active version.
-
-**Catch-all rewrite.** `[...slug].page.ts` parses the leading segment as a version slug; if it matches a registered version, that's the active version + the rest is the content path. If not, fall through to existing behaviour (with the 301 to `/v/latest` for content that exists under the current version).
-
-**Switcher UI.** Header dropdown next to the theme toggle. Active version label as trigger; menu lists every entry from `versions.list` with the `status` rendered as a chip. Picking a version navigates to the same content path under the new version, or falls back to `/v/<picked>/welcome` if that page doesn't exist in the picked version.
-
-**Sitemap.** One `<url>` entry per (version × page) combination. The current version's pages also get `<xhtml:link rel="alternate">` entries pointing at the same content in other versions for SEO.
-
-**Search index.** Build the Orama index per-version; the palette filters by active version unless the user toggles "search all versions".
-
-**Decisions to lock.**
-
-- Version slug format: `v1.0` vs `1.0` vs semver `1.0.0`? Pick `v1.0` (matches Docusaurus convention, reads cleanly in URLs).
-- "Latest" alias: redirect to current version, or serve current version content directly under `/v/latest`? Redirect — keeps canonical URLs unambiguous for search engines.
-- Archived versions: stay rendered or fully removed at build time? Stay rendered with a banner: "This is v0.x, archived. Latest is v2.0."
-
-Estimate: 1-2 weeks.
+Estimate: ~2 hours (config + service swap, no routing rework).
 
 ---
 
@@ -268,4 +219,3 @@ A release qualifies as 1.0 when all of the following are true.
 - [ ] Release blog post drafted
 
 When this list is green, version stamps as 1.0.0.
-

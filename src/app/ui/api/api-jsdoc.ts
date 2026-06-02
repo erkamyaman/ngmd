@@ -36,8 +36,14 @@ export class ApiJsDoc {
  */
 function formatParagraph(input: string): string {
   let out = escapeHtml(input).replace(/\n/g, ' ');
-  out = out.replace(/`([^`]+)`/g, (_, code) => `<code>${escapeHtml(code)}</code>`);
-  out = out.replace(/(https?:\/\/[^\s<]+)/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-[color:var(--accent-strong)] underline">${url}</a>`);
+  // `input` is already HTML-escaped above, so the captured `code` is too —
+  // escaping it again would render `Array<string>` as literal `Array&lt;…`.
+  out = out.replace(/`([^`]+)`/g, (_, code) => `<code>${code}</code>`);
+  out = out.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    (url) =>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-[color:var(--accent-strong)] underline">${url}</a>`,
+  );
   return out;
 }
 

@@ -2,8 +2,6 @@ import {Component, computed} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {apiIndex} from 'virtual:ngmd/api-index';
 import {ApiBadges} from '../../ui/api/api-badges';
-import {ApiSignature} from '../../ui/api/api-signature';
-import {ApiJsDoc} from '../../ui/api/api-jsdoc';
 
 /**
  * API reference landing page. Renders every symbol the api-gen plugin
@@ -16,7 +14,7 @@ import {ApiJsDoc} from '../../ui/api/api-jsdoc';
  */
 @Component({
   selector: 'app-api-index',
-  imports: [RouterLink, ApiBadges, ApiSignature, ApiJsDoc],
+  imports: [RouterLink, ApiBadges],
   template: `
     <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
       <header class="mb-8">
@@ -39,8 +37,7 @@ import {ApiJsDoc} from '../../ui/api/api-jsdoc';
             <code class="rounded bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 text-[0.85em]"
               >ngmd.api.ts</code
             >
-            scope file at your repo root and the build will populate this page
-            on the next run.
+            scope file at your repo root and the build will populate this page on the next run.
           </p>
         </div>
       } @else {
@@ -72,9 +69,7 @@ import {ApiJsDoc} from '../../ui/api/api-jsdoc';
                       <app-api-badges [tags]="sym.badges" />
                     </div>
                     @if (sym.description) {
-                      <p
-                        class="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2"
-                      >
+                      <p class="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
                         {{ shortDescription(sym.description) }}
                       </p>
                     }

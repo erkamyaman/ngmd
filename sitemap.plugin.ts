@@ -11,10 +11,9 @@ import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plu
  * `git log -1 --format=%cs` to populate `<lastmod>`, falls back to mtime
  * for uncommitted files.
  *
- * Versioned content authored under `src/content/v/<slug>/...` keeps its
- * authored path verbatim; the plugin doesn't synthesise version variants
- * because each variant is a real file on disk and the walker already
- * picks them up.
+ * Versioning is per-deployment (each docs version is its own site under the
+ * adev / PrimeNG model), so there are no in-repo version variants to
+ * special-case here — the sitemap simply covers this deployment's content.
  *
  * `robots.txt` is a one-liner pointing at the sitemap.
  */

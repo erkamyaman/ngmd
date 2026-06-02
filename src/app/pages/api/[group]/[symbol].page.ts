@@ -77,9 +77,9 @@ import config from '../../../../ngmd.config';
         >
           <p class="font-medium">Symbol not found.</p>
           <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <code class="rounded bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 text-[0.85em]"
-              >{{ requested() }}</code
-            >
+            <code class="rounded bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 text-[0.85em]">{{
+              requested()
+            }}</code>
             isn't in the current API index. It may have been renamed or removed.
           </p>
         </section>
@@ -107,6 +107,7 @@ export default class ApiSymbolPage {
   readonly sourceUrl = computed(() => {
     const sym = this.symbol();
     if (!sym || !config.site.githubUrl) return '';
-    return `${config.site.githubUrl}/blob/main/${sym.filePath}#L${sym.line}`;
+    const branch = config.site.githubBranch ?? 'main';
+    return `${config.site.githubUrl}/blob/${branch}/${sym.filePath}#L${sym.line}`;
   });
 }

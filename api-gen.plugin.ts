@@ -42,13 +42,16 @@ export function apiGenPlugin(): Plugin {
         compilerOptions: {target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext},
       });
       const sourceFile = proj.addSourceFileAtPath(path);
-      const def = sourceFile.getDefaultExportSymbol();
-      if (!def) return null;
       // We can't trivially evaluate the TS without a runtime; instead lift
       // the literal passed to `defineApi(...)` via AST traversal. For the
       // skeleton, every supported field is read as a literal so static
-      // extraction is enough.
-      const callExpr = sourceFile.getDescendantsOfKind(ts.SyntaxKind.CallExpression)[0];
+      // extraction is enough. Read the `export default` expression directly
+      // rather than the first `CallExpression` in the file — otherwise any
+      // helper call before the default export (even a harmless one) would
+      // be parsed as the config.
+      const exportAssignment = sourceFile.getExportAssignment((ea) => !ea.isExportEquals());
+      if (!exportAssignment) return null;
+      const callExpr = exportAssignment.getExpression().asKind(ts.SyntaxKind.CallExpression);
       if (!callExpr) return null;
       const literal = callExpr.getArguments()[0];
       if (!literal || !literal.asKind(ts.SyntaxKind.ObjectLiteralExpression)) return null;
@@ -92,7 +95,16 @@ export function apiGenPlugin(): Plugin {
         if (!first) continue;
         const kind = symbolKindOf(first);
         if (!kind) continue;
-        const jsDoc = ('getJsDocs' in first ? (first as never as {getJsDocs: () => unknown[]}).getJsDocs() : []) as Array<{
+        // `VariableDeclaration` nodes don't expose `getJsDocs()`; the JSDoc
+        // is attached to the enclosing `VariableStatement`. Resolve the
+        // right host so `export const` symbols pick up their description
+        // and `@deprecated`/`@experimental`/`@beta` badges.
+        const jsDocHost = jsDocHostFor(first);
+        const jsDoc = (
+          jsDocHost && 'getJsDocs' in jsDocHost
+            ? (jsDocHost as {getJsDocs: () => unknown[]}).getJsDocs()
+            : []
+        ) as Array<{
           getDescription: () => string;
           getTags: () => Array<{getTagName: () => string}>;
         }>;
@@ -136,13 +148,22 @@ export function apiGenPlugin(): Plugin {
       const records = extractRecords(config);
       return `export const apiIndex = ${JSON.stringify(records, null, 2)};\n`;
     },
-    handleHotUpdate({file}) {
+    handleHotUpdate({file, server}) {
       // Invalidate the project cache when any source under scope changes.
       // Cheap because `Project` re-uses TypeScript's incremental machinery.
       if (file.endsWith('.ts') || file.endsWith('ngmd.api.ts')) {
         project = null;
         recordsMemo = null;
+        // Clearing the memo isn't enough — Vite caches the virtual module's
+        // `load()` result, so invalidate it explicitly and return it so the
+        // client gets a fresh `apiIndex` without a full reload.
+        const mod = server.moduleGraph.getModuleById(RESOLVED_INDEX_ID);
+        if (mod) {
+          server.moduleGraph.invalidateModule(mod);
+          return [mod];
+        }
       }
+      return undefined;
     },
   };
 }
@@ -168,14 +189,40 @@ function symbolKindOf(decl: unknown): SymbolKind | null {
   }
 }
 
+/**
+ * Resolve the node that actually carries JSDoc for an exported declaration.
+ * Most declarations are themselves JSDocable, but a `VariableDeclaration`
+ * (`export const`) keeps its JSDoc on the enclosing `VariableStatement`.
+ */
+function jsDocHostFor(decl: unknown): unknown {
+  const node = decl as {
+    getKindName?: () => string;
+    getFirstAncestorByKind?: (kind: ts.SyntaxKind) => unknown;
+  };
+  if (typeof node.getKindName === 'function' && node.getKindName() === 'VariableDeclaration') {
+    return node.getFirstAncestorByKind?.(ts.SyntaxKind.VariableStatement) ?? node;
+  }
+  return node;
+}
+
 function groupNameFor(filePath: string, strategy: NonNullable<ApiConfig['groupBy']>): string {
   if (strategy === 'kind') return 'symbols';
   if (strategy === 'package') {
     const match = filePath.match(/^packages\/([^/]+)\//);
     return match?.[1] ?? 'root';
   }
+  // Sluggify the directory into a single URL- and label-friendly segment so
+  // groups stay short (`src/app/ui/api` → `src-app-ui-api`) instead of
+  // leaking multi-segment paths into URLs and headings.
   const dir = filePath.split('/').slice(0, -1).join('/');
-  return dir || 'root';
+  return slugifyGroup(dir) || 'root';
+}
+
+function slugifyGroup(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 /**

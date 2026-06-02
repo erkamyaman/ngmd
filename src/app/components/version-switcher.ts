@@ -38,7 +38,7 @@ import {VersionService} from '../services/version/version.service';
             class="absolute right-0 top-[calc(100%+0.375rem)] z-40 min-w-52 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-1 shadow-lg"
           >
             @for (entry of list(); track entry.label) {
-              <li>
+              <li role="presentation">
                 @if (entry.label === selfLabel()) {
                   <span
                     role="option"
@@ -101,7 +101,9 @@ export class VersionSwitcher {
   readonly list = computed(() => this.versions.list());
 
   readonly selfLabel = computed(() => this.versions.self()?.label ?? '');
-  readonly triggerLabel = computed(() => this.versions.self()?.label ?? this.list()[0]?.label ?? '');
+  readonly triggerLabel = computed(
+    () => this.versions.self()?.label ?? this.list()[0]?.label ?? '',
+  );
 
   toggle(): void {
     this.open.update((v) => !v);
