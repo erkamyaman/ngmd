@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
+import {Component, DestroyRef, afterNextRender, inject, input, signal} from '@angular/core';
 import {Router} from '@angular/router';
 import {onNavigation} from '../utils/enhance-on-navigation';
 
@@ -35,8 +35,7 @@ interface Heading {
     }
   `,
 })
-export class Toc implements AfterViewInit {
-  private readonly router = inject(Router);
+export class Toc {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly showActive = input<boolean>(true);
@@ -45,23 +44,19 @@ export class Toc implements AfterViewInit {
   private observer?: IntersectionObserver;
   private contentObserver?: MutationObserver;
 
-  isActive(id: string): boolean {
-    return this.showActive() && this.active() === id;
-  }
-
-  ngAfterViewInit(): void {
-    this.scanWithRetry();
-    onNavigation(this.router, this.destroyRef, () => {
-      this.headings.set([]);
+  constructor() {
+    const router = inject(Router);
+    afterNextRender(() => {
       this.scanWithRetry();
-    });
+      onNavigation(router, this.destroyRef, () => {
+        this.headings.set([]);
+        this.scanWithRetry();
+      });
 
-    // Bottom-of-page guard. Registered once here; reads the live
-    // `headings` signal so each scroll tick picks up the current last
-    // heading without re-binding. Previously this lived inside
-    // `setupObserver` which fires on every navigation, leaking a stale
-    // handler each time.
-    if (typeof window !== 'undefined') {
+      // Bottom-of-page guard. Registered once here; reads the live
+      // `headings` signal so each scroll tick picks up the current last
+      // heading without re-binding. `afterNextRender` is browser-only,
+      // so the `typeof window` check the registration used to need is gone.
       const onScroll = () => {
         const list = this.headings();
         if (list.length === 0) return;
@@ -73,12 +68,16 @@ export class Toc implements AfterViewInit {
       };
       window.addEventListener('scroll', onScroll, {passive: true});
       this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
-    }
 
-    this.destroyRef.onDestroy(() => {
-      this.contentObserver?.disconnect();
-      this.observer?.disconnect();
+      this.destroyRef.onDestroy(() => {
+        this.contentObserver?.disconnect();
+        this.observer?.disconnect();
+      });
     });
+  }
+
+  isActive(id: string): boolean {
+    return this.showActive() && this.active() === id;
   }
 
   scrollToHeading(id: string, event: MouseEvent): void {
@@ -99,13 +98,13 @@ export class Toc implements AfterViewInit {
   }
 
   private scanWithRetry(): void {
-    if (typeof document === 'undefined') return;
     // Reset any prior observer before scanning. Navigation churn would
     // otherwise leave a stale observer firing on the wrong route's <main>.
+    // (Browser-only: every call site runs inside `afterNextRender`.)
     this.contentObserver?.disconnect();
 
     // TS-driven pages render synchronously: the headings are in the DOM
-    // by the time AfterViewInit fires. Try once, succeed immediately.
+    // by the time the next render commits. Try once, succeed immediately.
     if (this.tryScan()) return;
 
     // Markdown routes resolve asynchronously through the catch-all:
@@ -176,7 +175,8 @@ export class Toc implements AfterViewInit {
       {rootMargin: '0px 0px -70% 0px', threshold: 0},
     );
     nodes.forEach((node) => this.observer!.observe(node));
-    // The bottom-of-page scroll guard lives in `ngAfterViewInit` so it
-    // registers exactly once across the component's lifetime.
+    // The bottom-of-page scroll guard is registered in the constructor's
+    // `afterNextRender` callback so it attaches exactly once across the
+    // component's lifetime.
   }
 }

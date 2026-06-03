@@ -12,7 +12,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {Router, RouterLink} from '@angular/router';
 import {injectContent, MarkdownComponent} from '@analogjs/content';
 import {LucideAngularModule, Search, ArrowRight} from 'lucide-angular';
-import {LayoutMode} from '../layout-mode.service';
+import {LAYOUT_CHROME_HIDDEN} from '../layout-mode.service';
 import {SearchService} from '../services/search/search.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
 import {ContentBanners} from '../components/content-banners';
@@ -103,7 +103,7 @@ const NOT_FOUND = '__ngmd-not-found__';
   `,
 })
 export default class DocPage implements OnDestroy {
-  private readonly layout = inject(LayoutMode);
+  private readonly chromeHidden = inject(LAYOUT_CHROME_HIDDEN);
   private readonly router = inject(Router);
   private readonly search = inject(SearchService);
   private readonly route = inject(RouteUrlService);
@@ -139,7 +139,7 @@ export default class DocPage implements OnDestroy {
   protected readonly suggestion = computed(() => this.suggestionsResource.value()?.[0] ?? null);
 
   constructor() {
-    effect(() => this.layout.chromeHidden.set(this.missing()));
+    effect(() => this.chromeHidden.set(this.missing()));
   }
 
   protected searchInPalette(): void {
@@ -173,6 +173,6 @@ export default class DocPage implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.layout.chromeHidden.set(false);
+    this.chromeHidden.set(false);
   }
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
@@ -19,14 +19,11 @@ import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
     }
   `,
 })
-export class CodeGroup implements AfterViewInit {
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
-
-  ngAfterViewInit(): void {
+export class CodeGroup {
+  constructor() {
     enhanceOnNavigation(
-      this.router,
-      this.destroyRef,
+      inject(Router),
+      inject(DestroyRef),
       'main .ngmd-code-group:not([data-enhanced])',
       (group) => this.enhance(group),
     );

@@ -1,10 +1,22 @@
-import {Injectable, signal} from '@angular/core';
+import {InjectionToken, signal, type WritableSignal} from '@angular/core';
 
 /**
- * Pages that want to render without the docs site frame (sidebar, breadcrumb,
- * TOC) can flip this signal in their constructor. The app shell reads it.
+ * Single boolean flag — exposed as a writable signal — that pages can flip
+ * to render without the docs site frame (sidebar, breadcrumb, TOC). The
+ * 404 view sets it on entry and clears it on destroy; the landing page
+ * sets it once in the constructor.
+ *
+ * Lifted out of a class wrapper into an `InjectionToken` because the only
+ * state was the signal itself — no constructor, no helpers, no DI graph
+ * worth the indirection. Consumers `inject(LAYOUT_CHROME_HIDDEN)` and read
+ * / write the signal directly. The `providedIn: 'root'` factory keeps the
+ * single-instance guarantee the old `@Injectable({providedIn: 'root'})`
+ * gave for free.
  */
-@Injectable({providedIn: 'root'})
-export class LayoutMode {
-  readonly chromeHidden = signal(false);
-}
+export const LAYOUT_CHROME_HIDDEN = new InjectionToken<WritableSignal<boolean>>(
+  'LAYOUT_CHROME_HIDDEN',
+  {
+    providedIn: 'root',
+    factory: () => signal(false),
+  },
+);

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
@@ -18,20 +18,19 @@ import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
     }
   `,
 })
-export class MediaEnhancer implements AfterViewInit {
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
-
-  ngAfterViewInit(): void {
+export class MediaEnhancer {
+  constructor() {
+    const router = inject(Router);
+    const destroyRef = inject(DestroyRef);
     enhanceOnNavigation(
-      this.router,
-      this.destroyRef,
+      router,
+      destroyRef,
       '.ngmd-video[data-video-src]:not([data-enhanced])',
       (el) => this.enhanceVideo(el),
     );
     enhanceOnNavigation(
-      this.router,
-      this.destroyRef,
+      router,
+      destroyRef,
       '.ngmd-image[data-image-src]:not([data-enhanced])',
       (el) => this.enhanceImage(el),
     );

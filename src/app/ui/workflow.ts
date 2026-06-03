@@ -1,10 +1,10 @@
 import {
   AfterContentInit,
-  AfterViewInit,
   Component,
   ContentChildren,
   DestroyRef,
   ElementRef,
+  afterNextRender,
   inject,
   input,
   QueryList,
@@ -49,12 +49,17 @@ export class NgmdStep {
     // Component-pages (where ContentChildren works) still call `index.set(i)`
     // directly; the attribute path is a no-op for them.
     const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-    const stop = watchHostAttribute(host, 'data-step-index', (value) => {
-      if (value === null) return;
-      const n = parseInt(value, 10);
-      if (!Number.isNaN(n)) this.index.set(n);
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      // `watchHostAttribute` uses `MutationObserver`, so it only runs
+      // safely on the browser. `afterNextRender` is browser-only.
+      const stop = watchHostAttribute(host, 'data-step-index', (value) => {
+        if (value === null) return;
+        const n = parseInt(value, 10);
+        if (!Number.isNaN(n)) this.index.set(n);
+      });
+      destroyRef.onDestroy(stop);
     });
-    inject(DestroyRef).onDestroy(stop);
   }
 }
 
@@ -68,26 +73,27 @@ export class NgmdStep {
     </div>
   `,
 })
-export class NgmdWorkflow implements AfterContentInit, AfterViewInit {
+export class NgmdWorkflow implements AfterContentInit {
   @ContentChildren(NgmdStep) private readonly steps!: QueryList<NgmdStep>;
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
 
+  constructor() {
+    // Markdown path: child `<ngmd-step>` elements are Custom Elements that
+    // `ContentChildren` can't see through. Walk the DOM after the next
+    // render and set `data-step-index="N"` on each one; the step's
+    // MutationObserver picks the new value up and updates its signal.
+    // Safe in component-page contexts too: a redundant attribute set the
+    // step ignores (its signal already has the right value).
+    afterNextRender(() => {
+      const els = this.host.nativeElement.querySelectorAll<HTMLElement>('ngmd-step');
+      els.forEach((el, i) => el.setAttribute('data-step-index', String(i)));
+    });
+  }
+
   ngAfterContentInit(): void {
-    // Component-pages path: ContentChildren finds Angular instances
+    // Component-pages path: `ContentChildren` finds Angular instances
     // directly because the projected children are real Angular components
     // (no Custom Element boundary in the way).
     this.steps.forEach((step, i) => step.index.set(i));
-  }
-
-  ngAfterViewInit(): void {
-    // Markdown path: child `<ngmd-step>` elements are Custom Elements that
-    // ContentChildren can't see through. Walk the DOM and set
-    // `data-step-index="N"` on each one; the step's MutationObserver picks
-    // the new value up and updates its signal. Safe to run in both contexts:
-    // for component pages this is a redundant attribute set that the step
-    // ignores (its signal is already the right value).
-    if (typeof document === 'undefined') return;
-    const els = this.host.nativeElement.querySelectorAll<HTMLElement>('ngmd-step');
-    els.forEach((el, i) => el.setAttribute('data-step-index', String(i)));
   }
 }

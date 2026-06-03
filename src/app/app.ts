@@ -2,7 +2,7 @@ import {Component, DestroyRef, computed, inject, OnInit, signal} from '@angular/
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {LucideAngularModule, Github, Menu, X, Search, Sun, Moon, SunMoon} from 'lucide-angular';
 import {ThemeService} from './theme';
-import {LayoutMode} from './layout-mode.service';
+import {LAYOUT_CHROME_HIDDEN} from './layout-mode.service';
 import {RouteUrlService} from './services/route-url/route-url.service';
 import {onNavigation} from './utils/enhance-on-navigation';
 import siteConfig from '../ngmd.config';
@@ -232,7 +232,7 @@ export class App implements OnInit {
   readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly layout = inject(LayoutMode);
+  protected readonly chromeHidden = inject(LAYOUT_CHROME_HIDDEN);
   private readonly routeUrl = inject(RouteUrlService);
 
   readonly menuIcon = Menu;
@@ -249,7 +249,7 @@ export class App implements OnInit {
 
   private readonly isDocsRoute = computed(() => {
     const url = this.routeUrl.cleanUrl();
-    return url !== '/' && url !== '' && !this.layout.chromeHidden();
+    return url !== '/' && url !== '' && !this.chromeHidden();
   });
   readonly showSidebar = this.isDocsRoute;
   readonly showBreadcrumb = this.isDocsRoute;

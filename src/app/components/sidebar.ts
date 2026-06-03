@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, ElementRef, inject, signal} from '@angular/core';
+import {Component, DestroyRef, ElementRef, afterNextRender, inject, signal} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {LucideAngularModule, ChevronDown} from 'lucide-angular';
 import config from '../../ngmd.config';
@@ -54,14 +54,30 @@ import {onNavigation} from '../utils/enhance-on-navigation';
     </nav>
   `,
 })
-export class Sidebar implements AfterViewInit {
+export class Sidebar {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
 
   readonly sections = config.nav;
   readonly chevron = ChevronDown;
   private readonly openSections = signal<Set<string>>(new Set(config.nav.map((s) => s.label)));
+
+  constructor() {
+    const router = inject(Router);
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      // Scroll the active row into view on initial mount and after every
+      // navigation. Matters most on the mobile drawer (long sections push
+      // the current page well below the fold) and on long Stack sections
+      // in the desktop sidebar. `afterNextRender` fires only in the
+      // browser so the helper is free of `typeof document` guards.
+      this.scrollActiveIntoView();
+      onNavigation(router, destroyRef, () => {
+        // `routerLinkActive` updates synchronously on NavigationEnd, so
+        // the class is already on the link by the time we read it.
+        this.scrollActiveIntoView();
+      });
+    });
+  }
 
   isOpen(label: string): boolean {
     return this.openSections().has(label);
@@ -80,21 +96,7 @@ export class Sidebar implements AfterViewInit {
     return BADGE_VARIANTS[status];
   }
 
-  ngAfterViewInit(): void {
-    // Scroll the active row into view on initial mount and after every
-    // navigation. Matters most on the mobile drawer (long sections push
-    // the current page well below the fold) and on long Stack sections
-    // in the desktop sidebar.
-    this.scrollActiveIntoView();
-    onNavigation(this.router, this.destroyRef, () => {
-      // `routerLinkActive` updates synchronously on NavigationEnd, so the
-      // class is already on the link by the time we read it.
-      this.scrollActiveIntoView();
-    });
-  }
-
   private scrollActiveIntoView(): void {
-    if (typeof document === 'undefined') return;
     const active = this.host.nativeElement.querySelector<HTMLElement>('a[aria-current="page"]');
     active?.scrollIntoView({block: 'nearest', behavior: 'instant'});
   }

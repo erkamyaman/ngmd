@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {ToastService} from '../services/toast/toast.service';
 import {writeToClipboard} from '../utils/clipboard';
@@ -17,15 +17,13 @@ import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
     }
   `,
 })
-export class CodeCopy implements AfterViewInit {
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
+export class CodeCopy {
   private readonly toast = inject(ToastService);
 
-  ngAfterViewInit(): void {
+  constructor() {
     enhanceOnNavigation(
-      this.router,
-      this.destroyRef,
+      inject(Router),
+      inject(DestroyRef),
       'analog-markdown-route pre:not([data-copy-enhanced]), analog-markdown pre:not([data-copy-enhanced])',
       (pre) => this.enhance(pre),
     );

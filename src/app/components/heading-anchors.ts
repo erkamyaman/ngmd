@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {writeToClipboard} from '../utils/clipboard';
 import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
@@ -17,14 +17,11 @@ import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
     }
   `,
 })
-export class HeadingAnchors implements AfterViewInit {
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
-
-  ngAfterViewInit(): void {
+export class HeadingAnchors {
+  constructor() {
     enhanceOnNavigation(
-      this.router,
-      this.destroyRef,
+      inject(Router),
+      inject(DestroyRef),
       'main h1[id]:not([data-anchor-enhanced]), main h2[id]:not([data-anchor-enhanced]), main h3[id]:not([data-anchor-enhanced])',
       (h) => this.enhance(h),
     );

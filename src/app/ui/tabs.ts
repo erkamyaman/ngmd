@@ -1,8 +1,8 @@
 import {
-  AfterViewInit,
   Component,
   DestroyRef,
   ElementRef,
+  afterNextRender,
   inject,
   input,
   signal,
@@ -98,10 +98,16 @@ export class NgmdTab {
     // Server-side falls back to "inactive" — the parent will hydrate state
     // when the bundle runs on the client.
     const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-    const stop = watchHostAttribute(host, 'data-active', (value) =>
-      this.active.set(value === 'true'),
-    );
-    inject(DestroyRef).onDestroy(stop);
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      // `watchHostAttribute` touches `MutationObserver`, so it's only safe
+      // on the browser. `afterNextRender` is browser-only, eliminating the
+      // explicit `typeof window` guard the helper used to need.
+      const stop = watchHostAttribute(host, 'data-active', (value) =>
+        this.active.set(value === 'true'),
+      );
+      destroyRef.onDestroy(stop);
+    });
   }
 }
 
@@ -151,7 +157,7 @@ export class NgmdTab {
     </div>
   `,
 })
-export class NgmdTabs implements AfterViewInit {
+export class NgmdTabs {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   readonly tabs = signal<
     {
@@ -164,23 +170,27 @@ export class NgmdTabs implements AfterViewInit {
   >([]);
   readonly active = signal('');
 
-  ngAfterViewInit(): void {
-    if (typeof document === 'undefined') return;
-    // `:scope ngmd-tab` because the `<ngmd-tab>` children land in the
-    // light DOM of `<ngmd-tabs>` — they project through `<ng-content>` but
-    // remain queryable via querySelectorAll on the host element.
-    const els = Array.from(
-      this.host.nativeElement.querySelectorAll<HTMLElement>(':scope ngmd-tab'),
-    );
-    const list = els.map((el, i) => ({
-      key: `tab-${i}`,
-      label: el.getAttribute('title') ?? '',
-      image: el.getAttribute('image') ?? '',
-      iconImg: ICON_MAP[el.getAttribute('icon') ?? ''] ?? null,
-      el,
-    }));
-    this.tabs.set(list);
-    if (list[0]) this.setActive(list[0].key);
+  constructor() {
+    // `afterNextRender` only fires on the browser platform, so the
+    // explicit `typeof document` guard from the old `ngAfterViewInit`
+    // implementation goes away. `:scope ngmd-tab` because `<ngmd-tab>`
+    // children land in the light DOM of `<ngmd-tabs>` — they project
+    // through `<ng-content>` but remain queryable via querySelectorAll
+    // on the host element.
+    afterNextRender(() => {
+      const els = Array.from(
+        this.host.nativeElement.querySelectorAll<HTMLElement>(':scope ngmd-tab'),
+      );
+      const list = els.map((el, i) => ({
+        key: `tab-${i}`,
+        label: el.getAttribute('title') ?? '',
+        image: el.getAttribute('image') ?? '',
+        iconImg: ICON_MAP[el.getAttribute('icon') ?? ''] ?? null,
+        el,
+      }));
+      this.tabs.set(list);
+      if (list[0]) this.setActive(list[0].key);
+    });
   }
 
   protected setActive(key: string): void {

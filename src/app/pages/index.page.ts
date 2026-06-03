@@ -1,8 +1,8 @@
 import {
-  AfterViewInit,
   Component,
-  computed,
   ElementRef,
+  afterNextRender,
+  computed,
   inject,
   signal,
   viewChild,
@@ -267,9 +267,32 @@ NgMd is a modern Angular docs starter.
     </section>
   `,
 })
-export default class Home implements AfterViewInit {
+export default class Home {
   private readonly toast = inject(ToastService);
   readonly hero = viewChild<ElementRef<HTMLElement>>('hero');
+
+  constructor() {
+    afterNextRender(() => {
+      // AnalogJS's prerender pipeline executes `afterNextRender` callbacks
+      // during SSG, so the explicit `typeof window` guard stays. Skip the
+      // motion stagger entirely when prefers-reduced-motion is set; the
+      // SSR'd HTML ships with words visible (no inline opacity:0), so this
+      // remains a graceful enhancement that fails open.
+      if (typeof window === 'undefined') return;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+      const root = this.hero()?.nativeElement;
+      if (!root) return;
+      const parts = root.querySelectorAll<HTMLElement>('.ngmd-hero-anim');
+      if (parts.length === 0) return;
+
+      animate(
+        parts,
+        {opacity: [0, 1], transform: ['translateY(0.5em)', 'translateY(0)']},
+        {duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1]},
+      );
+    });
+  }
 
   readonly arrowIcon = ArrowRight;
   readonly eyeIcon = Eye;
@@ -307,25 +330,6 @@ export default class Home implements AfterViewInit {
     }
     this.copied.set(cmd);
     setTimeout(() => this.copied.set(''), 1500);
-  }
-
-  ngAfterViewInit(): void {
-    // Browser-only. Motion touches window; SSR would crash. Skipping here
-    // also means SSR'd HTML ships with words visible (no inline opacity:0),
-    // which is the correct fallback if hydration or motion ever fails.
-    if (typeof window === 'undefined') return;
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-
-    const root = this.hero()?.nativeElement;
-    if (!root) return;
-    const parts = root.querySelectorAll<HTMLElement>('.ngmd-hero-anim');
-    if (parts.length === 0) return;
-
-    animate(
-      parts,
-      {opacity: [0, 1], transform: ['translateY(0.5em)', 'translateY(0)']},
-      {duration: 1.1, delay: stagger(0.18), ease: [0.22, 1, 0.36, 1]},
-    );
   }
 
   readonly stack = [
