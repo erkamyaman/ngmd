@@ -1,8 +1,8 @@
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS, escapeHtml} from './shiki-shared';
-import config from '../ngmd.config';
+import {getHighlighter, LANGS, escapeHtml} from './shiki-shared.ts';
+import config from '../ngmd.config.ts';
 
 /**
  * Fenced code blocks can import their content from a source file by adding

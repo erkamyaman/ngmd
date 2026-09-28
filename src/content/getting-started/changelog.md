@@ -6,7 +6,21 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.2.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.3.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Angular 22.** Upgraded to Angular 22.2 and TypeScript 6.0 with the official migrations. Components use the v22 default change detection (OnPush); every template value already came from signals, inputs or the async pipe, so behavior is unchanged. Node 22.22.3 or later is now required (Angular 22's floor), and `create-ngmd` warns when your Node is older.
+
+**AnalogJS 2.7.5, Vite 8.3, Tailwind 4.3.** Content and routing packages move to Analog 2.7.5. Analog's server routes now live under `/_server`, so `/api` belongs to the API reference pages in the dev server too. Config and plugin files use explicit `.ts` imports, ready for Vite's native config loader.
+
+**Icons move to `@lucide/angular`.** `lucide-angular` is replaced by its maintained, signal-based successor. The GitHub mark, which Lucide no longer ships, is a small inline component.
+
+**Hydration fix.** Loading a page that renders `ngmd-*` components directly (such as Components) no longer throws NG0500. The inline Custom Elements now only activate inside rendered markdown, so Angular keeps ownership of the components in `.page.ts` templates.
+
+**Scaffolder fixes.** Generated projects now include every plugin the build needs, and the version token falls back to the project's own version. A new smoke test (`pnpm --dir create-ngmd smoke`) scaffolds, installs, builds and tests a fresh site.
+
+**Security and CI.** `pnpm audit --prod` reports no vulnerabilities (37 before). New GitHub Actions run the format check, tests, build and scaffolder smoke test on every push and pull request, and a tag-triggered release publishes `create-ngmd` to npm with trusted publishing.
+
+## 0.2.0
 
 **Version switcher.** Header gains a flat registry of every documentation version, following the adev / PrimeNG model: each documentation version is its own deployment, the live site only renders one, and the switcher is a flat registry of external sibling URLs. Active row marked with a check icon and no link; every other row is a plain `<a href target="_blank">` opening the target deployment in a new tab. Visible only when `versions` config is set with more than one entry; hidden by default for single-version sites. Dropped the original internal-routing model (`/v/<slug>/...`) and everything that supported it: `VersionRedirectService`, the `content-index.plugin.ts` Vite plugin, the `virtual:ngmd/content-index` virtual module, the `Sidebar.resolveHref` version-prefix branch. Total surface shrunk to one service (`VersionService`) exposing four signals (`config`, `list`, `self`, `current`).
 

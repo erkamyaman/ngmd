@@ -26,7 +26,7 @@ const TEMPLATE_DIR = join(HERE, 'template');
  *   4. Replace placeholders ({{name}}) in package.json, ngmd.config.ts, index.html.
  *   5. Print next-step commands tailored to the detected package manager.
  *
- * Zero npm dependencies. Node 20+ builtins only.
+ * Zero npm dependencies. Node builtins only.
  */
 
 const c = {
@@ -45,6 +45,34 @@ function detectPM() {
   if (ua.startsWith('yarn')) return 'yarn';
   if (ua.startsWith('bun')) return 'bun';
   return 'npm';
+}
+
+function satisfiesNode(range, version) {
+  const [major, minor, patch] = version.split('.').map(Number);
+  const cmp = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+  return range.split('||').some((part) => {
+    const m = part.trim().match(/^(\^|>=)?\s*(\d+)\.(\d+)\.(\d+)$/);
+    if (!m) return true;
+    const min = [Number(m[2]), Number(m[3]), Number(m[4])];
+    if (cmp([major, minor, patch], min) < 0) return false;
+    return m[1] === '^' ? major === min[0] : true;
+  });
+}
+
+function warnIfNodeTooOld() {
+  let range = '';
+  try {
+    range =
+      JSON.parse(readFileSync(join(TEMPLATE_DIR, 'package.json'), 'utf8')).engines?.node ?? '';
+  } catch {
+    return;
+  }
+  if (!range || satisfiesNode(range, process.versions.node)) return;
+  console.warn(
+    `${c.yellow}warning:${c.reset} the generated project requires Node ${range}, ` +
+      `but you are running ${process.versions.node}.\n` +
+      `Scaffolding will continue, but install, dev and build will fail until you upgrade Node.\n`,
+  );
 }
 
 function validName(s) {
@@ -99,6 +127,8 @@ async function main() {
     console.error('Run `node create-ngmd/build-template.mjs` from the ngmd repo first.');
     process.exit(1);
   }
+
+  warnIfNodeTooOld();
 
   let name = requested;
   if (!name) {

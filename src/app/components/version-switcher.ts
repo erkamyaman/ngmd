@@ -1,5 +1,10 @@
 import {Component, computed, ElementRef, HostListener, inject, signal} from '@angular/core';
-import {LucideAngularModule, ChevronDown, Check, ExternalLink} from 'lucide-angular';
+import {
+  LucideDynamicIcon,
+  LucideCheck,
+  LucideChevronDown,
+  LucideExternalLink,
+} from '@lucide/angular';
 import type {VersionStatus} from '../../ngmd.config';
 import {VersionService} from '../services/version/version.service';
 
@@ -18,7 +23,7 @@ import {VersionService} from '../services/version/version.service';
  */
 @Component({
   selector: 'app-version-switcher',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     @if (visible()) {
       <div class="relative">
@@ -30,7 +35,7 @@ import {VersionService} from '../services/version/version.service';
           class="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-2.5 py-1 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800"
         >
           {{ triggerLabel() }}
-          <i-lucide [img]="chevronIcon" class="size-3 text-zinc-500"></i-lucide>
+          <svg [lucideIcon]="chevronIcon" class="size-3 text-zinc-500"></svg>
         </button>
         @if (open()) {
           <ul
@@ -46,7 +51,7 @@ import {VersionService} from '../services/version/version.service';
                     class="flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left text-sm bg-zinc-50 dark:bg-zinc-900"
                   >
                     <span class="flex items-center gap-2">
-                      <i-lucide [img]="checkIcon" class="size-3 text-zinc-500"></i-lucide>
+                      <svg [lucideIcon]="checkIcon" class="size-3 text-zinc-500"></svg>
                       {{ entry.label }}
                     </span>
                     <span
@@ -67,7 +72,7 @@ import {VersionService} from '../services/version/version.service';
                     class="flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
                   >
                     <span class="flex items-center gap-2">
-                      <i-lucide [img]="externalIcon" class="size-3 text-zinc-400"></i-lucide>
+                      <svg [lucideIcon]="externalIcon" class="size-3 text-zinc-400"></svg>
                       {{ entry.label }}
                     </span>
                     <span
@@ -90,9 +95,9 @@ export class VersionSwitcher {
   private readonly versions = inject(VersionService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  readonly chevronIcon = ChevronDown;
-  readonly checkIcon = Check;
-  readonly externalIcon = ExternalLink;
+  readonly chevronIcon = LucideChevronDown;
+  readonly checkIcon = LucideCheck;
+  readonly externalIcon = LucideExternalLink;
 
   readonly open = signal(false);
   /** Hide when the registry is empty or has only one entry. With one

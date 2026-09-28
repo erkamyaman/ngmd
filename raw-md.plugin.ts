@@ -1,7 +1,7 @@
 import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, relative} from 'node:path';
 import type {Plugin} from 'vite';
-import {substituteMdVars} from './vars.plugin';
+import {substituteMdVars} from './vars.plugin.ts';
 
 /**
  * Serves the raw markdown body at the same URL plus a `.md` suffix.

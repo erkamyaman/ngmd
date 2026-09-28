@@ -5,7 +5,7 @@
  * Sidebar, command palette, breadcrumb, and header all read from here.
  */
 
-import type {BadgeVariant} from './types/badge';
+import type {BadgeVariant} from './types/badge.ts';
 
 export interface NavItem {
   label: string;
@@ -180,8 +180,8 @@ const config: NgmdConfig = {
   // The live deployment renders one version; clicking a non-self entry
   // opens its deployment in a new tab.
   versions: {
-    self: 'v0.2.0',
-    list: [{label: 'v0.2.0', url: 'https://ngmd.netlify.app', status: 'current'}],
+    self: 'v0.3.0',
+    list: [{label: 'v0.3.0', url: 'https://ngmd.netlify.app', status: 'current'}],
   },
 };
 

@@ -1,6 +1,6 @@
 import {Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {LucideAngularModule, ChevronRight, House} from 'lucide-angular';
+import {LucideDynamicIcon, LucideChevronRight, LucideHouse} from '@lucide/angular';
 import {RouteUrlService} from '../services/route-url/route-url.service';
 
 interface Crumb {
@@ -24,17 +24,17 @@ const LABELS: Record<string, string> = {
 
 @Component({
   selector: 'app-breadcrumb',
-  imports: [RouterLink, LucideAngularModule],
+  imports: [RouterLink, LucideDynamicIcon],
   template: `
     @if (crumbs().length > 0) {
       <nav
         class="flex items-center gap-1.5 px-6 py-3 text-sm border-b border-zinc-200 dark:border-zinc-800"
       >
         <a routerLink="/" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50">
-          <i-lucide [img]="home" class="size-4"></i-lucide>
+          <svg [lucideIcon]="home" class="size-4"></svg>
         </a>
         @for (crumb of crumbs(); track crumb.href; let last = $last) {
-          <i-lucide [img]="chevron" class="size-3.5 text-zinc-400"></i-lucide>
+          <svg [lucideIcon]="chevron" class="size-3.5 text-zinc-400"></svg>
           @if (last) {
             <span class="font-medium">{{ crumb.label }}</span>
           } @else {
@@ -47,8 +47,8 @@ const LABELS: Record<string, string> = {
 })
 export class Breadcrumb {
   private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
-  readonly home = House;
-  readonly chevron = ChevronRight;
+  readonly home = LucideHouse;
+  readonly chevron = LucideChevronRight;
 
   readonly crumbs = computed<Crumb[]>(() => {
     const segments = this.cleanUrl()

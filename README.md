@@ -24,7 +24,7 @@
 
 ---
 
-Modern stack (Vite 8, Angular 21, Tailwind v4, Shiki), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
+Modern stack (Vite 8, Angular 22, Tailwind v4, Shiki), full docs-site frame (sidebar, command palette, TOC, prev/next, edit-on-github, sitemap, link guards), and a build-time pipeline that catches broken anchors before you ship.
 
 ## Try it
 
@@ -53,7 +53,7 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 
 | Tool                                                                                        | Role                                             |
 | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v21)   | Framework                                        |
+| <a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular</a> (v22)   | Framework                                        |
 | <a href="https://analogjs.org" target="_blank" rel="noopener noreferrer">AnalogJS</a>       | File-based routing, SSR/SSG, content collections |
 | <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer">Tailwind v4</a> | Styling                                          |
 | <a href="https://shiki.style" target="_blank" rel="noopener noreferrer">Shiki</a>           | Code highlighting                                |

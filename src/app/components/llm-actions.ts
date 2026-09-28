@@ -1,14 +1,15 @@
 import {Component, DestroyRef, HostListener, computed, inject, signal} from '@angular/core';
 import {
-  LucideAngularModule,
-  ChevronDown,
-  Check,
-  Copy,
-  Link,
-  Github,
-  Sparkles,
-  MessageSquare,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  type LucideIcon,
+  LucideCheck,
+  LucideChevronDown,
+  LucideCopy,
+  LucideLink,
+  LucideMessageSquare,
+  LucideSparkles,
+} from '@lucide/angular';
+import {GithubIcon} from '../ui/github-icon';
 import {pageMeta} from 'virtual:ngmd/page-meta';
 import {ToastService} from '../services/toast/toast.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
@@ -16,7 +17,7 @@ import {writeToClipboard} from '../utils/clipboard';
 
 interface MenuItem {
   label: string;
-  icon: typeof Copy;
+  icon: LucideIcon | 'github';
   /** Either a click handler or a target URL — drives the `<button>` vs
    * `<a>` rendering and what action fires. Return value is ignored; the
    * loose typing accommodates handlers that report success via boolean. */
@@ -42,7 +43,7 @@ interface MenuItem {
  */
 @Component({
   selector: 'app-llm-actions',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon, GithubIcon],
   template: `
     @if (hasMdSource()) {
       <div class="relative">
@@ -55,11 +56,11 @@ interface MenuItem {
             class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 min-w-[7.5rem] hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
             [attr.aria-label]="copied() ? 'Markdown copied' : 'Copy markdown to clipboard'"
           >
-            <i-lucide
-              [img]="copied() ? checkIcon : copyIcon"
+            <svg
+              [lucideIcon]="copied() ? checkIcon : copyIcon"
               class="size-3.5"
-              [class.text-emerald-500]="copied()"
-            ></i-lucide>
+              [class]="copied() ? 'text-emerald-500' : ''"
+            ></svg>
             <span>{{ copied() ? 'Copied!' : 'Copy Markdown' }}</span>
           </button>
           <button
@@ -70,11 +71,11 @@ interface MenuItem {
             aria-haspopup="menu"
             aria-label="Show more actions"
           >
-            <i-lucide
-              [img]="chevronIcon"
+            <svg
+              [lucideIcon]="chevronIcon"
               class="size-3.5 transition-transform"
-              [class.rotate-180]="open()"
-            ></i-lucide>
+              [class]="open() ? 'rotate-180' : ''"
+            ></svg>
           </button>
         </div>
         @if (open()) {
@@ -93,7 +94,11 @@ interface MenuItem {
                   class="flex items-center gap-2.5 px-3 py-2 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                   (click)="close()"
                 >
-                  <i-lucide [img]="item.icon" class="size-4 text-zinc-500"></i-lucide>
+                  @if (item.icon === 'github') {
+                    <svg ngmdGithubIcon class="size-4 text-zinc-500"></svg>
+                  } @else {
+                    <svg [lucideIcon]="item.icon" class="size-4 text-zinc-500"></svg>
+                  }
                   {{ item.label }}
                 </a>
               } @else {
@@ -103,7 +108,11 @@ interface MenuItem {
                   class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                   (click)="runAndClose(item.handler!)"
                 >
-                  <i-lucide [img]="item.icon" class="size-4 text-zinc-500"></i-lucide>
+                  @if (item.icon === 'github') {
+                    <svg ngmdGithubIcon class="size-4 text-zinc-500"></svg>
+                  } @else {
+                    <svg [lucideIcon]="item.icon" class="size-4 text-zinc-500"></svg>
+                  }
                   {{ item.label }}
                 </button>
               }
@@ -132,13 +141,12 @@ export class LlmActions {
     }
   }
 
-  readonly copyIcon = Copy;
-  readonly checkIcon = Check;
-  readonly chevronIcon = ChevronDown;
-  readonly linkIcon = Link;
-  readonly githubIcon = Github;
-  readonly chatGptIcon = Sparkles;
-  readonly claudeIcon = MessageSquare;
+  readonly copyIcon = LucideCopy;
+  readonly checkIcon = LucideCheck;
+  readonly chevronIcon = LucideChevronDown;
+  readonly linkIcon = LucideLink;
+  readonly chatGptIcon = LucideSparkles;
+  readonly claudeIcon = LucideMessageSquare;
 
   readonly open = signal(false);
   readonly copied = signal(false);
@@ -170,7 +178,7 @@ export class LlmActions {
 
   protected readonly items = computed<MenuItem[]>(() => [
     {label: 'Copy Markdown Link', icon: this.linkIcon, handler: () => this.copyLinkAction()},
-    {label: 'Open in GitHub', icon: this.githubIcon, href: this.editUrl()},
+    {label: 'Open in GitHub', icon: 'github', href: this.editUrl()},
     {
       label: 'Open in ChatGPT',
       icon: this.chatGptIcon,

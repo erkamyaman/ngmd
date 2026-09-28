@@ -17,10 +17,10 @@ This guide walks through wiring an email + password authentication flow into a f
 
 ## Prerequisites <ngmd-badge variant="stable">Stable</ngmd-badge>
 
-You'll need Node 20.19.1 or newer and one of pnpm, npm, yarn, or bun. The flow below uses pnpm but the others work identically.
+You'll need Node 22.22.3+ (or 24.15.0+) and one of pnpm, npm, yarn, or bun. The flow below uses pnpm but the others work identically.
 
 <ngmd-alert severity="helpful">
-  If your team is still on Node 18, upgrade before continuing. AnalogJS 2.5 and Vite 8 both require Node 20.19.1.
+  If your team is still on Node 20, upgrade before continuing. Angular 22 requires Node 22.22.3 or 24.15.0 and newer.
 </ngmd-alert>
 
 ## What you'll build

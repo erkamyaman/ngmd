@@ -14,10 +14,10 @@ NgMd is built on three headline pieces (*Angular, *AnalogJS, *Vite) and a curate
 
 <ngmd-card-grid columns="3">
   <ngmd-card image="/logos/angular.svg" title="Angular" link="https://angular.dev">
-    The framework. v21+.
+    The framework. v22+.
   </ngmd-card>
   <ngmd-card image="https://analogjs.org/img/logos/analog-logo.svg" title="AnalogJS" link="https://analogjs.org">
-    Meta-framework: file-based routing, SSR/SSG, markdown content collections. v2.5+.
+    Meta-framework: file-based routing, SSR/SSG, markdown content collections. v2.7+.
   </ngmd-card>
   <ngmd-card image="/logos/vite.svg" title="Vite" link="https://vite.dev">
     Dev server and build tool. v8.
@@ -36,7 +36,7 @@ NgMd is built on three headline pieces (*Angular, *AnalogJS, *Vite) and a curate
 | Package | Role |
 |---|---|
 | <img class="pkg-icon" src="/logos/angular.svg" alt="" /> [@angular/elements](https://angular.dev/guide/elements) | Bridges NgmdUi components to Custom Elements so they upgrade inside `&lt;analog-markdown [innerHTML]&gt;`. Dynamic-imported on the client for SSR safety. |
-| <img class="pkg-icon" src="https://cdn.simpleicons.org/lucide/F56565" alt="" /> [lucide-angular](https://lucide.dev) | Icon set used throughout the site frame and card icons. |
+| <img class="pkg-icon" src="https://cdn.simpleicons.org/lucide/F56565" alt="" /> [@lucide/angular](https://lucide.dev) | Icon set used throughout the site frame and card icons. |
 
 ## Content pipeline
 
@@ -45,7 +45,7 @@ NgMd is built on three headline pieces (*Angular, *AnalogJS, *Vite) and a curate
 | <img class="pkg-icon" src="https://analogjs.org/img/logos/analog-logo.svg" alt="" /> [@analogjs/content](https://analogjs.org/docs/features/routing/content) | Markdown content collections that the catch-all reads via `injectContent()`. |
 | <img class="pkg-icon" src="https://cdn.simpleicons.org/markdown/FAFAFA" alt="" /> [marked](https://marked.js.org) | Markdown parser. |
 | <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [marked-shiki](https://github.com/agusterodin/marked-shiki) | Bridge running Shiki over fenced code blocks at build time. |
-| <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [shiki](https://shiki.style) | VS Code-grade syntax highlighting. Held at `^1.29.2` because newer 4.x conflicts with `@analogjs/platform` 2.5's peer dep. |
+| <img class="pkg-icon" src="https://shiki.style/logo.svg" alt="" /> [shiki](https://shiki.style) | VS Code-grade syntax highlighting. Held at `^1.29.2` because newer 4.x conflicts with `@analogjs/platform` 2.7's peer dep. |
 | <img class="pkg-icon" src="https://cdn.simpleicons.org/yaml/CB171E" alt="" /> [front-matter](https://github.com/jxson/front-matter) | Frontmatter parser used by AnalogJS content collections. |
 
 ## Marked extensions

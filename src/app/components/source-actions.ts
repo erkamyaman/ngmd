@@ -1,5 +1,5 @@
 import {Component, computed, inject} from '@angular/core';
-import {LucideAngularModule, Pencil, Code} from 'lucide-angular';
+import {LucideDynamicIcon, LucideCode, LucidePencil} from '@lucide/angular';
 import {pageMeta} from 'virtual:ngmd/page-meta';
 import {LlmActions} from './llm-actions';
 import {RouteUrlService} from '../services/route-url/route-url.service';
@@ -15,7 +15,7 @@ import {RouteUrlService} from '../services/route-url/route-url.service';
  */
 @Component({
   selector: 'app-source-actions',
-  imports: [LucideAngularModule, LlmActions],
+  imports: [LucideDynamicIcon, LlmActions],
   template: `
     @if (editUrl(); as edit) {
       <div class="flex items-center justify-end gap-2 px-4 sm:px-8 pt-4">
@@ -28,7 +28,7 @@ import {RouteUrlService} from '../services/route-url/route-url.service';
           title="Edit this page on GitHub"
           aria-label="Edit this page on GitHub"
         >
-          <i-lucide [img]="editIcon" class="size-4"></i-lucide>
+          <svg [lucideIcon]="editIcon" class="size-4"></svg>
         </a>
         <a
           [href]="sourceUrl()"
@@ -38,7 +38,7 @@ import {RouteUrlService} from '../services/route-url/route-url.service';
           title="View source on GitHub"
           aria-label="View source on GitHub"
         >
-          <i-lucide [img]="sourceIcon" class="size-4"></i-lucide>
+          <svg [lucideIcon]="sourceIcon" class="size-4"></svg>
         </a>
       </div>
     }
@@ -47,8 +47,8 @@ import {RouteUrlService} from '../services/route-url/route-url.service';
 export class SourceActions {
   private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
 
-  readonly editIcon = Pencil;
-  readonly sourceIcon = Code;
+  readonly editIcon = LucidePencil;
+  readonly sourceIcon = LucideCode;
 
   protected readonly editUrl = computed(() => pageMeta[this.cleanUrl()]?.editUrl ?? '');
   protected readonly sourceUrl = computed(() => this.editUrl().replace('/edit/', '/blob/'));

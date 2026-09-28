@@ -17,7 +17,7 @@ The serious incumbent. Mature, production-tested, used by real Angular libraries
 
 **Where ng-doc loses:**
 
-- AnalogJS-native. ng-doc runs on Nx + custom Angular setup. NgMd ships on AnalogJS 2.5, Vite 8, modern signals, native SSR/SSG. Setup is `pnpm create ngmd@latest`, not a multi-step Nx generator.
+- AnalogJS-native. ng-doc runs on Nx + custom Angular setup. NgMd ships on AnalogJS 2.7, Vite 8, modern signals, native SSR/SSG. Setup is `pnpm create ngmd@latest`, not a multi-step Nx generator.
 - Tailwind v4 first-class. ng-doc uses its own SCSS theming layer; theming means learning their variable system. NgMd themes through Tailwind tokens consumers already know.
 - File-based routing through `src/content/`. ng-doc requires a per-page TS wrapper. NgMd: drop an `.md`, get a route.
 - Customisation through copy-and-own. NgMd's chrome and authoring components are files in the user's repo, not imports from a library. Same shadcn-style philosophy ng-doc explicitly rejects.
@@ -98,7 +98,7 @@ The non-Angular incumbents. Everyone evaluating a docs site has used at least on
 
 **Imagined gaps where NgMd is already ahead:**
 
-- Modern stack: Angular 21 + AnalogJS 2.5 + Vite 8 + Tailwind v4 + Shiki
+- Modern stack: Angular 22 + AnalogJS 2.7 + Vite 8 + Tailwind v4 + Shiki
 - Authoring DX: file-based routing, drop-an-md-get-a-route, no per-page wrappers
 - Theming: CSS tokens consumers already know, not a custom theming API
 - Customisation model: copy-and-own, not import-from-a-library

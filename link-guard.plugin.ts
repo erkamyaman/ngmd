@@ -1,7 +1,7 @@
 import {readFileSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import type {Plugin} from 'vite';
-import {routeFromPagePath, slugify, walkContentFiles, walkPageFiles} from './plugin-utils';
+import {routeFromPagePath, slugify, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
 
 /**
  * Build-time guard that errors on broken internal links inside markdown files.

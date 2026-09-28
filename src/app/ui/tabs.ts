@@ -9,43 +9,43 @@ import {
 } from '@angular/core';
 import {watchHostAttribute} from '../utils/watch-host-attribute';
 import {
-  LucideAngularModule,
-  type LucideIconData,
-  Book,
-  Box,
-  Code2,
-  Compass,
-  FileText,
-  Layers,
-  Lightbulb,
-  Palette,
-  Rocket,
-  Search,
-  Settings,
-  Shield,
-  Sparkles,
-  Terminal,
-  Wrench,
-  Zap,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  type LucideIcon,
+  LucideBook,
+  LucideBox,
+  LucideCodeXml,
+  LucideCompass,
+  LucideFileText,
+  LucideLayers,
+  LucideLightbulb,
+  LucidePalette,
+  LucideRocket,
+  LucideSearch,
+  LucideSettings,
+  LucideShield,
+  LucideSparkles,
+  LucideTerminal,
+  LucideWrench,
+  LucideZap,
+} from '@lucide/angular';
 
-const ICON_MAP: Record<string, LucideIconData> = {
-  book: Book,
-  box: Box,
-  code: Code2,
-  compass: Compass,
-  file: FileText,
-  layers: Layers,
-  lightbulb: Lightbulb,
-  palette: Palette,
-  rocket: Rocket,
-  search: Search,
-  settings: Settings,
-  shield: Shield,
-  sparkles: Sparkles,
-  terminal: Terminal,
-  wrench: Wrench,
-  zap: Zap,
+const ICON_MAP: Record<string, LucideIcon> = {
+  book: LucideBook,
+  box: LucideBox,
+  code: LucideCodeXml,
+  compass: LucideCompass,
+  file: LucideFileText,
+  layers: LucideLayers,
+  lightbulb: LucideLightbulb,
+  palette: LucidePalette,
+  rocket: LucideRocket,
+  search: LucideSearch,
+  settings: LucideSettings,
+  shield: LucideShield,
+  sparkles: LucideSparkles,
+  terminal: LucideTerminal,
+  wrench: LucideWrench,
+  zap: LucideZap,
 };
 
 /**
@@ -107,7 +107,7 @@ export class NgmdTab {
 
 @Component({
   selector: 'ngmd-tabs',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     <div class="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
       <div
@@ -135,7 +135,7 @@ export class NgmdTab {
                 loading="lazy"
               />
             } @else if (tab.iconImg; as img) {
-              <i-lucide [img]="img" class="size-4" aria-hidden="true"></i-lucide>
+              <svg [lucideIcon]="img" class="size-4" aria-hidden="true"></svg>
             }
             {{ tab.label }}
           </button>
@@ -158,7 +158,7 @@ export class NgmdTabs implements AfterViewInit {
       key: string;
       label: string;
       image: string;
-      iconImg: LucideIconData | null;
+      iconImg: LucideIcon | null;
       el: HTMLElement;
     }[]
   >([]);

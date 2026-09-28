@@ -1,5 +1,11 @@
 import {Component, computed, inject} from '@angular/core';
-import {LucideAngularModule, AlertTriangle, Archive, ExternalLink, Rocket} from 'lucide-angular';
+import {
+  LucideDynamicIcon,
+  LucideArchive,
+  LucideExternalLink,
+  LucideRocket,
+  LucideTriangleAlert,
+} from '@lucide/angular';
 import {VersionService} from '../services/version/version.service';
 
 /**
@@ -15,14 +21,14 @@ import {VersionService} from '../services/version/version.service';
  */
 @Component({
   selector: 'app-content-banners',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     @if (banner(); as b) {
       <div
         class="mb-6 flex items-start gap-3 rounded-lg border px-4 py-3"
         [class]="b.containerClass"
       >
-        <i-lucide [img]="b.icon" class="mt-0.5 size-5 shrink-0" [class]="b.iconClass"></i-lucide>
+        <svg [lucideIcon]="b.icon" class="mt-0.5 size-5 shrink-0" [class]="b.iconClass"></svg>
         <div class="text-sm">
           <p class="font-medium">{{ b.title }}</p>
           <p class="mt-1" [class]="b.bodyClass">
@@ -34,7 +40,7 @@ import {VersionService} from '../services/version/version.service';
               class="inline-flex items-center gap-1 font-medium text-[color:var(--accent-strong)] underline"
             >
               {{ b.currentLabel }}
-              <i-lucide [img]="externalIcon" class="size-3"></i-lucide>
+              <svg [lucideIcon]="externalIcon" class="size-3"></svg>
             </a>
             .
           </p>
@@ -46,7 +52,7 @@ import {VersionService} from '../services/version/version.service';
 export class ContentBanners {
   private readonly versions = inject(VersionService);
 
-  readonly externalIcon = ExternalLink;
+  readonly externalIcon = LucideExternalLink;
 
   readonly banner = computed(() => {
     const self = this.versions.self();
@@ -63,9 +69,8 @@ export class ContentBanners {
         prefix: 'The current stable is',
         currentUrl,
         currentLabel,
-        icon: Rocket,
-        containerClass:
-          'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40',
+        icon: LucideRocket,
+        containerClass: 'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40',
         iconClass: 'text-amber-600',
         bodyClass: 'text-amber-700 dark:text-amber-300',
       };
@@ -76,9 +81,8 @@ export class ContentBanners {
         prefix: 'The current stable is',
         currentUrl,
         currentLabel,
-        icon: AlertTriangle,
-        containerClass:
-          'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40',
+        icon: LucideTriangleAlert,
+        containerClass: 'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40',
         iconClass: 'text-amber-600',
         bodyClass: 'text-amber-700 dark:text-amber-300',
       };
@@ -88,9 +92,8 @@ export class ContentBanners {
       prefix: 'The current stable is',
       currentUrl,
       currentLabel,
-      icon: Archive,
-      containerClass:
-        'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900',
+      icon: LucideArchive,
+      containerClass: 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900',
       iconClass: 'text-zinc-500',
       bodyClass: 'text-zinc-600 dark:text-zinc-400',
     };

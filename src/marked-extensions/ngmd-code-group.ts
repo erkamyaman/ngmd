@@ -1,5 +1,5 @@
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS, escapeHtml} from './shiki-shared';
+import {getHighlighter, LANGS, escapeHtml} from './shiki-shared.ts';
 
 /**
  * Adjacent fenced code blocks tagged with `group="..."` merge into a tabbed

@@ -1,7 +1,7 @@
 import type {MarkedExtension} from 'marked';
-import {ngmdVideoExtension} from './ngmd-video';
-import {ngmdImageExtension} from './ngmd-image';
-import {ngmdKeywordsExtension} from './ngmd-keywords';
+import {ngmdRuntimeExtensions} from './runtime.ts';
+
+export {ngmdRuntimeExtensions};
 
 /**
  * Marked extensions are split into two arrays.
@@ -18,22 +18,15 @@ import {ngmdKeywordsExtension} from './ngmd-keywords';
  * Chrome (cards, tabs, callouts, alerts, pill rows, workflows, hero, code
  * blocks) lives as Angular components under `src/app/ui/`, not here.
  */
-export const ngmdRuntimeExtensions: MarkedExtension[] = [
-  {
-    extensions: [ngmdVideoExtension, ngmdImageExtension],
-  },
-  ngmdKeywordsExtension,
-];
-
 // Build-time-only extensions are imported lazily below so the runtime bundle
 // never resolves their `node:fs` / `shiki` imports. The async getter is
 // called by `vite.config.ts` (Node context) only.
 export async function getBuildExtensions(): Promise<MarkedExtension[]> {
   const [{ngmdCodeImportExtension}, {ngmdCodeGroupExtension}, {ngmdCodeHighlightExtension}] =
     await Promise.all([
-      import('./ngmd-code-import'),
-      import('./ngmd-code-group'),
-      import('./ngmd-code-highlight'),
+      import('./ngmd-code-import.ts'),
+      import('./ngmd-code-group.ts'),
+      import('./ngmd-code-highlight.ts'),
     ]);
   return [
     ...ngmdRuntimeExtensions,

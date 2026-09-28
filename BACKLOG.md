@@ -138,7 +138,7 @@ Open follow-ups:
 
 Foundation:
 
-- ✅ AnalogJS + Vite 8 + Angular 21 + pnpm/npm/yarn/bun support
+- ✅ AnalogJS + Vite 8 + Angular 22 + pnpm/npm/yarn/bun support
 - ✅ Markdown content collections via `src/content/`
 - ✅ Shiki syntax highlighting pinned to `1.29.2` (`bash`, `md`, `json`, `ts`, `html`, `css`)
 - ✅ Tailwind v4 + class-based dark mode (`@variant dark`)

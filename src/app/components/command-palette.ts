@@ -11,16 +11,16 @@ import {
 import {NgTemplateOutlet} from '@angular/common';
 import {Router} from '@angular/router';
 import {
-  LucideAngularModule,
-  Search,
-  ArrowRight,
-  Hash,
-  FileText,
-  Clock,
-  Trash2,
-  Star,
-  X,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  LucideArrowRight,
+  LucideClock,
+  LucideFileText,
+  LucideHash,
+  LucideSearch,
+  LucideStar,
+  LucideTrash,
+  LucideX,
+} from '@lucide/angular';
 import type {SearchHit} from '../../types/search';
 import {SearchService} from '../services/search/search.service';
 
@@ -36,7 +36,7 @@ import {SearchService} from '../services/search/search.service';
  */
 @Component({
   selector: 'app-command-palette',
-  imports: [LucideAngularModule, NgTemplateOutlet],
+  imports: [LucideDynamicIcon, NgTemplateOutlet],
   template: `
     @if (open()) {
       <div
@@ -48,7 +48,7 @@ import {SearchService} from '../services/search/search.service';
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center gap-3 px-5 py-4">
-            <i-lucide [img]="searchIcon" class="size-6 text-zinc-400"></i-lucide>
+            <svg [lucideIcon]="searchIcon" class="size-6 text-zinc-400"></svg>
             <input
               #input
               type="text"
@@ -87,7 +87,7 @@ import {SearchService} from '../services/search/search.service';
                     class="inline-flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-300"
                     (click)="search.clearRecents()"
                   >
-                    <i-lucide [img]="trashIcon" class="size-3"></i-lucide>
+                    <svg [lucideIcon]="trashIcon" class="size-3"></svg>
                     Clear
                   </button>
                 </div>
@@ -110,11 +110,11 @@ import {SearchService} from '../services/search/search.service';
                     class="flex flex-1 min-w-0 items-center gap-4 px-4 py-3 text-left"
                     (click)="selectHistory(item)"
                   >
-                    <i-lucide
-                      [img]="favorite ? starIcon : clockIcon"
+                    <svg
+                      [lucideIcon]="favorite ? starIcon : clockIcon"
                       class="size-5"
                       [class]="favorite ? 'text-amber-500 fill-amber-500' : 'text-zinc-400'"
-                    ></i-lucide>
+                    ></svg>
                     <div class="flex-1 min-w-0">
                       <div
                         class="text-base font-semibold truncate"
@@ -135,7 +135,7 @@ import {SearchService} from '../services/search/search.service';
                       aria-label="Pin to favourites"
                       (click)="search.toggleFavorite(item.url)"
                     >
-                      <i-lucide [img]="starIcon" class="size-4"></i-lucide>
+                      <svg [lucideIcon]="starIcon" class="size-4"></svg>
                     </button>
                   }
                   <button
@@ -144,7 +144,7 @@ import {SearchService} from '../services/search/search.service';
                     aria-label="Remove from history"
                     (click)="removeAt(item.url)"
                   >
-                    <i-lucide [img]="closeIcon" class="size-4"></i-lucide>
+                    <svg [lucideIcon]="closeIcon" class="size-4"></svg>
                   </button>
                 </div>
               </ng-template>
@@ -165,7 +165,7 @@ import {SearchService} from '../services/search/search.service';
                   (mouseenter)="active.set(i)"
                   (click)="select(item)"
                 >
-                  <i-lucide [img]="iconFor(item)" class="mt-0.5 size-5 text-zinc-400"></i-lucide>
+                  <svg [lucideIcon]="iconFor(item)" class="mt-0.5 size-5 text-zinc-400"></svg>
                   <div class="flex-1 min-w-0">
                     <div
                       class="text-base font-semibold truncate"
@@ -282,14 +282,14 @@ export class CommandPalette {
   protected readonly search = inject(SearchService);
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
 
-  readonly searchIcon = Search;
-  readonly arrowIcon = ArrowRight;
-  readonly hashIcon = Hash;
-  readonly fileIcon = FileText;
-  readonly clockIcon = Clock;
-  readonly trashIcon = Trash2;
-  readonly starIcon = Star;
-  readonly closeIcon = X;
+  readonly searchIcon = LucideSearch;
+  readonly arrowIcon = LucideArrowRight;
+  readonly hashIcon = LucideHash;
+  readonly fileIcon = LucideFileText;
+  readonly clockIcon = LucideClock;
+  readonly trashIcon = LucideTrash;
+  readonly starIcon = LucideStar;
+  readonly closeIcon = LucideX;
 
   readonly open = signal(false);
   /** Mouse-hover highlight only. Arrow-key keyboard nav is intentionally

@@ -4,6 +4,7 @@
  * components can take Tailwind classes (`<ngmd-accordion class="my-8">`,
  * etc.) and have those utilities actually appear in the generated CSS. */
 @source "./content/**/*.md";
+@source not inline("bg-[image:var(...)]");
 
 /* View Transitions API tuning. Angular's withViewTransitions() crossfades
  * route changes via these pseudo-elements. Shorten the default ~250ms to
@@ -139,27 +140,28 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-/* Hide NgmdUi Custom Elements until @angular/elements has registered them.
+/* Hide NgmdUi Custom Elements inside markdown until @angular/elements has
+ * registered them (Angular-rendered hosts in .page.ts are already complete).
  * Without this, raw children (often plain <code> spans projected via
  * ng-content) render with default inline-code styling for a few ms during
  * the bundle load + provideAppInitializer step — looks like the title sits
  * inside a code pill until the element upgrades. `:not(:defined)` ceases
  * matching the moment customElements.define() runs. */
-ngmd-accordion:not(:defined),
-ngmd-accordion-item:not(:defined),
-ngmd-alert:not(:defined),
-ngmd-badge:not(:defined),
-ngmd-callout:not(:defined),
-ngmd-card:not(:defined),
-ngmd-card-grid:not(:defined),
-ngmd-hero:not(:defined),
-ngmd-image:not(:defined),
-ngmd-pill:not(:defined),
-ngmd-pill-row:not(:defined),
-ngmd-step:not(:defined),
-ngmd-tabs:not(:defined),
-ngmd-video:not(:defined),
-ngmd-workflow:not(:defined) {
+:is(analog-markdown, analog-markdown-route) ngmd-accordion:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-accordion-item:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-alert:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-badge:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-callout:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-card:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-card-grid:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-hero:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-image:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-pill:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-pill-row:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-step:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-tabs:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-video:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-workflow:not(:defined) {
   visibility: hidden;
 }
 

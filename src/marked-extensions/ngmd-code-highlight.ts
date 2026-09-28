@@ -1,5 +1,5 @@
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS} from './shiki-shared';
+import {getHighlighter, LANGS} from './shiki-shared.ts';
 
 /**
  * Fenced code blocks tagged with `{1,3-5}` get the matching lines visually

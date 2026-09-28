@@ -1,5 +1,5 @@
 import type {MarkedExtension, Tokens} from 'marked';
-import config from '../ngmd.config';
+import config from '../ngmd.config.ts';
 
 /**
  * Inline keyword auto-linking. Any `*Keyword` token (where `Keyword` is

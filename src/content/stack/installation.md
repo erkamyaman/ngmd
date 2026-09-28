@@ -67,8 +67,8 @@ For when you already have an AnalogJS app and want to pull NgMd in piece by piec
 ### Prerequisites
 
 <ngmd-card-grid columns="3">
-  <ngmd-card icon="terminal" title="Node ≥ 20.19.1">
-    Required floor for AnalogJS 2.5 and Vite 8.
+  <ngmd-card icon="terminal" title="Node ≥ 22.22.3">
+    Required floor for Angular 22 (or Node ≥ 24.15.0).
   </ngmd-card>
   <ngmd-card icon="box" title="Package manager">
     pnpm, npm, yarn, or bun. Any of the four.

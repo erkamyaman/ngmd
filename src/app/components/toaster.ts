@@ -1,5 +1,11 @@
 import {Component, DestroyRef, effect, inject, signal} from '@angular/core';
-import {LucideAngularModule, CheckCircle2, AlertCircle, Info, X} from 'lucide-angular';
+import {
+  LucideDynamicIcon,
+  LucideCircleAlert,
+  LucideCircleCheck,
+  LucideInfo,
+  LucideX,
+} from '@lucide/angular';
 import {ToastService, type Toast} from '../services/toast/toast.service';
 
 /** ms the slide-out keyframes take. Matches `ngmd-toast-slide-out` in
@@ -17,7 +23,7 @@ const EXIT_MS = 220;
  */
 @Component({
   selector: 'app-toaster',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     @if (toasts().length) {
       <div
@@ -31,7 +37,7 @@ const EXIT_MS = 220;
             class="pointer-events-auto flex items-center gap-2.5 rounded-lg border bg-white dark:bg-zinc-950 px-3 py-2.5 shadow-md text-sm"
             [class]="variantClass(t.variant) + ' ' + animClass(t.id)"
           >
-            <i-lucide [img]="iconFor(t.variant)" class="size-4 shrink-0"></i-lucide>
+            <svg [lucideIcon]="iconFor(t.variant)" class="size-4 shrink-0"></svg>
             <span class="flex-1 text-zinc-700 dark:text-zinc-200 leading-snug">{{
               t.message
             }}</span>
@@ -41,7 +47,7 @@ const EXIT_MS = 220;
               class="shrink-0 rounded p-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
               aria-label="Dismiss"
             >
-              <i-lucide [img]="closeIcon" class="size-3.5"></i-lucide>
+              <svg [lucideIcon]="closeIcon" class="size-3.5"></svg>
             </button>
           </div>
         }
@@ -55,10 +61,10 @@ export class Toaster {
 
   readonly toasts = this.toastService.toasts;
 
-  protected readonly closeIcon = X;
-  private readonly successIcon = CheckCircle2;
-  private readonly errorIcon = AlertCircle;
-  private readonly infoIcon = Info;
+  protected readonly closeIcon = LucideX;
+  private readonly successIcon = LucideCircleCheck;
+  private readonly errorIcon = LucideCircleAlert;
+  private readonly infoIcon = LucideInfo;
 
   /** Ids currently animating out. Used to swap in the slide-out class
    * before the service entry is actually removed. */
@@ -128,11 +134,11 @@ export class Toaster {
   protected variantClass(variant: Toast['variant']): string {
     switch (variant) {
       case 'success':
-        return 'border-emerald-200 dark:border-emerald-500/30 [&_i-lucide:first-of-type]:text-emerald-500';
+        return 'border-emerald-200 dark:border-emerald-500/30 [&_svg:first-of-type]:text-emerald-500';
       case 'error':
-        return 'border-red-200 dark:border-red-500/30 [&_i-lucide:first-of-type]:text-red-500';
+        return 'border-red-200 dark:border-red-500/30 [&_svg:first-of-type]:text-red-500';
       default:
-        return 'border-zinc-200 dark:border-zinc-800 [&_i-lucide:first-of-type]:text-sky-500';
+        return 'border-zinc-200 dark:border-zinc-800 [&_svg:first-of-type]:text-sky-500';
     }
   }
 

@@ -4,9 +4,11 @@ import type {Plugin} from 'vite';
 
 /**
  * Single source of truth for "the current published version" in markdown
- * content. Reads `create-ngmd/package.json` at build time, exposes its
- * `version` as the `{{ngmd-version}}` token, and substitutes it into
- * every `.md` source before AnalogJS hands the body to marked.
+ * content. Reads `create-ngmd/package.json` at build time (or the project's
+ * own `package.json` in a scaffolded site, where `create-ngmd/` doesn't
+ * exist), exposes its `version` as the `{{ngmd-version}}` token, and
+ * substitutes it into every `.md` source before AnalogJS hands the body
+ * to marked.
  *
  * Saves the two-place hand-update in changelog + technologies pages
  * after every npm publish. Extend the `vars` map if you need more.
@@ -21,12 +23,15 @@ let memo: Record<string, string> | null = null;
 function readVars(root: string): Record<string, string> {
   if (memo) return memo;
   let version = '';
-  try {
-    const pkg = JSON.parse(
-      readFileSync(join(root, 'create-ngmd/package.json'), 'utf8'),
-    );
-    if (typeof pkg.version === 'string') version = pkg.version;
-  } catch {}
+  for (const file of ['create-ngmd/package.json', 'package.json']) {
+    try {
+      const pkg = JSON.parse(readFileSync(join(root, file), 'utf8'));
+      if (typeof pkg.version === 'string') {
+        version = pkg.version;
+        break;
+      }
+    } catch {}
+  }
   memo = {'ngmd-version': version};
   return memo;
 }

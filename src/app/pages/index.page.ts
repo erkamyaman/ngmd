@@ -9,21 +9,21 @@ import {
 } from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {
-  LucideAngularModule,
-  ArrowRight,
-  Check,
-  Copy,
-  Eye,
-  Github,
-  FileText,
-  Palette,
-  Code,
-  Box,
-  Search,
-  Zap,
-  GitBranch,
-  BookOpen,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  LucideArrowRight,
+  LucideBookOpen,
+  LucideBox,
+  LucideCheck,
+  LucideCode,
+  LucideCopy,
+  LucideEye,
+  LucideFileText,
+  LucideGitBranch,
+  LucidePalette,
+  LucideSearch,
+  LucideZap,
+} from '@lucide/angular';
+import {GithubIcon} from '../ui/github-icon';
 import {animate, stagger} from 'motion';
 import siteConfig from '../../ngmd.config';
 import {ToastService} from '../services/toast/toast.service';
@@ -31,7 +31,7 @@ import {writeToClipboard} from '../utils/clipboard';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, LucideAngularModule],
+  imports: [RouterLink, LucideDynamicIcon, GithubIcon],
   template: `
     <!-- Spotlight backdrop -->
     <div
@@ -55,7 +55,7 @@ import {writeToClipboard} from '../utils/clipboard';
         >
           <span class="text-yellow-400">★</span>
           Star on GitHub
-          <i-lucide [img]="arrowIcon" class="size-3.5"></i-lucide>
+          <svg [lucideIcon]="arrowIcon" class="size-3.5"></svg>
         </a>
 
         <h1 #hero class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]">
@@ -84,13 +84,13 @@ import {writeToClipboard} from '../utils/clipboard';
             class="inline-flex items-center gap-2 rounded-md bg-zinc-900 dark:bg-zinc-50 px-6 py-3 text-base font-medium text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors"
           >
             Get started
-            <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
+            <svg [lucideIcon]="arrowIcon" class="size-4"></svg>
           </a>
           <a
             routerLink="/concepts/showcase"
             class="inline-flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-6 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
-            <i-lucide [img]="eyeIcon" class="size-4"></i-lucide>
+            <svg [lucideIcon]="eyeIcon" class="size-4"></svg>
             Showcase
           </a>
           <a
@@ -99,7 +99,7 @@ import {writeToClipboard} from '../utils/clipboard';
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 backdrop-blur px-6 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
-            <i-lucide [img]="githubIcon" class="size-4"></i-lucide>
+            <svg ngmdGithubIcon class="size-4"></svg>
             View on GitHub
           </a>
         </div>
@@ -198,11 +198,11 @@ NgMd is a modern Angular docs starter.
           <div
             class="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
           >
-            <i-lucide
-              [img]="feature.icon"
+            <svg
+              [lucideIcon]="feature.icon"
               class="size-6 mb-4 text-[color:var(--accent)]"
               aria-hidden="true"
-            ></i-lucide>
+            ></svg>
             <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
               {{ feature.title }}
             </p>
@@ -247,10 +247,10 @@ NgMd is a modern Angular docs starter.
               [attr.aria-label]="copied() === activeCmd() ? 'Copied' : 'Copy'"
               class="ml-auto inline-flex items-center justify-center size-7 rounded-md text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              <i-lucide
-                [img]="copied() === activeCmd() ? checkIcon : copyIcon"
+              <svg
+                [lucideIcon]="copied() === activeCmd() ? checkIcon : copyIcon"
                 class="size-3.5"
-              ></i-lucide>
+              ></svg>
             </button>
           </div>
         </div>
@@ -260,7 +260,7 @@ NgMd is a modern Angular docs starter.
             class="inline-flex items-center gap-2 text-base font-medium text-[color:var(--accent)] hover:opacity-80"
           >
             Read the docs
-            <i-lucide [img]="arrowIcon" class="size-4"></i-lucide>
+            <svg [lucideIcon]="arrowIcon" class="size-4"></svg>
           </a>
         </div>
       </div>
@@ -271,11 +271,10 @@ export default class Home implements AfterViewInit {
   private readonly toast = inject(ToastService);
   readonly hero = viewChild<ElementRef<HTMLElement>>('hero');
 
-  readonly arrowIcon = ArrowRight;
-  readonly eyeIcon = Eye;
-  readonly githubIcon = Github;
-  readonly copyIcon = Copy;
-  readonly checkIcon = Check;
+  readonly arrowIcon = LucideArrowRight;
+  readonly eyeIcon = LucideEye;
+  readonly copyIcon = LucideCopy;
+  readonly checkIcon = LucideCheck;
   readonly githubUrl = siteConfig.site.githubUrl;
 
   readonly copied = signal('');
@@ -346,45 +345,45 @@ export default class Home implements AfterViewInit {
 
   readonly features = [
     {
-      icon: FileText,
+      icon: LucideFileText,
       title: 'Markdown routes',
       description:
         'Drop a .md file in src/content, get a route. Powered by AnalogJS content collections.',
     },
     {
-      icon: Palette,
+      icon: LucidePalette,
       title: 'Branding-first',
       description: 'Tailwind tokens and CSS variables make a complete rebrand a one-file change.',
     },
     {
-      icon: Code,
+      icon: LucideCode,
       title: 'Shiki highlighting',
       description: 'Beautiful syntax highlighting for code blocks. Same engine as VS Code.',
     },
     {
-      icon: Box,
+      icon: LucideBox,
       title: 'Own your components',
       description: 'shadcn-style ownership. Authoring components live in your repo, theme freely.',
     },
     {
-      icon: Search,
+      icon: LucideSearch,
       title: 'Cmd+K search',
       description:
         'Local Orama index out of the box with optional Algolia swap-in. Fuzzy, ranked, with recents and favourites. Press ⌘K (or Ctrl+K on Windows / Linux) to try it.',
     },
     {
-      icon: Zap,
+      icon: LucideZap,
       title: 'AnalogJS-native',
       description: 'File-based routing, SSR/SSG, Vite dev server. The fast Angular stack.',
     },
     {
-      icon: GitBranch,
+      icon: LucideGitBranch,
       title: 'Multi-version docs',
       description:
         'Header version switcher in the adev / PrimeNG model. Each version is its own deployment, the switcher is a flat registry of external sibling URLs, and a status banner nudges visitors stuck on a next / rc / deprecated build toward the current stable.',
     },
     {
-      icon: BookOpen,
+      icon: LucideBookOpen,
       title: 'API reference auto-gen',
       description:
         'Drop an `ngmd.api.ts` scope file at the repo root. The api-gen plugin walks your TypeScript through ts-morph, emits a virtual symbol index, and serves it at `/api`. Cmd+K palette searches symbols alongside content pages.',

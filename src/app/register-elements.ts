@@ -27,6 +27,14 @@ import {NgmdStep, NgmdWorkflow} from './ui/workflow';
  * same outputs — only the host is the browser registry instead of Angular's
  * standalone-imports system.
  *
+ * The same tag names are also the Angular selectors that `.page.ts` templates
+ * use. Defining a custom element upgrades every matching tag in the document,
+ * including hosts Angular already owns (SSR output about to be hydrated, or
+ * elements Angular creates itself), which would boot a second component
+ * instance on the same host and break hydration. So each element only
+ * bootstraps when it is connected inside a markdown host
+ * (`MARKDOWN_HOSTS`); everywhere else Angular keeps sole ownership.
+ *
  * `@angular/elements` is dynamic-imported because it references the DOM's
  * `HTMLElement` at module-load time, which doesn't exist in Node during
  * SSR pre-rendering. The browser-only path is fine because Custom Elements
@@ -59,11 +67,23 @@ const elementMap: Array<[string, Type<unknown>]> = [
   ['ngmd-workflow', NgmdWorkflow],
 ];
 
+export const MARKDOWN_HOSTS = 'analog-markdown, analog-markdown-route';
+
 export async function registerNgmdElements(injector: Injector): Promise<void> {
   if (typeof customElements === 'undefined') return;
   const {createCustomElement} = await import('@angular/elements');
   for (const [tag, component] of elementMap) {
     if (customElements.get(tag)) continue;
-    customElements.define(tag, createCustomElement(component, {injector}));
+    const NgElementCtor = createCustomElement(component, {
+      injector,
+    }) as unknown as new () => HTMLElement & {
+      connectedCallback(): void;
+    };
+    class MarkdownElement extends NgElementCtor {
+      override connectedCallback(): void {
+        if (this.closest(MARKDOWN_HOSTS)) super.connectedCallback();
+      }
+    }
+    customElements.define(tag, MarkdownElement);
   }
 }

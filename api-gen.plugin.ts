@@ -2,7 +2,7 @@ import {existsSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import type {Plugin} from 'vite';
 import {Project, ts} from 'ts-morph';
-import type {ApiConfig, SymbolRecord, SymbolKind} from './src/types/api';
+import type {ApiConfig, SymbolRecord, SymbolKind} from './src/types/api.ts';
 
 /**
  * API-reference auto-generation plugin.

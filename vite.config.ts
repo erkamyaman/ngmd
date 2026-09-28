@@ -4,15 +4,15 @@ import {defineConfig} from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import {readFileSync} from 'node:fs';
-import {getBuildExtensions} from './src/marked-extensions';
-import {pageMetaPlugin} from './page-meta.plugin';
-import {internalLinkGuard} from './link-guard.plugin';
-import {sitemapPlugin} from './sitemap.plugin';
-import {searchIndexPlugin} from './search-index.plugin';
-import {rawMdPlugin} from './raw-md.plugin';
-import {varsPlugin} from './vars.plugin';
-import {apiGenPlugin} from './api-gen.plugin';
-import config from './src/ngmd.config';
+import {getBuildExtensions} from './src/marked-extensions/index.ts';
+import {pageMetaPlugin} from './page-meta.plugin.ts';
+import {internalLinkGuard} from './link-guard.plugin.ts';
+import {sitemapPlugin} from './sitemap.plugin.ts';
+import {searchIndexPlugin} from './search-index.plugin.ts';
+import {rawMdPlugin} from './raw-md.plugin.ts';
+import {varsPlugin} from './vars.plugin.ts';
+import {apiGenPlugin} from './api-gen.plugin.ts';
+import config from './src/ngmd.config.ts';
 
 /**
  * Build-time guard: errors when a markdown file in `src/content/` contains
@@ -62,6 +62,7 @@ export default defineConfig(async () => ({
     searchIndexPlugin(),
     apiGenPlugin(),
     analog({
+      apiPrefix: '_server',
       content: {
         highlighter: 'shiki',
         markedOptions: {

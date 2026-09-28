@@ -6,14 +6,18 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withNoIncrementalHydration,
+} from '@angular/platform-browser';
 import {provideFileRouter, requestContextInterceptor} from '@analogjs/router';
 import {provideContent, withMarkdownRenderer} from '@analogjs/content';
 import {withShikiHighlighter} from '@analogjs/content/shiki-highlighter';
 import {withInMemoryScrolling, withViewTransitions, TitleStrategy} from '@angular/router';
 import {ViewportScroller} from '@angular/common';
 import {marked} from 'marked';
-import {ngmdRuntimeExtensions} from '../marked-extensions';
+import {ngmdRuntimeExtensions} from '../marked-extensions/runtime';
 import {NgmdTitleStrategy} from './title-strategy';
 import {registerNgmdElements} from './register-elements';
 
@@ -33,7 +37,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
     ),
     provideHttpClient(withFetch(), withInterceptors([requestContextInterceptor])),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
     provideContent(withMarkdownRenderer(), withShikiHighlighter()),
     {provide: TitleStrategy, useClass: NgmdTitleStrategy},
     // AnalogJS's runtime MarkedSetupService only registers gfm/mangle/shiki.

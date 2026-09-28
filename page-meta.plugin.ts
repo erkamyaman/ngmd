@@ -1,7 +1,7 @@
 import {statSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils';
+import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
 
 /**
  * Build-time map of page URL → { editUrl, lastUpdated }.

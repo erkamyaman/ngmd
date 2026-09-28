@@ -1,6 +1,15 @@
 import {Component, DestroyRef, computed, inject, OnInit, signal} from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
-import {LucideAngularModule, Github, Menu, X, Search, Sun, Moon, SunMoon} from 'lucide-angular';
+import {
+  LucideDynamicIcon,
+  LucideMenu,
+  LucideMoon,
+  LucideSearch,
+  LucideSun,
+  LucideSunMoon,
+  LucideX,
+} from '@lucide/angular';
+import {GithubIcon} from './ui/github-icon';
 import {ThemeService} from './theme';
 import {LayoutMode} from './layout-mode.service';
 import {RouteUrlService} from './services/route-url/route-url.service';
@@ -26,7 +35,8 @@ import {VersionSwitcher} from './components/version-switcher';
   imports: [
     RouterLink,
     RouterOutlet,
-    LucideAngularModule,
+    LucideDynamicIcon,
+    GithubIcon,
     CommandPalette,
     Sidebar,
     Breadcrumb,
@@ -54,7 +64,7 @@ import {VersionSwitcher} from './components/version-switcher';
             class="lg:hidden rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             [attr.aria-label]="drawerOpen() ? 'Close menu' : 'Open menu'"
           >
-            <i-lucide [img]="drawerOpen() ? closeIcon : menuIcon" class="size-5"></i-lucide>
+            <svg [lucideIcon]="drawerOpen() ? closeIcon : menuIcon" class="size-5"></svg>
           </button>
         }
 
@@ -93,7 +103,7 @@ import {VersionSwitcher} from './components/version-switcher';
             (click)="palette.toggle()"
             class="hidden lg:inline-flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-w-56"
           >
-            <i-lucide [img]="searchIcon" class="size-4"></i-lucide>
+            <svg [lucideIcon]="searchIcon" class="size-4"></svg>
             <span class="flex-1 text-left">Search documentation...</span>
             <span class="flex items-center gap-0.5">
               <kbd
@@ -114,7 +124,7 @@ import {VersionSwitcher} from './components/version-switcher';
             class="lg:hidden rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             aria-label="Search"
           >
-            <i-lucide [img]="searchIcon" class="size-5"></i-lucide>
+            <svg [lucideIcon]="searchIcon" class="size-5"></svg>
           </button>
           <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <a
@@ -124,7 +134,7 @@ import {VersionSwitcher} from './components/version-switcher';
             class="rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             aria-label="GitHub"
           >
-            <i-lucide [img]="githubIcon" class="size-5"></i-lucide>
+            <svg ngmdGithubIcon class="size-5"></svg>
           </a>
           <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <button
@@ -134,12 +144,12 @@ import {VersionSwitcher} from './components/version-switcher';
             [attr.aria-label]="'Theme: ' + theme.mode()"
             [title]="'Theme: ' + theme.mode()"
           >
-            <i-lucide
-              [img]="
+            <svg
+              [lucideIcon]="
                 theme.mode() === 'light' ? sunIcon : theme.mode() === 'dark' ? moonIcon : autoIcon
               "
               class="size-5"
-            ></i-lucide>
+            ></svg>
           </button>
         </div>
       </header>
@@ -235,13 +245,12 @@ export class App implements OnInit {
   protected readonly layout = inject(LayoutMode);
   private readonly routeUrl = inject(RouteUrlService);
 
-  readonly menuIcon = Menu;
-  readonly closeIcon = X;
-  readonly searchIcon = Search;
-  readonly githubIcon = Github;
-  readonly sunIcon = Sun;
-  readonly moonIcon = Moon;
-  readonly autoIcon = SunMoon;
+  readonly menuIcon = LucideMenu;
+  readonly closeIcon = LucideX;
+  readonly searchIcon = LucideSearch;
+  readonly sunIcon = LucideSun;
+  readonly moonIcon = LucideMoon;
+  readonly autoIcon = LucideSunMoon;
 
   readonly githubUrl = siteConfig.site.githubUrl;
 

@@ -1,6 +1,6 @@
 {
   "name": "create-ngmd",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Scaffold a NgMd Angular docs site. Run via `pnpm create ngmd@latest` / `npm create ngmd@latest` / `yarn create ngmd` / `bun create ngmd`.",
   "license": "MIT",
   "author": {
@@ -33,10 +33,11 @@
   },
   "scripts": {
     "build-template": "node build-template.mjs",
+    "smoke": "node smoke-test.mjs",
     "prepublishOnly": "node build-template.mjs"
   },
   "engines": {
-    "node": ">=20.19.1"
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "files": [
     "index.mjs",

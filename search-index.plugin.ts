@@ -1,8 +1,8 @@
 import {readFileSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import type {IndexDoc, SearchHitKind} from './src/types/search';
-import {slugify, walkContentFiles} from './plugin-utils';
+import type {IndexDoc, SearchHitKind} from './src/types/search.ts';
+import {slugify, walkContentFiles} from './plugin-utils.ts';
 
 /**
  * Build-time search index. Walks `src/content/**\/*.md` and emits a flat list

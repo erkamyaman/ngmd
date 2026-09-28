@@ -1,5 +1,5 @@
 import {Component, effect, input, signal} from '@angular/core';
-import {LucideAngularModule, ChevronDown} from 'lucide-angular';
+import {LucideDynamicIcon, LucideChevronDown} from '@lucide/angular';
 
 let idCounter = 0;
 
@@ -18,7 +18,7 @@ let idCounter = 0;
  */
 @Component({
   selector: 'ngmd-accordion-item',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     <div
       class="ngmd-accordion-item rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden"
@@ -45,12 +45,12 @@ let idCounter = 0;
           }
           <span>{{ title() }}</span>
         </span>
-        <i-lucide
-          [img]="chevronIcon"
+        <svg
+          [lucideIcon]="chevronIcon"
           class="size-4 shrink-0 text-zinc-400 transition-transform duration-200"
-          [class.rotate-180]="expanded()"
+          [class]="expanded() ? 'rotate-180' : ''"
           aria-hidden="true"
-        ></i-lucide>
+        ></svg>
       </button>
       <div
         [id]="regionId"
@@ -70,7 +70,7 @@ let idCounter = 0;
   `,
 })
 export class NgmdAccordionItem {
-  protected readonly chevronIcon = ChevronDown;
+  protected readonly chevronIcon = LucideChevronDown;
 
   readonly title = input.required<string>();
   /** Optional brand logo / icon URL rendered as a 16×16 prefix to the title. */

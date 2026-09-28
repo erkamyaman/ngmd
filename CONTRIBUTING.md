@@ -28,7 +28,7 @@ pnpm run dev          # localhost:5173
 pnpm run build        # production build, runs link guards + sitemap
 ```
 
-Node 20.19.1 or newer required (AnalogJS 2.5 + Vite 8 floor).
+Node 22.22.3+ or 24.15.0+ required (Angular 22 floor).
 
 ## Code style
 
@@ -88,6 +88,16 @@ Examples from the existing log:
 2. **Manual smoke test** in the dev server. Open the affected route, navigate around, click links, toggle dark mode.
 3. **No `console.log`** left in committed code.
 4. **Commit message** follows the convention above.
+
+## Releasing
+
+Releases are automated by `.github/workflows/release.yml`:
+
+1. Bump `version` in `create-ngmd/package.json` (and the root `package.json`) and merge it to `main`.
+2. Tag the merge commit with the same version and push the tag: `git tag v0.3.0 && git push origin v0.3.0`.
+3. The workflow checks the tag matches the version, runs the format check, tests, build and the scaffolder smoke test, publishes `create-ngmd` to npm, and creates the GitHub release with generated notes.
+
+Publishing uses npm trusted publishing: `create-ngmd` trusts `erkamyaman/ngmd` with the `release.yml` workflow, so no npm token is stored in the repository, and npm adds provenance automatically. If the workflow file is renamed, update the trusted publisher on npmjs.com.
 
 ## Reporting security issues
 

@@ -10,7 +10,7 @@
 [build.environment]
   # Pin Node to match the engines field in package.json so dev / Netlify
   # stay aligned. Bump together when the project upgrades.
-  NODE_VERSION = "20.19.1"
+  NODE_VERSION = "22.22.3"
 
 # SPA fallback — last rule, status 200 (rewrite, not redirect) so the URL
 # in the browser bar stays correct while the SPA shell renders.

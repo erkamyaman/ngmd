@@ -49,7 +49,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
   <ngmd-accordion-item title="Angular" image="/logos/angular.svg" open>
     The framework. Standalone components, signals, control flow, function-based DI. Every authoring component is a regular Angular standalone unit you can drop into any Angular app.
   </ngmd-accordion-item>
-  <ngmd-accordion-item title="AnalogJS 2.5" image="https://analogjs.org/img/logos/analog-logo.svg">
+  <ngmd-accordion-item title="AnalogJS 2.7" image="https://analogjs.org/img/logos/analog-logo.svg">
     Angular's Nuxt / Next equivalent. Vite-based, SSR-capable, file-router-first. Markdown content collections, the build pipeline, and the entire routing model all come from here.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Vite" image="/logos/vite.svg">
@@ -59,7 +59,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     Utility CSS that doesn't impose a design system. Theme tokens live as CSS variables; the rest is regular Tailwind. <code>&#64;variant dark</code> powers class-based dark mode.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Shiki 1.29.2" image="https://shiki.style/logo.svg">
-    VS Code-quality syntax highlighting. Held at 1.x because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.5's peer dep. Dual-theme HTML output: github-light + github-dark in one pass.
+    VS Code-quality syntax highlighting. Held at 1.x because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.7's peer dep. Dual-theme HTML output: github-light + github-dark in one pass.
   </ngmd-accordion-item>
 </ngmd-accordion>
 

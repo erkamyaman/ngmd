@@ -1,6 +1,6 @@
 import {Component, computed, input} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {LucideAngularModule, ArrowRight, ArrowUpRight} from 'lucide-angular';
+import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/angular';
 
 /**
  * Pill-shaped link. Internal hrefs route via `RouterLink`; external (http(s))
@@ -11,7 +11,7 @@ import {LucideAngularModule, ArrowRight, ArrowUpRight} from 'lucide-angular';
  */
 @Component({
   selector: 'ngmd-pill',
-  imports: [RouterLink, LucideAngularModule],
+  imports: [RouterLink, LucideDynamicIcon],
   template: `
     @if (isExternal()) {
       <a
@@ -21,11 +21,11 @@ import {LucideAngularModule, ArrowRight, ArrowUpRight} from 'lucide-angular';
         class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
       >
         <span>{{ title() }}</span>
-        <i-lucide
-          [img]="externalIcon"
+        <svg
+          [lucideIcon]="externalIcon"
           class="size-3.5 opacity-50 group-hover:opacity-100 transition-opacity"
           aria-hidden="true"
-        ></i-lucide>
+        ></svg>
       </a>
     } @else {
       <a
@@ -33,11 +33,11 @@ import {LucideAngularModule, ArrowRight, ArrowUpRight} from 'lucide-angular';
         class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
       >
         <span>{{ title() }}</span>
-        <i-lucide
-          [img]="internalIcon"
+        <svg
+          [lucideIcon]="internalIcon"
           class="size-3.5 opacity-50 transition-all group-hover:opacity-100 group-hover:translate-x-0.5"
           aria-hidden="true"
-        ></i-lucide>
+        ></svg>
       </a>
     }
   `,
@@ -48,8 +48,8 @@ export class NgmdPill {
 
   readonly isExternal = computed(() => /^https?:\/\//.test(this.href()));
 
-  protected readonly internalIcon = ArrowRight;
-  protected readonly externalIcon = ArrowUpRight;
+  protected readonly internalIcon = LucideArrowRight;
+  protected readonly externalIcon = LucideArrowUpRight;
 }
 
 @Component({

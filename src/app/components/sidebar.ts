@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, DestroyRef, ElementRef, inject, signal} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
-import {LucideAngularModule, ChevronDown} from 'lucide-angular';
+import {LucideDynamicIcon, LucideChevronDown} from '@lucide/angular';
 import config from '../../ngmd.config';
 import {BADGE_VARIANTS, type BadgeVariant} from '../../types/badge';
 import {onNavigation} from '../utils/enhance-on-navigation';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [RouterLink, RouterLinkActive, LucideDynamicIcon],
   template: `
     <nav class="flex flex-col gap-4 text-sm">
       @for (section of sections; track section.label) {
@@ -19,11 +19,11 @@ import {onNavigation} from '../utils/enhance-on-navigation';
             [attr.aria-expanded]="isOpen(section.label)"
           >
             {{ section.label }}
-            <i-lucide
-              [img]="chevron"
+            <svg
+              [lucideIcon]="chevron"
               class="size-4 transition-transform"
-              [class.-rotate-90]="!isOpen(section.label)"
-            ></i-lucide>
+              [class]="isOpen(section.label) ? '' : '-rotate-90'"
+            ></svg>
           </button>
           @if (isOpen(section.label)) {
             <ul class="mt-1 flex flex-col gap-1">
@@ -60,7 +60,7 @@ export class Sidebar implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly sections = config.nav;
-  readonly chevron = ChevronDown;
+  readonly chevron = LucideChevronDown;
   private readonly openSections = signal<Set<string>>(new Set(config.nav.map((s) => s.label)));
 
   isOpen(label: string): boolean {

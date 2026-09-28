@@ -53,7 +53,7 @@ See the [NgMd repo](https://github.com/erkamyaman/ngmd) for the feature list.
 
 ## How it works
 
-`index.mjs` (Node 20+, zero npm deps) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand, `index.html` title) so the new project matches the name you passed.
+`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand, `index.html` title) so the new project matches the name you passed.
 
 `template/` is generated from the parent ngmd repo by `build-template.mjs` and is git-ignored. The `prepublishOnly` script regenerates it before every publish, so the npm artifact always carries an up-to-date starter.
 

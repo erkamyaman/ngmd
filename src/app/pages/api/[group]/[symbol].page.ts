@@ -1,7 +1,7 @@
 import {Component, computed, inject} from '@angular/core';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {LucideAngularModule, ArrowLeft, ExternalLink} from 'lucide-angular';
+import {LucideDynamicIcon, LucideArrowLeft, LucideExternalLink} from '@lucide/angular';
 import {apiIndex} from 'virtual:ngmd/api-index';
 import {ApiBadges} from '../../../ui/api/api-badges';
 import {ApiSignature} from '../../../ui/api/api-signature';
@@ -18,14 +18,14 @@ import config from '../../../../ngmd.config';
  */
 @Component({
   selector: 'app-api-symbol',
-  imports: [RouterLink, LucideAngularModule, ApiBadges, ApiSignature, ApiJsDoc],
+  imports: [RouterLink, LucideDynamicIcon, ApiBadges, ApiSignature, ApiJsDoc],
   template: `
     <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
       <a
         routerLink="/api"
         class="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[color:var(--accent-strong)] mb-6"
       >
-        <i-lucide [img]="backIcon" class="size-3.5"></i-lucide>
+        <svg [lucideIcon]="backIcon" class="size-3.5"></svg>
         All symbols
       </a>
 
@@ -50,7 +50,7 @@ import config from '../../../../ngmd.config';
                 class="ml-2 inline-flex items-center gap-1 text-zinc-500 hover:text-[color:var(--accent-strong)]"
               >
                 view source
-                <i-lucide [img]="externalIcon" class="size-3"></i-lucide>
+                <svg [lucideIcon]="externalIcon" class="size-3"></svg>
               </a>
             }
           </p>
@@ -89,8 +89,8 @@ import config from '../../../../ngmd.config';
 })
 export default class ApiSymbolPage {
   private readonly route = inject(ActivatedRoute);
-  readonly backIcon = ArrowLeft;
-  readonly externalIcon = ExternalLink;
+  readonly backIcon = LucideArrowLeft;
+  readonly externalIcon = LucideExternalLink;
 
   private readonly params = toSignal(this.route.paramMap, {requireSync: true});
 

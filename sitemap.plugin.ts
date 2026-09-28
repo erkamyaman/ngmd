@@ -1,7 +1,7 @@
 import {statSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils';
+import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
 
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.

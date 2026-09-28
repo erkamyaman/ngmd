@@ -1,22 +1,22 @@
 import {Component, computed, input} from '@angular/core';
 import {
-  LucideAngularModule,
-  Info,
-  TriangleAlert,
-  OctagonAlert,
-  Lightbulb,
-  CircleAlert,
-  type LucideIconData,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  type LucideIcon,
+  LucideCircleAlert,
+  LucideInfo,
+  LucideLightbulb,
+  LucideOctagonAlert,
+  LucideTriangleAlert,
+} from '@lucide/angular';
 
 type AlertSeverity = 'info' | 'warning' | 'critical' | 'helpful' | 'important';
 
-const ICON_MAP: Record<AlertSeverity, LucideIconData> = {
-  info: Info,
-  warning: TriangleAlert,
-  critical: OctagonAlert,
-  helpful: Lightbulb,
-  important: CircleAlert,
+const ICON_MAP: Record<AlertSeverity, LucideIcon> = {
+  info: LucideInfo,
+  warning: LucideTriangleAlert,
+  critical: LucideOctagonAlert,
+  helpful: LucideLightbulb,
+  important: LucideCircleAlert,
 };
 
 const STRIPE: Record<AlertSeverity, string> = {
@@ -49,15 +49,15 @@ const BOX =
  */
 @Component({
   selector: 'ngmd-alert',
-  imports: [LucideAngularModule],
+  imports: [LucideDynamicIcon],
   template: `
     <div [class]="boxClass()">
-      <i-lucide
-        [img]="iconImg()"
+      <svg
+        [lucideIcon]="iconImg()"
         class="size-4 shrink-0 mt-0.5"
         [class]="accentClass()"
         aria-hidden="true"
-      ></i-lucide>
+      ></svg>
       <div class="flex-1 [&>*:first-child]:inline [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
         <strong class="font-semibold mr-1" [class]="accentClass()">{{ tag() }}:</strong>
         <ng-content></ng-content>

@@ -1,13 +1,12 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 
-import {NgmdCodeBlock} from '../../ui/code-block';
+import {NgmdUi} from '../../ui';
 import {ToastService} from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-components',
-  imports: [RouterLink, NgmdCodeBlock],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [RouterLink, ...NgmdUi],
   template: `
     <article class="ngmd-prose max-w-3xl mx-auto p-8 space-y-12">
       <header>

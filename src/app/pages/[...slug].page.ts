@@ -11,7 +11,7 @@ import {
 import {toSignal} from '@angular/core/rxjs-interop';
 import {Router, RouterLink} from '@angular/router';
 import {injectContent, MarkdownComponent} from '@analogjs/content';
-import {LucideAngularModule, Search, ArrowRight} from 'lucide-angular';
+import {LucideDynamicIcon, LucideArrowRight, LucideSearch} from '@lucide/angular';
 import {LayoutMode} from '../layout-mode.service';
 import {SearchService} from '../services/search/search.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
@@ -45,7 +45,7 @@ const NOT_FOUND = '__ngmd-not-found__';
 @Component({
   selector: 'app-doc',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideAngularModule, ContentBanners],
+  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideDynamicIcon, ContentBanners],
   template: `
     @if (content$ | async; as doc) {
       @if (doc.content === notFound) {
@@ -72,7 +72,7 @@ const NOT_FOUND = '__ngmd-not-found__';
                   stripMarkup(hit.labelHtml)
                 }}</span>
               </span>
-              <i-lucide [img]="arrowIcon" class="size-4 text-zinc-400 shrink-0"></i-lucide>
+              <svg [lucideIcon]="arrowIcon" class="size-4 text-zinc-400 shrink-0"></svg>
             </button>
           }
 
@@ -82,7 +82,7 @@ const NOT_FOUND = '__ngmd-not-found__';
               (click)="searchInPalette()"
               class="inline-flex items-center gap-2 rounded-md bg-zinc-900 dark:bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200"
             >
-              <i-lucide [img]="searchIcon" class="size-4"></i-lucide>
+              <svg [lucideIcon]="searchIcon" class="size-4"></svg>
               Search the docs
             </button>
             <a
@@ -110,8 +110,8 @@ export default class DocPage implements OnDestroy {
   private readonly cleanUrl = this.route.cleanUrl;
   protected readonly notFound = NOT_FOUND;
 
-  readonly searchIcon = Search;
-  readonly arrowIcon = ArrowRight;
+  readonly searchIcon = LucideSearch;
+  readonly arrowIcon = LucideArrowRight;
 
   readonly content$ = injectContent<{title: string}>('slug', NOT_FOUND);
   private readonly doc = toSignal(this.content$);

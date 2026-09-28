@@ -2,25 +2,25 @@ import {Component, computed, input} from '@angular/core';
 import {NgTemplateOutlet} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {
-  LucideAngularModule,
-  Book,
-  Box,
-  Code2,
-  Compass,
-  FileText,
-  Layers,
-  Lightbulb,
-  Palette,
-  Rocket,
-  Search,
-  Settings,
-  Shield,
-  Sparkles,
-  Terminal,
-  Wrench,
-  Zap,
-  type LucideIconData,
-} from 'lucide-angular';
+  LucideDynamicIcon,
+  type LucideIcon,
+  LucideBook,
+  LucideBox,
+  LucideCodeXml,
+  LucideCompass,
+  LucideFileText,
+  LucideLayers,
+  LucideLightbulb,
+  LucidePalette,
+  LucideRocket,
+  LucideSearch,
+  LucideSettings,
+  LucideShield,
+  LucideSparkles,
+  LucideTerminal,
+  LucideWrench,
+  LucideZap,
+} from '@lucide/angular';
 
 /**
  * Curated icon set, keyed by short name. Author passes one via the `icon`
@@ -29,28 +29,28 @@ import {
  * authoring surface stays memorable and the bundle stays light. Unknown
  * names render no icon, with no error.
  */
-const ICON_MAP: Record<string, LucideIconData> = {
-  book: Book,
-  box: Box,
-  code: Code2,
-  compass: Compass,
-  file: FileText,
-  layers: Layers,
-  lightbulb: Lightbulb,
-  palette: Palette,
-  rocket: Rocket,
-  search: Search,
-  settings: Settings,
-  shield: Shield,
-  sparkles: Sparkles,
-  terminal: Terminal,
-  wrench: Wrench,
-  zap: Zap,
+const ICON_MAP: Record<string, LucideIcon> = {
+  book: LucideBook,
+  box: LucideBox,
+  code: LucideCodeXml,
+  compass: LucideCompass,
+  file: LucideFileText,
+  layers: LucideLayers,
+  lightbulb: LucideLightbulb,
+  palette: LucidePalette,
+  rocket: LucideRocket,
+  search: LucideSearch,
+  settings: LucideSettings,
+  shield: LucideShield,
+  sparkles: LucideSparkles,
+  terminal: LucideTerminal,
+  wrench: LucideWrench,
+  zap: LucideZap,
 };
 
 @Component({
   selector: 'ngmd-card',
-  imports: [NgTemplateOutlet, RouterLink, LucideAngularModule],
+  imports: [NgTemplateOutlet, RouterLink, LucideDynamicIcon],
   host: {
     // `display: block` so the host occupies its grid cell properly. `h-full`
     // so when laid out inside `<ngmd-card-grid>` (which uses
@@ -97,11 +97,11 @@ const ICON_MAP: Record<string, LucideIconData> = {
           loading="lazy"
         />
       } @else if (iconImg(); as img) {
-        <i-lucide
-          [img]="img"
+        <svg
+          [lucideIcon]="img"
           class="size-6 mb-4 text-[color:var(--accent)]"
           aria-hidden="true"
-        ></i-lucide>
+        ></svg>
       }
       @if (title()) {
         <!-- <p> not <h3>: card titles are labels, not section headings.

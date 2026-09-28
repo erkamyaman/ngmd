@@ -1,6 +1,6 @@
 import {Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {LucideAngularModule, ArrowLeft, ArrowRight} from 'lucide-angular';
+import {LucideDynamicIcon, LucideArrowLeft, LucideArrowRight} from '@lucide/angular';
 import {navItems} from '../../ngmd.config';
 import {RouteUrlService} from '../services/route-url/route-url.service';
 
@@ -15,7 +15,7 @@ const RELATED_MAX = 4;
  */
 @Component({
   selector: 'app-page-footer',
-  imports: [RouterLink, LucideAngularModule],
+  imports: [RouterLink, LucideDynamicIcon],
   template: `
     @if (related().length || prev() || next()) {
       <footer class="mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-5 pb-10 text-sm">
@@ -47,7 +47,7 @@ const RELATED_MAX = 4;
                 class="group rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:border-[color:var(--accent)] transition-colors sm:col-start-1"
               >
                 <span class="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-                  <i-lucide [img]="prevIcon" class="size-3.5"></i-lucide>
+                  <svg [lucideIcon]="prevIcon" class="size-3.5"></svg>
                   Previous
                 </span>
                 <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{
@@ -64,7 +64,7 @@ const RELATED_MAX = 4;
                   class="flex items-center justify-end gap-1.5 text-xs text-zinc-500 dark:text-zinc-400"
                 >
                   Next
-                  <i-lucide [img]="nextIcon" class="size-3.5"></i-lucide>
+                  <svg [lucideIcon]="nextIcon" class="size-3.5"></svg>
                 </span>
                 <span class="mt-1 block text-base font-medium text-zinc-900 dark:text-zinc-100">{{
                   n.label
@@ -80,8 +80,8 @@ const RELATED_MAX = 4;
 export class PageFooter {
   private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
 
-  readonly prevIcon = ArrowLeft;
-  readonly nextIcon = ArrowRight;
+  readonly prevIcon = LucideArrowLeft;
+  readonly nextIcon = LucideArrowRight;
 
   private readonly index = computed(() => navItems.findIndex((n) => n.href === this.cleanUrl()));
   readonly prev = computed(() => {
