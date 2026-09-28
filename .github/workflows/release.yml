@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - name: Check the tag matches create-ngmd's version
         run: |
