@@ -37,6 +37,8 @@ describe('headingText', () => {
     expect(headingText('Read [the guide](/guide) and ![logo](/logo.svg)')).toBe(
       'Read the guide and logo',
     );
+    expect(headingText('Use `<router-outlet>` here')).toBe('Use <router-outlet> here');
+    expect(slugify(headingText('Use `<router-outlet>`'))).toBe('use-router-outlet');
     expect(headingText('Install <code>&#64;scope/pkg</code> &amp; run')).toBe(
       'Install @scope/pkg & run',
     );

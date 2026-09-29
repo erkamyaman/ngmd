@@ -6,7 +6,13 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.4.1 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.4.2 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Anchors for headings with code or `#`.** A heading like ``Use `<router-outlet>` `` keeps the code text in its anchor, so the link guard agrees with the page. Search results for a heading like `C# Support` now jump to the right anchor.
+
+**Tested path check.** The `file=` import check moved into `resolveInside()` in `plugin-utils.ts`, with tests for paths that climb out of the project and symlinks that point outside it.
+
+## 0.4.1
 
 **Code imports follow symlinks safely.** `file=` imports resolve the real path first, so a symlink inside the project can no longer pull in a file from outside it.
 

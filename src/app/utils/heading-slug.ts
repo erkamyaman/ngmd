@@ -40,11 +40,17 @@ const ENTITIES: Record<string, string> = {
  * other tags removed and entities decoded.
  */
 export function headingText(markdown: string): string {
+  const code: string[] = [];
   return markdown
+    .replace(/(`+)([\s\S]*?)\1/g, (_, _ticks: string, inner: string) => {
+      code.push(inner);
+      return `\u0000${code.length - 1}\u0000`;
+    })
     .replace(/<ngmd-badge\b[^>]*>[\s\S]*?<\/ngmd-badge>/g, '')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]+>/g, '')
     .replace(/&#(\d+);/g, (_, n: string) => String.fromCharCode(Number(n)))
     .replace(/&(amp|lt|gt|quot|apos|nbsp);/g, (_, e: string) => ENTITIES[e])
+    .replace(/\u0000(\d+)\u0000/g, (_, i: string) => code[Number(i)])
     .trim();
 }

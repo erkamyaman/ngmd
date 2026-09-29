@@ -182,7 +182,7 @@ export function searchIndexPlugin(): Plugin {
         for (const section of splitSections(body)) {
           if (section.heading) {
             const headingText = stripMarkdown(headingTextOf(section.heading));
-            const anchor = anchorFor(headingText);
+            const anchor = anchorFor(headingTextOf(section.heading));
             docs.push({
               id: `section:${url}#${anchor}`,
               url,

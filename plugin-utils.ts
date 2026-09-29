@@ -1,6 +1,6 @@
 import {execFileSync} from 'node:child_process';
-import {readdirSync, statSync} from 'node:fs';
-import {join, relative} from 'node:path';
+import {readdirSync, realpathSync, statSync} from 'node:fs';
+import {isAbsolute, join, relative, resolve} from 'node:path';
 
 export {createSlugger, headingText, slugify} from './src/app/utils/heading-slug.ts';
 
@@ -102,4 +102,18 @@ export function fenceTracker(): (line: string) => boolean {
     if (m && m[1][0] === open[0] && m[1].length >= open.length && !m[2].trim()) open = '';
     return true;
   };
+}
+
+/**
+ * Resolve `path` against `root`, following symlinks, and throw when the
+ * real target lies outside the real root.
+ */
+export function resolveInside(root: string, path: string): string {
+  const realRoot = realpathSync(root);
+  const full = realpathSync(resolve(realRoot, path));
+  const rel = relative(realRoot, full);
+  if (rel.startsWith('..') || isAbsolute(rel)) {
+    throw new Error('path resolves outside the project root');
+  }
+  return full;
 }
