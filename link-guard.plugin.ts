@@ -1,6 +1,6 @@
 import {readFileSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
-import type {Plugin, ViteDevServer} from 'vite';
+import type {Plugin} from 'vite';
 import {
   createSlugger,
   fenceTracker,
@@ -49,7 +49,7 @@ export function internalLinkGuard(): Plugin {
   // route → source file (relative path)
   const routes = new Map<string, string>();
   let primed = false;
-  let server: ViteDevServer | undefined;
+  let isBuild = true;
 
   function prime(): void {
     if (primed) return;
@@ -87,9 +87,7 @@ export function internalLinkGuard(): Plugin {
     enforce: 'pre',
     configResolved(cfg) {
       root = cfg.root;
-    },
-    configureServer(devServer) {
-      server = devServer;
+      isBuild = cfg.command === 'build';
     },
     watchChange(id) {
       if (!id.endsWith('.md') && !id.endsWith('.page.ts')) return;
@@ -151,9 +149,8 @@ export function internalLinkGuard(): Plugin {
         const message =
           `[ngmd] Broken internal links in ${relative(root, file)}:\n${issues.join('\n')}\n` +
           `Fix the link target, or update the heading slug it points to.`;
-        if (!server) this.error(message);
+        if (isBuild) this.error(message);
         this.warn(message);
-        server.ws.send({type: 'error', err: {message, stack: ''}});
       }
 
       return null;

@@ -184,6 +184,7 @@ const config: NgmdConfig = {
         {label: 'Get help', href: '/help/get-help'},
         {label: 'Contribute', href: '/help/contribute'},
         {label: 'Support us', href: '/help/sponsor'},
+        {label: 'Kitchen sink', href: '/help/kitchen-sink'},
       ],
     },
     {
@@ -202,7 +203,7 @@ const config: NgmdConfig = {
   // opens its deployment in a new tab.
   versions: {
     self: 'v0.3.0',
-    list: [{label: 'v0.3.0', url: 'https://ngmd.netlify.app', status: 'current'}],
+    list: [{label: 'v0.4.3', url: 'https://ngmd.netlify.app', status: 'current'}],
   },
 };
 

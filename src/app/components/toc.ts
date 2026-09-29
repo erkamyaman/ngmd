@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {onNavigation} from '../utils/enhance-on-navigation';
 import {createSlugger} from '../utils/heading-slug';
@@ -43,6 +52,30 @@ export class Toc implements AfterViewInit {
   readonly showActive = input<boolean>(true);
   readonly headings = signal<Heading[]>([]);
   readonly active = signal<string>('');
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  constructor() {
+    effect(() => {
+      const id = this.active();
+      if (!this.showActive() || !id) return;
+      this.revealActive(id);
+    });
+  }
+
+  private revealActive(id: string): void {
+    const link = this.host.nativeElement.querySelector<HTMLElement>(`a[href="#${CSS.escape(id)}"]`);
+    let box = this.host.nativeElement.parentElement;
+    while (box && box.scrollHeight <= box.clientHeight) box = box.parentElement;
+    if (!link || !box || box === document.documentElement || box === document.body) return;
+    const linkRect = link.getBoundingClientRect();
+    const boxRect = box.getBoundingClientRect();
+    const margin = 48;
+    if (linkRect.top < boxRect.top + margin) {
+      box.scrollTop -= boxRect.top + margin - linkRect.top;
+    } else if (linkRect.bottom > boxRect.bottom - margin) {
+      box.scrollTop += linkRect.bottom - (boxRect.bottom - margin);
+    }
+  }
   private observer?: IntersectionObserver;
   private contentObserver?: MutationObserver;
   private retryTimer?: ReturnType<typeof setTimeout>;

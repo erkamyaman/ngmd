@@ -6,7 +6,17 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.4.2 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.4.3 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**The TOC follows the page.** On long pages the "On this page" list scrolls on its own to keep the active heading in view.
+
+**Kitchen sink.** A new [Kitchen sink](/help/kitchen-sink) page shows every component and markdown feature on one page, for checking styles and dark mode.
+
+**`noIndex` also skips the sitemap.** Pages with `noIndex: true` in their frontmatter are now left out of the sitemap as well as search.
+
+**Quieter dev link guard.** A broken link in dev is a terminal warning only, without the error overlay. Production builds still fail on it.
+
+## 0.4.2
 
 **Anchors for headings with code or `#`.** A heading like ``Use `<router-outlet>` `` keeps the code text in its anchor, so the link guard agrees with the page. Search results for a heading like `C# Support` now jump to the right anchor.
 

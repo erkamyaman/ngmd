@@ -1,4 +1,4 @@
-import {statSync} from 'node:fs';
+import {readFileSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
 import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
@@ -56,6 +56,13 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
       try {
         statSync(contentDir);
         for (const [rel, route] of walkContentFiles(contentDir, root)) {
+          if (
+            /^---[\s\S]*?^noIndex:\s*(true|yes|1)\s*$[\s\S]*?^---/m.test(
+              readFileSync(join(root, rel), 'utf8'),
+            )
+          ) {
+            continue;
+          }
           entries.set(route, gitDate(rel, root, today));
         }
       } catch {
