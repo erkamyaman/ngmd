@@ -1,4 +1,15 @@
-import {Component, DestroyRef, computed, inject, OnInit, signal} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {
   LucideDynamicIcon,
@@ -10,6 +21,7 @@ import {
   LucideX,
 } from '@lucide/angular';
 import {GithubIcon} from './ui/github-icon';
+import {DiscordIcon} from './ui/discord-icon';
 import {ThemeService} from './theme';
 import {LayoutMode} from './layout-mode.service';
 import {RouteUrlService} from './services/route-url/route-url.service';
@@ -37,6 +49,7 @@ import {VersionSwitcher} from './components/version-switcher';
     RouterOutlet,
     LucideDynamicIcon,
     GithubIcon,
+    DiscordIcon,
     CommandPalette,
     Sidebar,
     Breadcrumb,
@@ -59,8 +72,9 @@ import {VersionSwitcher} from './components/version-switcher';
       >
         @if (showSidebar()) {
           <button
+            #menuButton
             type="button"
-            (click)="drawerOpen.set(!drawerOpen())"
+            (click)="toggleDrawer()"
             class="lg:hidden rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
             [attr.aria-label]="drawerOpen() ? 'Close menu' : 'Open menu'"
           >
@@ -78,23 +92,32 @@ import {VersionSwitcher} from './components/version-switcher';
             class="size-[34px] text-zinc-900 dark:text-zinc-50"
             aria-hidden="true"
           />
-          NgMd
+          {{ siteName }}
         </a>
 
-        <nav class="hidden sm:flex items-center gap-1 text-sm">
-          <a
-            routerLink="/welcome"
-            class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-          >
-            Docs
-          </a>
-          <a
-            routerLink="/help/get-help"
-            class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-          >
-            Help
-          </a>
-        </nav>
+        @if (headerNav.length > 0) {
+          <nav class="hidden sm:flex items-center gap-1 text-sm">
+            @for (item of headerNav; track item.href) {
+              @if (isExternal(item.href)) {
+                <a
+                  [href]="item.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                >
+                  {{ item.label }}
+                </a>
+              } @else {
+                <a
+                  [routerLink]="item.href"
+                  class="rounded px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                >
+                  {{ item.label }}
+                </a>
+              }
+            }
+          </nav>
+        }
 
         <div class="ml-auto flex items-center gap-2">
           <app-version-switcher></app-version-switcher>
@@ -136,6 +159,17 @@ import {VersionSwitcher} from './components/version-switcher';
           >
             <svg ngmdGithubIcon class="size-5"></svg>
           </a>
+          @if (discordUrl) {
+            <a
+              [href]="discordUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              aria-label="Discord"
+            >
+              <svg ngmdDiscordIcon class="size-5"></svg>
+            </a>
+          }
           <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <button
             type="button"
@@ -171,10 +205,12 @@ import {VersionSwitcher} from './components/version-switcher';
             [class.opacity-0]="!drawerOpen()"
             [class.opacity-100]="drawerOpen()"
             [class.pointer-events-none]="!drawerOpen()"
-            (click)="drawerOpen.set(false)"
+            (click)="closeDrawer()"
             aria-hidden="true"
           ></div>
           <aside
+            #drawer
+            (keydown.escape)="closeDrawer()"
             class="lg:hidden fixed left-0 top-[57px] bottom-0 z-40 w-64 overflow-y-auto border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 transform transition-transform duration-200 ease-out"
             [class.-translate-x-full]="!drawerOpen()"
             [class.translate-x-0]="drawerOpen()"
@@ -244,6 +280,9 @@ export class App implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   protected readonly layout = inject(LayoutMode);
   private readonly routeUrl = inject(RouteUrlService);
+  private readonly injector = inject(Injector);
+  private readonly menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
+  private readonly drawer = viewChild<ElementRef<HTMLElement>>('drawer');
 
   readonly menuIcon = LucideMenu;
   readonly closeIcon = LucideX;
@@ -252,7 +291,10 @@ export class App implements OnInit {
   readonly moonIcon = LucideMoon;
   readonly autoIcon = LucideSunMoon;
 
+  readonly siteName = siteConfig.site.name;
   readonly githubUrl = siteConfig.site.githubUrl;
+  readonly discordUrl = siteConfig.site.links?.discord;
+  readonly headerNav = siteConfig.headerNav ?? [];
 
   readonly drawerOpen = signal(false);
 
@@ -264,6 +306,28 @@ export class App implements OnInit {
   readonly showBreadcrumb = this.isDocsRoute;
   readonly showToc = this.isDocsRoute;
   readonly showFooter = this.isDocsRoute;
+
+  isExternal(href: string): boolean {
+    return /^https?:\/\//.test(href);
+  }
+
+  toggleDrawer(): void {
+    if (this.drawerOpen()) {
+      this.closeDrawer();
+      return;
+    }
+    this.drawerOpen.set(true);
+    afterNextRender(
+      () => this.drawer()?.nativeElement.querySelector<HTMLElement>('a[href], button')?.focus(),
+      {injector: this.injector},
+    );
+  }
+
+  closeDrawer(): void {
+    if (!this.drawerOpen()) return;
+    this.drawerOpen.set(false);
+    this.menuButton()?.nativeElement.focus();
+  }
 
   ngOnInit(): void {
     this.theme.initFromStorage();

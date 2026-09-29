@@ -70,8 +70,11 @@ export class NgmdAlert {
   /** Optional label override. Defaults to the severity name, uppercased. */
   readonly label = input<string>('');
 
-  protected readonly iconImg = computed(() => ICON_MAP[this.severity()]);
-  protected readonly accentClass = computed(() => ACCENT[this.severity()]);
-  protected readonly boxClass = computed(() => `${BOX} ${STRIPE[this.severity()]}`);
-  protected readonly tag = computed(() => (this.label() || this.severity()).toUpperCase());
+  private readonly resolved = computed<AlertSeverity>(() =>
+    Object.hasOwn(ICON_MAP, this.severity()) ? this.severity() : 'info',
+  );
+  protected readonly iconImg = computed(() => ICON_MAP[this.resolved()]);
+  protected readonly accentClass = computed(() => ACCENT[this.resolved()]);
+  protected readonly boxClass = computed(() => `${BOX} ${STRIPE[this.resolved()]}`);
+  protected readonly tag = computed(() => (this.label() || this.resolved()).toUpperCase());
 }

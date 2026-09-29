@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, DestroyRef, inject, input, signal} from '@angular/core';
 import {Router} from '@angular/router';
 import {onNavigation} from '../utils/enhance-on-navigation';
+import {createSlugger} from '../utils/heading-slug';
 
 interface Heading {
   id: string;
@@ -44,6 +45,7 @@ export class Toc implements AfterViewInit {
   readonly active = signal<string>('');
   private observer?: IntersectionObserver;
   private contentObserver?: MutationObserver;
+  private retryTimer?: ReturnType<typeof setTimeout>;
 
   isActive(id: string): boolean {
     return this.showActive() && this.active() === id;
@@ -76,6 +78,7 @@ export class Toc implements AfterViewInit {
     }
 
     this.destroyRef.onDestroy(() => {
+      clearTimeout(this.retryTimer);
       this.contentObserver?.disconnect();
       this.observer?.disconnect();
     });
@@ -103,6 +106,7 @@ export class Toc implements AfterViewInit {
     // Reset any prior observer before scanning. Navigation churn would
     // otherwise leave a stale observer firing on the wrong route's <main>.
     this.contentObserver?.disconnect();
+    clearTimeout(this.retryTimer);
 
     // TS-driven pages render synchronously: the headings are in the DOM
     // by the time AfterViewInit fires. Try once, succeed immediately.
@@ -117,7 +121,7 @@ export class Toc implements AfterViewInit {
     if (!main) {
       // <main> not in DOM yet (very early in the lifecycle). One micro-delay
       // and we'll find it.
-      setTimeout(() => this.scanWithRetry(), 50);
+      this.retryTimer = setTimeout(() => this.scanWithRetry(), 50);
       return;
     }
     this.contentObserver = new MutationObserver(() => {
@@ -142,23 +146,22 @@ export class Toc implements AfterViewInit {
   }
 
   private scan(content: Element): void {
-    const nodes = Array.from(content.querySelectorAll('h2, h3'));
-    const result: Heading[] = nodes.map((node) => {
-      const text = node.textContent?.trim() ?? '';
+    const slug = createSlugger();
+    const nodes: HTMLElement[] = [];
+    const result: Heading[] = [];
+    for (const node of Array.from(content.querySelectorAll<HTMLElement>('h2, h3, h4, h5, h6'))) {
+      const copy = node.cloneNode(true) as HTMLElement;
+      copy.querySelectorAll('ngmd-badge').forEach((badge) => badge.remove());
+      const text = copy.textContent?.trim() ?? '';
       // Always overwrite the id with a clean slug so palette deep-links match.
-      const id = text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
-      node.id = id;
-      return {
-        id,
-        text,
-        level: parseInt(node.tagName.substring(1), 10),
-      };
-    });
+      node.id = slug(text);
+      const level = parseInt(node.tagName.substring(1), 10);
+      if (level > 3) continue;
+      nodes.push(node);
+      result.push({id: node.id, text, level});
+    }
     this.headings.set(result);
-    this.setupObserver(nodes as HTMLElement[]);
+    this.setupObserver(nodes);
   }
 
   private setupObserver(nodes: HTMLElement[]): void {

@@ -29,6 +29,8 @@ import {
   LucideZap,
 } from '@lucide/angular';
 
+let idCounter = 0;
+
 const ICON_MAP: Record<string, LucideIcon> = {
   book: LucideBook,
   box: LucideBox,
@@ -81,6 +83,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 @Component({
   selector: 'ngmd-tab',
+  host: {role: 'tabpanel', '[hidden]': '!active()'},
   template: `
     <div class="p-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" [hidden]="!active()">
       <ng-content></ng-content>
@@ -118,9 +121,9 @@ export class NgmdTab {
           <button
             type="button"
             role="tab"
-            [id]="'ngmd-tab-' + tab.key"
+            [id]="tab.key + '-tab'"
             [attr.aria-selected]="active() === tab.key"
-            [attr.aria-controls]="'ngmd-tabpanel-' + tab.key"
+            [attr.aria-controls]="tab.key + '-panel'"
             [tabindex]="active() === tab.key ? 0 : -1"
             (click)="setActive(tab.key)"
             (keydown)="onKey($event, i)"
@@ -141,11 +144,7 @@ export class NgmdTab {
           </button>
         }
       </div>
-      <div
-        role="tabpanel"
-        [attr.aria-labelledby]="'ngmd-tab-' + active()"
-        [id]="'ngmd-tabpanel-' + active()"
-      >
+      <div>
         <ng-content></ng-content>
       </div>
     </div>
@@ -153,6 +152,7 @@ export class NgmdTab {
 })
 export class NgmdTabs implements AfterViewInit {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  private readonly uid = ++idCounter;
   readonly tabs = signal<
     {
       key: string;
@@ -173,12 +173,16 @@ export class NgmdTabs implements AfterViewInit {
       this.host.nativeElement.querySelectorAll<HTMLElement>(':scope ngmd-tab'),
     );
     const list = els.map((el, i) => ({
-      key: `tab-${i}`,
+      key: `ngmd-tabs-${this.uid}-${i}`,
       label: el.getAttribute('title') ?? '',
       image: el.getAttribute('image') ?? '',
       iconImg: ICON_MAP[el.getAttribute('icon') ?? ''] ?? null,
       el,
     }));
+    for (const tab of list) {
+      tab.el.id = `${tab.key}-panel`;
+      tab.el.setAttribute('aria-labelledby', `${tab.key}-tab`);
+    }
     this.tabs.set(list);
     if (list[0]) this.setActive(list[0].key);
   }

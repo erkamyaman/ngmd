@@ -1,5 +1,6 @@
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS, escapeHtml} from './shiki-shared.ts';
+import {getHighlighter, LANGS} from './shiki-shared.ts';
+import {escapeHtml} from './escape-html.ts';
 
 /**
  * Adjacent fenced code blocks tagged with `group="..."` merge into a tabbed
@@ -25,7 +26,7 @@ import {getHighlighter, LANGS, escapeHtml} from './shiki-shared.ts';
 let groupCounter = 0;
 
 const FENCE_WITH_GROUP_RE =
-  /^```([\w-]+)?[\t ]+([^\n]*?\bgroup="([^"]+)"[^\n]*)\n([\s\S]*?)\n```$/gm;
+  /^(`{3,})([\w-]+)?[\t ]+([^\n]*?\bgroup="([^"]+)"[^\n]*)\n([\s\S]*?)\n\1`*$/gm;
 
 interface Fence {
   start: number;
@@ -64,10 +65,10 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
         fences.push({
           start: m.index,
           end: m.index + m[0].length,
-          lang: m[1] ?? '',
-          attrs: m[2],
-          group: m[3],
-          body: m[4],
+          lang: m[2] ?? '',
+          attrs: m[3],
+          group: m[4],
+          body: m[5],
         });
       }
       if (fences.length === 0) return markdown;

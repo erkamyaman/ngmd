@@ -35,12 +35,8 @@ export function enhanceOnNavigation(
 
   const run = (attempt = 0): void => {
     if (typeof document === 'undefined' || attempt > maxAttempts) return;
-    const nodes = document.querySelectorAll<HTMLElement>(selector);
-    if (nodes.length === 0) {
-      setTimeout(() => run(attempt + 1), delayMs);
-      return;
-    }
-    nodes.forEach(enhanceEach);
+    document.querySelectorAll<HTMLElement>(selector).forEach(enhanceEach);
+    setTimeout(() => run(attempt + 1), delayMs);
   };
 
   run();

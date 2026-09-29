@@ -49,14 +49,18 @@ export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin
       const map: Record<string, PageMeta> = {};
 
       // .page.ts → route
-      const pageFiles = walkPageFiles(join(root, 'src/app/pages'), root);
-      for (const rel of pageFiles) {
-        const route = routeFromPagePath(rel);
-        if (!route) continue;
-        map[route] = {
-          editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
-          lastUpdated: gitDate(rel, root),
-        };
+      try {
+        const pageFiles = walkPageFiles(join(root, 'src/app/pages'), root);
+        for (const rel of pageFiles) {
+          const route = routeFromPagePath(rel);
+          if (!route) continue;
+          map[route] = {
+            editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
+            lastUpdated: gitDate(rel, root),
+          };
+        }
+      } catch {
+        // src/app/pages missing, skip
       }
 
       // src/content/**/*.md → route (mirrors the [...slug] catch-all)

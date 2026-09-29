@@ -10,9 +10,9 @@ import {fileURLToPath} from 'node:url';
  *
  * What gets copied (the runtime project):
  *   src/, public/, index.html, vite.config.ts, tsconfig*.json, angular.json,
- *   package.json, .gitignore, and every build plugin that vite.config.ts
- *   imports: page-meta, link-guard, sitemap, search-index, raw-md, vars,
- *   api-gen, plus their shared plugin-utils.
+ *   package.json, .gitignore, .prettierrc.json, .prettierignore, and every
+ *   build plugin that vite.config.ts imports: page-meta, link-guard, sitemap,
+ *   search-index, raw-md, vars, api-gen, plus their shared plugin-utils.
  *
  * What gets excluded (NgMd-repo-only):
  *   node_modules/, dist/, .git/, .angular/, .vite/, pnpm-lock.yaml,
@@ -48,6 +48,8 @@ const INCLUDE = [
   'angular.json',
   'package.json',
   '.gitignore',
+  '.prettierrc.json',
+  '.prettierignore',
 ];
 
 function clean(dir) {
@@ -160,25 +162,25 @@ function slimDocsContent() {
   writeFileSync(join(CONTENT, 'welcome.md'), welcome);
   console.log('  + src/content/welcome.md (placeholder)');
 
-  // Trim nav config to a single starter section.
+  // Trim header and sidebar nav to the single starter page.
   const cfg = join(TEMPLATE, 'src/ngmd.config.ts');
   if (existsSync(cfg)) {
-    let src = readFileSync(cfg, 'utf8');
-    const navStart = src.indexOf('nav: [');
-    const closeIdx = src.indexOf('  ],\n};', navStart);
-    if (navStart !== -1 && closeIdx !== -1) {
-      const before = src.slice(0, navStart);
-      const after = src.slice(closeIdx);
-      const minimalNav =
-        'nav: [\n' +
-        '    {\n' +
-        "      label: 'Getting Started',\n" +
-        "      items: [{ label: 'Welcome', href: '/welcome' }],\n" +
-        '    },\n  ],\n};';
-      src = before + minimalNav + after.replace(/^  \],\n\};/, '');
-      writeFileSync(cfg, src);
-      console.log('  ~ trimmed nav in src/ngmd.config.ts');
-    }
+    const src = readFileSync(cfg, 'utf8')
+      .replace(
+        /\n  headerNav: \[[\s\S]*?\n  \],\n/,
+        "\n  headerNav: [{label: 'Docs', href: '/welcome'}],\n",
+      )
+      .replace(
+        /\n  nav: \[[\s\S]*?\n  \],\n/,
+        '\n  nav: [\n' +
+          '    {\n' +
+          "      label: 'Getting Started',\n" +
+          "      items: [{label: 'Welcome', href: '/welcome'}],\n" +
+          '    },\n' +
+          '  ],\n',
+      );
+    writeFileSync(cfg, src);
+    console.log('  ~ trimmed header and sidebar nav in src/ngmd.config.ts');
   }
 }
 

@@ -36,6 +36,6 @@ export class NgmdVideo {
     if (ytShort) return `https://www.youtube.com/embed/${ytShort[1]}`;
     const vm = src.match(/vimeo\.com\/(\d+)/);
     if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-    return src;
+    return 'about:blank';
   });
 }

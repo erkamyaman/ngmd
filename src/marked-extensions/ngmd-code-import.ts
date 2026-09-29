@@ -1,7 +1,8 @@
 import {readFileSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {isAbsolute, relative, resolve} from 'node:path';
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS, escapeHtml} from './shiki-shared.ts';
+import {getHighlighter, LANGS} from './shiki-shared.ts';
+import {escapeHtml} from './escape-html.ts';
 import config from '../ngmd.config.ts';
 
 /**
@@ -24,12 +25,17 @@ import config from '../ngmd.config.ts';
  * self-contained HTML block — marked never sees the inner fence.
  */
 
-const FENCE_RE = /^```([\w-]+)?[\t ]+file="([^"]+)"[^\n]*\n(?:([\s\S]*?)\n)?```$/gm;
+const FENCE_RE = /^(`{3,})([\w-]+)?[\t ]+file="([^"]+)"[^\n]*\n(?:([\s\S]*?)\n)?\1`*$/gm;
 const IGNORE_LINE_RE = /^.*\/\/\s*ngmd-ignore-line\s*$/;
 
 function loadFile(spec: string): {code: string; rangeFragment: string} {
   const [path, range] = spec.split('#');
-  const full = resolve(process.cwd(), path);
+  const root = process.cwd();
+  const full = resolve(root, path);
+  const rel = relative(root, full);
+  if (rel.startsWith('..') || isAbsolute(rel)) {
+    throw new Error('path resolves outside the project root');
+  }
   let content = readFileSync(full, 'utf8');
 
   let rangeFragment = '';
@@ -62,7 +68,7 @@ function githubBlobUrl(filePath: string, rangeFragment: string): string {
 export const ngmdCodeImportExtension: MarkedExtension = {
   hooks: {
     async preprocess(markdown: string): Promise<string> {
-      if (!/^```[\w-]*[\t ]+file="/m.test(markdown)) return markdown;
+      if (!/^`{3,}[\w-]*[\t ]+file="/m.test(markdown)) return markdown;
 
       const matches: {
         start: number;
@@ -76,8 +82,8 @@ export const ngmdCodeImportExtension: MarkedExtension = {
       const re = new RegExp(FENCE_RE.source, FENCE_RE.flags);
       let m: RegExpExecArray | null;
       while ((m = re.exec(markdown)) !== null) {
-        const lang = m[1] ?? '';
-        const spec = m[2];
+        const lang = m[2] ?? '';
+        const spec = m[3];
         try {
           const {code, rangeFragment} = loadFile(spec);
           matches.push({

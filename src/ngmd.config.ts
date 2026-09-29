@@ -72,10 +72,12 @@ export interface SiteConfig {
    *  "view source" link on API symbol pages). Defaults to `main` when
    *  omitted. Set this if the repo's default branch isn't `main`. */
   githubBranch?: string;
-  /** Optional social / community links rendered in the header. */
+  /** Optional community links. `discord` adds an icon to the header and a
+   *  link to the footer; `sponsor` adds a "Sponsor" link to the footer. */
   links?: {
     twitter?: string;
     discord?: string;
+    sponsor?: string;
   };
   /**
    * Optional Algolia DocSearch credentials. When all three are set, the
@@ -90,8 +92,22 @@ export interface SiteConfig {
   };
 }
 
+export interface Sponsor {
+  /** Display name, also used as the avatar's alt text. */
+  name: string;
+  /** GitHub login. Drives the avatar and the profile link. */
+  login: string;
+}
+
 export interface NgmdConfig {
   site: SiteConfig;
+  /** Links rendered in the header next to the brand, in order. Internal
+   *  paths route in-app; `http(s)` URLs open in a new tab. Leave undefined
+   *  for no header links. */
+  headerNav?: NavItem[];
+  /** Sponsors listed by `<ngmd-sponsors>`. Leave undefined to render
+   *  nothing. */
+  sponsors?: Sponsor[];
   /** Sidebar sections, in render order. */
   nav: NavSection[];
   /**
@@ -119,6 +135,11 @@ const config: NgmdConfig = {
     url: 'https://ngmd.netlify.app',
     githubUrl: 'https://github.com/erkamyaman/ngmd',
   },
+
+  headerNav: [
+    {label: 'Docs', href: '/welcome'},
+    {label: 'Help', href: '/help/get-help'},
+  ],
 
   keywords: {
     NgMd: '/welcome',

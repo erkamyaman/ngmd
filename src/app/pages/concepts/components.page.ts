@@ -75,14 +75,18 @@ import {ToastService} from '../../services/toast/toast.service';
         <h2 id="card" class="text-2xl font-semibold tracking-tight">Card</h2>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Bordered card with title and body. Pass <code>link</code> to make the whole card a router
-          link with a hover state.
+          link with a hover state. Add <code>avatar</code> next to <code>image</code> to render the
+          image as a round 56px photo, for people cards.
         </p>
         <div class="mt-4 space-y-3">
           <ngmd-card title="Plain card">
             Body content. No link, no hover. Use for grouping prose.
           </ngmd-card>
           <ngmd-card title="Linked card" link="/concepts/markdown-routes" cta="Read more">
-            Wraps the whole card in a router link. Hover turns the border fuchsia.
+            Wraps the whole card in a router link. Hover darkens the border.
+          </ngmd-card>
+          <ngmd-card avatar image="https://github.com/erkamyaman.png" title="Erkam Yaman">
+            Maintainer. <code>avatar</code> turns the image into a round photo.
           </ngmd-card>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="cardCode" />
@@ -154,10 +158,14 @@ import {ToastService} from '../../services/toast/toast.service';
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Page header with optional gradient background. Pass
           <code>gradient</code> for the brand-accent wash (driven by the
-          <code>--accent-gradient</code> token), omit for the quiet variant.
+          <code>--accent-gradient</code> token), omit for the quiet variant. Pass
+          <code>logo</code> to show a brand image left of the title.
         </p>
         <div class="mt-4">
           <ngmd-hero title="Welcome" gradient> The hero you see on the home page. </ngmd-hero>
+          <ngmd-hero title="Angular" logo="https://cdn.simpleicons.org/angular/DD0031">
+            A page about a tool, with its logo.
+          </ngmd-hero>
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="heroCode" />
       </section>
@@ -407,6 +415,9 @@ export default class ComponentsPage {
     '<ngmd-card title="Linked card" link="/concepts/markdown-routes" cta="Read more">',
     '  Wraps the whole card in a router link.',
     '</ngmd-card>',
+    '<ngmd-card avatar image="https://github.com/erkamyaman.png" title="Erkam Yaman">',
+    '  Maintainer.',
+    '</ngmd-card>',
   ].join('\n');
 
   readonly tabsCode = [
@@ -439,6 +450,9 @@ export default class ComponentsPage {
   readonly heroCode = [
     '<ngmd-hero title="Welcome" gradient>',
     '  The hero you see on the home page.',
+    '</ngmd-hero>',
+    '<ngmd-hero title="Angular" logo="https://cdn.simpleicons.org/angular/DD0031">',
+    '  A page about a tool, with its logo.',
     '</ngmd-hero>',
   ].join('\n');
 

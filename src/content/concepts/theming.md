@@ -48,9 +48,11 @@ The token block lives under `@layer base` in `src/styles.css`. Four groups, decl
   rgba(217, 70, 239, 0.10) 50%,
   rgba(168, 85, 247, 0.10) 100%
 );
+--code-border-gradient: linear-gradient(135deg, #f0abfc, #d946ef, #a21caf);
+--line-highlight: rgba(217, 70, 239, 0.12);
 ```
 
-Six accent tokens cover everything:
+Eight accent tokens cover everything:
 
 | Token | What it's for |
 |---|---|
@@ -60,6 +62,8 @@ Six accent tokens cover everything:
 | `--accent-soft` | Tinted background for active rows in the palette, sidebar, and TOC |
 | `--accent-gradient` | Hero title fill, homepage hero band, logo stroke |
 | `--accent-gradient-soft` | Hero background wash, homepage spotlight backdrop |
+| `--code-border-gradient` | Gradient border on inline code chips in prose |
+| `--line-highlight` | Background of lines highlighted with `{1,3-5}` in a code fence |
 
 ### Geometry
 
@@ -114,12 +118,12 @@ Pick one accent and update its companion tokens in both `:root` and `.dark`. The
 }
 ```
 
-For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft` with the colours you want in the hero wash.
+For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft` with the colours you want in the hero wash, and `--code-border-gradient` and `--line-highlight` for inline code chips and highlighted code lines.
 
 Components that lean on the accent (sidebar active item, TOC active heading, command palette row, page footer hover, heading anchor hover, card icon, card CTA arrow, pill hover, hero gradient, code-preview headings, install-picker tabs) all pick the new colour up automatically.
 
-<ngmd-callout type="info" title="Inline code chips are hardcoded">
-  Body inline code uses a three-stop fuchsia gradient border (<code>#f0abfc → #d946ef → #a21caf</code>) hardcoded in <code>src/styles.css</code> under the <code>analog-markdown code:not(pre code)</code> rule. Rebranding to a non-fuchsia accent? Update those three hex values there too. They're not driven by the brand tokens.
+<ngmd-callout type="info" title="Inline code chips">
+  Body inline code takes its gradient border from <code>--code-border-gradient</code>. Inside cards and callouts it drops the border and renders as a plain muted chip, so it doesn't compete with the surrounding box.
 </ngmd-callout>
 
 ## How components consume tokens

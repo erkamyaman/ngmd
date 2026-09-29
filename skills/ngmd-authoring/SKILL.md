@@ -82,6 +82,7 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 ```
 
 - `title`, `link`, `cta` are all optional. With `link`, the whole card becomes a router link.
+- `image="<url>"` shows a small logo above the title. Add `avatar` to render it as a round 56px photo instead, for people cards: `<ngmd-card avatar image="https://github.com/<user>.png" title="Name">`.
 - Use for: card grids, feature overviews, "next steps" sections.
 
 ### `<ngmd-tabs>` and `<ngmd-tab>`
@@ -142,6 +143,7 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 ```
 
 - `title` required. `gradient` (boolean) switches the title to the brand gradient and tints the background.
+- `logo="<url>"` shows a brand image left of the title, for pages about a tool: `<ngmd-hero title="NgRx Store" logo="https://cdn.simpleicons.org/ngrx/BA2BD2" gradient>`.
 - Use for: at most one per page, at the top.
 
 ### `<ngmd-code-block>` — runtime-highlighted code with header
@@ -353,7 +355,7 @@ Heading IDs are slugified from the heading text by the TOC component. So `## Qui
 2. **Create the file:**
    - Prose: `src/content/<path>/<name>.md` with frontmatter + body. The path under `src/content/` becomes the URL. No wrapper needed; the catch-all serves it.
    - Component: `src/app/pages/<path>/<name>.page.ts` with `default export` and `@Component`. Only when the page needs a bespoke layout or composes `NgmdUi` directly.
-3. **Add the route to the nav** in `src/ngmd.config.ts > nav`. Pick the section that fits or add a new one.
+3. **Add the route to the nav** in `src/ngmd.config.ts > nav`. Pick the section that fits or add a new one. Top-level header links live in `headerNav` in the same file; only add one there when the user asks for it.
 4. **Run the dev server.** The new route should appear in the sidebar and TOC.
 5. **Run `pnpm run build`.** Link guards run only at build time, so verify before pushing.
 
@@ -363,7 +365,7 @@ When asked to edit a page:
 
 1. **Read the file first.** Match the existing voice. Do not rewrite tone unless explicitly asked.
 2. **Edit the smallest surface that solves the problem.** Refactoring is a separate ask.
-3. **If the edit changes a heading**, check whether anything links to that heading by its slug. The internal link guard catches direct links, but if you rename without updating callers the build fails.
+3. **If the edit changes a heading**, check whether anything links to that heading by its slug. The internal link guard catches direct links, but if you rename without updating callers the build fails. Repeated heading text on one page gets `-1`, `-2` suffixes in order (two `### Flags` become `#flags` and `#flags-1`), so adding or removing a duplicate shifts the ids after it.
 4. **If the edit removes a route** (deletes a `.md` file or named `.page.ts`), also remove its entry from `src/ngmd.config.ts > nav`. The sidebar will silently render a dead link otherwise.
 
 ## 9. Common mistakes to avoid

@@ -22,9 +22,12 @@ export class ThemeService {
     this.cycle();
   }
 
+  private listening = false;
+
   initFromStorage() {
     this.apply(this.mode());
-    if (this.isBrowser) {
+    if (this.isBrowser && !this.listening) {
+      this.listening = true;
       matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (this.mode() === 'auto') this.apply('auto');
       });

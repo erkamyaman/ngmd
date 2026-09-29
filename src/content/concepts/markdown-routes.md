@@ -69,6 +69,34 @@ Six values are supported, each with its own colour so meaning is consistent acro
 
 Drop the `status` field to remove the chip. The same chip shape is available inline anywhere in prose via `&lt;ngmd-badge variant="..."&gt;`. See [Badge in the components reference](/concepts/components#badge) for copy-paste examples and how to add a new variant.
 
+## Header and community links
+
+The header links next to the brand come from `headerNav` in `ngmd.config.ts`. Internal paths route in-app; `http(s)` URLs open in a new tab. Leave it out for no header links.
+
+```ts
+headerNav: [
+  {label: 'Docs', href: '/welcome'},
+  {label: 'Help', href: '/help/get-help'},
+],
+```
+
+Community links are optional too. Each one renders only when it is set:
+
+- `site.links.discord` adds a Discord icon to the header and a Discord link to the footer.
+- `site.links.sponsor` adds a "Sponsor" link to the footer.
+- `sponsors` lists `{name, login}` entries by GitHub login. `&lt;app-sponsor-list&gt;` (`src/app/components/sponsor-list.ts`) renders them as round GitHub avatars in any `.page.ts` template, with `[size]` and `[showNames]` inputs. It renders nothing when the list is empty.
+
+```ts
+site: {
+  // ...
+  links: {
+    discord: 'https://discord.gg/your-invite',
+    sponsor: 'https://github.com/sponsors/your-name',
+  },
+},
+sponsors: [{name: 'Ada Lovelace', login: 'ada'}],
+```
+
 ## Dynamic and catch-all routes
 
 Two kinds of bracket syntax in AnalogJS file routing:
@@ -115,7 +143,9 @@ YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus 
   The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code> and <code>/route#fragment</code> markdown links must resolve to real headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
 </ngmd-alert>
 
-This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404.
+This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404. In the dev server, editing a page refreshes the heading index, so a link to a heading you just added resolves without a restart.
+
+Heading ids are slugs of the heading text. When two headings on a page share the same text, the second gets `-1`, the third `-2`, and so on, like GitHub. Two `### Flags` headings become `#flags` and `#flags-1`. The TOC, the link guard and the search index all use the same ids.
 
 ## Importing code from real files
 

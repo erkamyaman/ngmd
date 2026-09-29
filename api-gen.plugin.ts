@@ -151,7 +151,9 @@ export function apiGenPlugin(): Plugin {
     handleHotUpdate({file, server}) {
       // Invalidate the project cache when any source under scope changes.
       // Cheap because `Project` re-uses TypeScript's incremental machinery.
-      if (file.endsWith('.ts') || file.endsWith('ngmd.api.ts')) {
+      const configPath = join(root, 'ngmd.api.ts');
+      if (!existsSync(configPath)) return undefined;
+      if (file === configPath || project?.getSourceFile(file)) {
         project = null;
         recordsMemo = null;
         // Clearing the memo isn't enough — Vite caches the virtual module's

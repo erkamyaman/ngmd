@@ -92,7 +92,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
         <img
           [src]="image()"
           [alt]="title() || ''"
-          class="size-8 mb-4 object-contain"
+          class="mb-4"
+          [class]="avatar() ? 'size-14 rounded-full object-cover' : 'size-8 object-contain'"
           aria-hidden="true"
           loading="lazy"
         />
@@ -107,9 +108,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
         <!-- <p> not <h3>: card titles are labels, not section headings.
              Using <h3> here would pollute the page TOC (Toc scanner picks
              up h2/h3 inside analog-markdown) with every card title. -->
-        <p class="text-base font-semibold mb-2 text-zinc-900 dark:text-zinc-100">{{ title() }}</p>
+        <p class="text-base font-semibold mt-0 mb-2 text-zinc-900 dark:text-zinc-100">
+          {{ title() }}
+        </p>
       }
-      <div class="text-sm text-zinc-600 dark:text-zinc-400 flex-1">
+      <div
+        class="text-sm text-zinc-600 dark:text-zinc-400 flex-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+      >
         <ng-content></ng-content>
       </div>
       @if (cta()) {
@@ -135,6 +140,9 @@ export class NgmdCard {
    * matters more than a generic Lucide glyph.
    */
   readonly image = input<string>('');
+  readonly avatar = input(false, {
+    transform: (v: boolean | string) => v === '' || v === true || v === 'true',
+  });
 
   protected readonly iconImg = computed(() => ICON_MAP[this.icon()] ?? null);
 }

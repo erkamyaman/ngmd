@@ -26,7 +26,7 @@ import {getHighlighter, LANGS} from './shiki-shared.ts';
 
 // Capture: lang, line ranges in {}, body. Skips fences whose info string
 // contains `group=` or `file=` so those routes own the fence.
-const FENCE_RE = /^```([\w-]+)?[\t ]+\{([0-9,\-\s]+)\}[\t ]*\n([\s\S]*?)\n```$/gm;
+const FENCE_RE = /^(`{3,})([\w-]+)?[\t ]+\{([0-9,\-\s]+)\}[\t ]*\n([\s\S]*?)\n\1`*$/gm;
 
 function parseRanges(spec: string): Set<number> {
   const lines = new Set<number>();
@@ -59,7 +59,7 @@ export const ngmdCodeHighlightExtension: MarkedExtension = {
   hooks: {
     async preprocess(markdown: string): Promise<string> {
       // Quick negative check before scanning.
-      if (!/^```[\w-]*[\t ]+\{[0-9,\-\s]+\}/m.test(markdown)) return markdown;
+      if (!/^`{3,}[\w-]*[\t ]+\{[0-9,\-\s]+\}/m.test(markdown)) return markdown;
 
       const matches: {start: number; end: number; lang: string; spec: string; body: string}[] = [];
       const re = new RegExp(FENCE_RE.source, FENCE_RE.flags);
@@ -72,9 +72,9 @@ export const ngmdCodeHighlightExtension: MarkedExtension = {
         matches.push({
           start: m.index,
           end: m.index + m[0].length,
-          lang: m[1] ?? '',
-          spec: m[2],
-          body: m[3],
+          lang: m[2] ?? '',
+          spec: m[3],
+          body: m[4],
         });
       }
       if (matches.length === 0) return markdown;

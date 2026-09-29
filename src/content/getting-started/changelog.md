@@ -6,7 +6,25 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.3.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.4.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Security fixes.** Image and video attributes in markdown are now escaped. `<ngmd-video>` only embeds YouTube and Vimeo URLs and renders `about:blank` for anything else. Code imports with `file=` can no longer read files outside the project.
+
+**Accessibility.** Opening the mobile drawer moves focus into it, and Escape or a backdrop click closes it and returns focus to the menu button. Each tab in `<ngmd-tabs>` now has its own panel, and ids stay unique when a page has several tab groups.
+
+**Unique heading ids.** Repeated headings on one page get GitHub-style `-1`, `-2` suffixes. The TOC, the link guard and the search index share the same slugger, so anchors always point at the right heading. Headings inside fenced code blocks are no longer treated as real headings, and a longer outer fence can wrap a nested one.
+
+**Link guard in dev.** A broken link no longer takes the dev server down. The guard logs it and shows the error overlay, and the page still renders; production builds still fail on it. Adding a heading to a page no longer needs a restart before links to it pass the guard, and headings with badges, links or inline HTML now resolve to the same anchor the TOC uses.
+
+**New options.** `<ngmd-hero logo="...">` shows a brand logo next to the title, and `<ngmd-card avatar image="...">` renders a round profile photo. The header links come from a new `headerNav` array in `ngmd.config.ts`. Optional `site.links.discord`, `site.links.sponsor` and `sponsors` add a Discord icon, footer links and an `<app-sponsor-list>` component; nothing renders when they are unset.
+
+**Styling.** Cards no longer pick up extra paragraph margins. Inline code inside cards and callouts uses a plain muted chip. The code border gradient and line highlight are now the `--code-border-gradient` and `--line-highlight` tokens, and callouts use the accent color, so a rebrand is a token change. "Open in ChatGPT" and "Open in Claude" show their real logos, and the prompt uses your site name.
+
+**Scaffolder.** Generated sites now get the one-item starter sidebar again instead of NgMd's full nav, and ship `.prettierrc.json` and `.prettierignore` so a parent monorepo's Prettier config doesn't reformat them.
+
+**Smaller fixes.** The copy button timer is cleared properly, the theme listener is registered once, an unknown alert severity falls back to `info`, the page-meta plugin tolerates a missing pages folder, and the API index no longer rebuilds on every `.ts` edit.
+
+## 0.3.0
 
 **Angular 22.** Upgraded to Angular 22.2 and TypeScript 6.0 with the official migrations. Components use the v22 default change detection (OnPush); every template value already came from signals, inputs or the async pipe, so behavior is unchanged. Node 22.22.3 or later is now required (Angular 22's floor), and `create-ngmd` warns when your Node is older.
 

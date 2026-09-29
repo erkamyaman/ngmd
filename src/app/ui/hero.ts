@@ -8,13 +8,18 @@ import {Component, computed, input} from '@angular/core';
       [class]="bgClass()"
       [style.background-image]="gradient() ? 'var(--accent-gradient-soft)' : null"
     >
-      <h1
-        class="text-3xl sm:text-4xl font-bold tracking-tight m-0 mb-3"
-        [class]="titleClass()"
-        [style.background-image]="gradient() ? 'var(--accent-gradient)' : null"
-      >
-        {{ title() }}
-      </h1>
+      <div class="flex items-center gap-3 mb-3">
+        @if (logo()) {
+          <img [src]="logo()" alt="" aria-hidden="true" class="size-9 sm:size-10 object-contain" />
+        }
+        <h1
+          class="text-3xl sm:text-4xl font-bold tracking-tight m-0"
+          [class]="titleClass()"
+          [style.background-image]="gradient() ? 'var(--accent-gradient)' : null"
+        >
+          {{ title() }}
+        </h1>
+      </div>
       <div
         class="text-base sm:text-lg leading-relaxed max-w-prose [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
         [class]="bodyClass()"
@@ -26,6 +31,7 @@ import {Component, computed, input} from '@angular/core';
 })
 export class NgmdHero {
   readonly title = input.required<string>();
+  readonly logo = input<string>();
   readonly gradient = input(false, {
     transform: (v: boolean | string) => v === '' || v === true || v === 'true',
   });

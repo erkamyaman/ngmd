@@ -2,6 +2,8 @@ import {execFileSync} from 'node:child_process';
 import {readdirSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 
+export {createSlugger, headingText, slugify} from './src/app/utils/heading-slug.ts';
+
 /**
  * Shared helpers for the build-time Vite plugins (`page-meta`, `sitemap`,
  * `link-guard`, `search-index`). Every plugin walks `src/content/**\/*.md`
@@ -13,8 +15,9 @@ import {join, relative} from 'node:path';
  *   - `.page.ts` under `src/app/pages/`: `home/index.page.ts` → `/home`,
  *     `index.page.ts` → `/`, dynamic / catch-all (`[...slug].page.ts`) → '' (skipped)
  *
- * The `slugify` rule matches the runtime TOC's heading-id algorithm so
- * build-time link validation and runtime fragments stay aligned.
+ * `slugify` and `createSlugger` are re-exported from the runtime TOC's
+ * heading-id module so build-time link validation and runtime fragments
+ * stay aligned.
  */
 
 /** Walk `src/app/pages/**\/*.page.ts` and return paths relative to `root`. */
@@ -87,18 +90,16 @@ export function gitDate(file: string, cwd: string, mtimeFallback: () => string =
   }
 }
 
-/**
- * Heading slug. Matches the algorithm `toc.ts` uses at runtime to
- * overwrite every rendered heading id, and the one `search-index.plugin.ts`
- * uses to anchor search snippets, so all three stay in sync.
- *
- * Lowercase, collapse every run of non-alphanumeric characters (including
- * `.`, `_`, `*`, spaces, etc.) into a single `-`, then trim outer hyphens.
- */
-export function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+export function fenceTracker(): (line: string) => boolean {
+  let open = '';
+  return (line) => {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+    if (!open) {
+      if (!m) return false;
+      open = m[1];
+      return true;
+    }
+    if (m && m[1][0] === open[0] && m[1].length >= open.length && !m[2].trim()) open = '';
+    return true;
+  };
 }

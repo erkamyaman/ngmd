@@ -4,7 +4,7 @@ import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/a
 
 /**
  * Pill-shaped link. Internal hrefs route via `RouterLink`; external (http(s))
- * open in a new tab with `target="_blank"`. Hover lifts toward the fuchsia
+ * open in a new tab with `target="_blank"`. Hover lifts toward the
  * accent and reveals a trailing arrow (internal = right, external = up-right)
  * so the click affordance reads clearly. Without those cues the pill looks
  * like an inert badge.

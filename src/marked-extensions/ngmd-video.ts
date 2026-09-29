@@ -1,4 +1,5 @@
 import type {Tokens} from 'marked';
+import {escapeHtml} from './escape-html.ts';
 
 interface NgmdVideoToken extends Tokens.Generic {
   type: 'ngmd-video';
@@ -22,7 +23,7 @@ function buildEmbedUrl(src: string): string {
   if (ytShort) return `https://www.youtube.com/embed/${ytShort[1]}`;
   const vm = src.match(/vimeo\.com\/(\d+)/);
   if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return src;
+  return 'about:blank';
 }
 
 export const ngmdVideoExtension = {
@@ -46,7 +47,7 @@ export const ngmdVideoExtension = {
   },
   renderer(token: NgmdVideoToken) {
     const url = buildEmbedUrl(token.src);
-    const title = (token.title ?? 'Video player').replace(/"/g, '&quot;');
-    return `<div class="ngmd-video" data-video-src="${url}" data-video-title="${title}"></div>`;
+    const title = escapeHtml(token.title ?? 'Video player');
+    return `<div class="ngmd-video" data-video-src="${escapeHtml(url)}" data-video-title="${title}"></div>`;
   },
 };

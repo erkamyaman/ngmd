@@ -1,4 +1,5 @@
 import type {Tokens} from 'marked';
+import {escapeHtml} from './escape-html.ts';
 
 interface NgmdImageToken extends Tokens.Generic {
   type: 'ngmd-image';
@@ -37,9 +38,9 @@ export const ngmdImageExtension = {
     };
   },
   renderer(token: NgmdImageToken) {
-    const widthAttr = token.width ? token.width.replace(/"/g, '') : '';
-    const alt = token.alt.replace(/"/g, '&quot;');
-    const caption = token.caption ? token.caption.replace(/"/g, '&quot;') : '';
-    return `<div class="ngmd-image" data-image-src="${token.src}" data-image-alt="${alt}" data-image-caption="${caption}" data-image-width="${widthAttr}"></div>`;
+    const widthAttr = escapeHtml(token.width ?? '');
+    const alt = escapeHtml(token.alt);
+    const caption = escapeHtml(token.caption ?? '');
+    return `<div class="ngmd-image" data-image-src="${escapeHtml(token.src)}" data-image-alt="${alt}" data-image-caption="${caption}" data-image-width="${widthAttr}"></div>`;
   },
 };

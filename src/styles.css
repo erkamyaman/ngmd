@@ -16,7 +16,7 @@
 }
 
 /* Hero title animation. The gradient span slowly shifts horizontally so the
- * fuchsia core appears to pulse through the text. Whole h1 fades up on
+ * accent core appears to pulse through the text. Whole h1 fades up on
  * first paint. Honours prefers-reduced-motion. */
 @keyframes ngmd-hero-fade-in {
   from {
@@ -159,6 +159,7 @@
 :is(analog-markdown, analog-markdown-route) ngmd-pill:not(:defined),
 :is(analog-markdown, analog-markdown-route) ngmd-pill-row:not(:defined),
 :is(analog-markdown, analog-markdown-route) ngmd-step:not(:defined),
+:is(analog-markdown, analog-markdown-route) ngmd-tab:not(:defined),
 :is(analog-markdown, analog-markdown-route) ngmd-tabs:not(:defined),
 :is(analog-markdown, analog-markdown-route) ngmd-video:not(:defined),
 :is(analog-markdown, analog-markdown-route) ngmd-workflow:not(:defined) {
@@ -215,6 +216,8 @@
       rgba(217, 70, 239, 0.1) 50%,
       rgba(168, 85, 247, 0.1) 100%
     );
+    --code-border-gradient: linear-gradient(135deg, #f0abfc, #d946ef, #a21caf);
+    --line-highlight: rgba(217, 70, 239, 0.12);
 
     /* Geometry */
     --radius-sm: 0.25rem;
@@ -251,6 +254,8 @@
       rgba(217, 70, 239, 0.1) 50%,
       rgba(168, 85, 247, 0.1) 100%
     );
+    --code-border-gradient: linear-gradient(135deg, #f0abfc, #d946ef, #a21caf);
+    --line-highlight: rgba(217, 70, 239, 0.12);
 
     color-scheme: dark;
   }
@@ -480,7 +485,7 @@
   .ngmd-prose code:not(pre code) {
     background:
       linear-gradient(var(--bg), var(--bg)) padding-box,
-      linear-gradient(135deg, #f0abfc, #d946ef, #a21caf) border-box;
+      var(--code-border-gradient) border-box;
     color: var(--fg);
     padding: 0.15em 0.45em;
     border-radius: 0.3rem;
@@ -499,6 +504,13 @@
   .dark analog-markdown-route code:not(pre code),
   .dark .ngmd-prose code:not(pre code) {
     border-width: 1px;
+  }
+
+  :is(analog-markdown, analog-markdown-route, .ngmd-prose)
+    :is(ngmd-card, ngmd-callout)
+    code:not(pre code) {
+    background: color-mix(in srgb, var(--fg) 7%, transparent);
+    border-color: transparent;
   }
 
   analog-markdown pre,
@@ -726,7 +738,7 @@
   .shiki .line.highlighted {
     display: inline-block;
     width: 100%;
-    background-color: rgba(217, 70, 239, 0.12);
+    background-color: var(--line-highlight);
     box-shadow: inset 2px 0 var(--accent);
   }
 

@@ -51,6 +51,8 @@ See the [NgMd repo](https://github.com/erkamyaman/ngmd) for the feature list.
 3. Drop more `.md` files in `src/app/pages/` or `src/content/`.
 4. Build with `pnpm run build`, deploy `dist/` to any static host.
 
+Inside a monorepo, keep the scaffolded `.prettierrc.json` and `.prettierignore` in the NgMd folder. Otherwise the root Prettier config reformats NgMd's files (bracket spacing, for example) and they drift from upstream.
+
 ## How it works
 
 `index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand, `index.html` title) so the new project matches the name you passed.

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   computed,
+  DestroyRef,
   ElementRef,
   inject,
   signal,
@@ -277,7 +278,13 @@ export default class Home implements AfterViewInit {
   readonly checkIcon = LucideCheck;
   readonly githubUrl = siteConfig.site.githubUrl;
 
+  private copyTimer: ReturnType<typeof setTimeout> | undefined;
+
   readonly copied = signal('');
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => clearTimeout(this.copyTimer));
+  }
 
   readonly installCommands = [
     {
@@ -305,7 +312,8 @@ export default class Home implements AfterViewInit {
       return;
     }
     this.copied.set(cmd);
-    setTimeout(() => this.copied.set(''), 1500);
+    clearTimeout(this.copyTimer);
+    this.copyTimer = setTimeout(() => this.copied.set(''), 1500);
   }
 
   ngAfterViewInit(): void {
