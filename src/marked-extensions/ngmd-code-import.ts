@@ -1,4 +1,4 @@
-import {readFileSync} from 'node:fs';
+import {readFileSync, realpathSync} from 'node:fs';
 import {isAbsolute, relative, resolve} from 'node:path';
 import type {MarkedExtension} from 'marked';
 import {getHighlighter, LANGS} from './shiki-shared.ts';
@@ -30,8 +30,8 @@ const IGNORE_LINE_RE = /^.*\/\/\s*ngmd-ignore-line\s*$/;
 
 function loadFile(spec: string): {code: string; rangeFragment: string} {
   const [path, range] = spec.split('#');
-  const root = process.cwd();
-  const full = resolve(root, path);
+  const root = realpathSync(process.cwd());
+  const full = realpathSync(resolve(root, path));
   const rel = relative(root, full);
   if (rel.startsWith('..') || isAbsolute(rel)) {
     throw new Error('path resolves outside the project root');

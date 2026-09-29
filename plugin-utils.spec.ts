@@ -16,6 +16,11 @@ describe('fenceTracker', () => {
     expect(outsideFences(md.join('\n'))).toEqual(['## Out']);
   });
 
+  it('does not open a backtick fence whose info string has a backtick', () => {
+    const md = ['``` not `a fence`', '## Heading', 'after'];
+    expect(outsideFences(md.join('\n'))).toEqual(md);
+  });
+
   it('does not close on a fence line with an info string', () => {
     const md = ['```', '```ts', '## Still inside', '```', '## Out'];
     expect(outsideFences(md.join('\n'))).toEqual(['## Out']);

@@ -6,7 +6,13 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.4.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.4.1 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Code imports follow symlinks safely.** `file=` imports resolve the real path first, so a symlink inside the project can no longer pull in a file from outside it.
+
+**Fence detection follows CommonMark.** A line that starts with backticks but has a backtick in its info string no longer opens a code block, so the headings after it stay visible to the link guard and the search index.
+
+## 0.4.0
 
 **Security fixes.** Image and video attributes in markdown are now escaped. `<ngmd-video>` only embeds YouTube and Vimeo URLs and renders `about:blank` for anything else. Code imports with `file=` can no longer read files outside the project.
 

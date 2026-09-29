@@ -95,7 +95,7 @@ export function fenceTracker(): (line: string) => boolean {
   return (line) => {
     const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
     if (!open) {
-      if (!m) return false;
+      if (!m || (m[1][0] === '`' && m[2].includes('`'))) return false;
       open = m[1];
       return true;
     }
