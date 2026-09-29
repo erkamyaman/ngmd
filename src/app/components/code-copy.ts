@@ -34,22 +34,16 @@ export class CodeCopy implements AfterViewInit {
   private enhance(pre: HTMLElement): void {
     pre.setAttribute('data-copy-enhanced', 'true');
     pre.style.position = 'relative';
+    pre.classList.add('group/code');
 
     const button = document.createElement('button');
     button.type = 'button';
     button.setAttribute('aria-label', 'Copy code');
     button.className =
-      'absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-200/80 text-zinc-600 hover:bg-zinc-300 hover:text-zinc-900 dark:bg-zinc-800/80 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white opacity-0 transition-opacity focus:opacity-100';
-    button.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-      </svg>
-    `;
+      'absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-200/80 text-zinc-600 hover:bg-zinc-300 hover:text-zinc-900 dark:bg-zinc-800/80 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white opacity-0 transition-opacity group-hover/code:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100';
+    button.innerHTML = COPY_ICON;
 
-    pre.addEventListener('mouseenter', () => (button.style.opacity = '1'));
-    pre.addEventListener('mouseleave', () => (button.style.opacity = '0'));
-
+    let resetTimer: ReturnType<typeof setTimeout> | undefined;
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
       const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
@@ -58,21 +52,25 @@ export class CodeCopy implements AfterViewInit {
         this.toast.error('Could not copy code.');
         return;
       }
-      button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      `;
-      setTimeout(() => {
-        button.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-          </svg>
-        `;
-      }, 1500);
+      this.toast.success('Code copied to clipboard.');
+      button.innerHTML = CHECK_ICON;
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => (button.innerHTML = COPY_ICON), 1500);
     });
 
     pre.appendChild(button);
   }
 }
+
+const COPY_ICON = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+  </svg>
+`;
+
+const CHECK_ICON = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+`;

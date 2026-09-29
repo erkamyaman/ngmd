@@ -26,7 +26,9 @@ export class NgmdBadge {
    * runtime. Fall back to `new` for any unknown value so the chip always
    * renders rather than collapsing to an unstyled span.
    */
-  protected readonly variantClass = computed(
-    () => BADGE_VARIANTS[this.variant()] ?? BADGE_VARIANTS.new,
+  protected readonly variantClass = computed(() =>
+    Object.hasOwn(BADGE_VARIANTS, this.variant())
+      ? BADGE_VARIANTS[this.variant()]
+      : BADGE_VARIANTS.new,
   );
 }

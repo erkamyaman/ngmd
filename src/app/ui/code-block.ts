@@ -22,7 +22,7 @@ import {writeToClipboard} from '../utils/clipboard';
             type="button"
             (click)="copy()"
             [attr.aria-label]="copied() ? 'Copied' : 'Copy code'"
-            class="inline-flex items-center justify-center size-6 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+            class="inline-flex items-center justify-center size-6 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 opacity-0 group-hover:opacity-100 focus:opacity-100 pointer-coarse:opacity-100 transition-opacity"
           >
             @if (copied()) {
               <svg
@@ -61,7 +61,7 @@ import {writeToClipboard} from '../utils/clipboard';
           type="button"
           (click)="copy()"
           [attr.aria-label]="copied() ? 'Copied' : 'Copy code'"
-          class="absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10"
+          class="absolute top-2 right-2 inline-flex items-center justify-center size-7 rounded-md bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white opacity-0 group-hover:opacity-100 focus:opacity-100 pointer-coarse:opacity-100 transition-opacity z-10"
         >
           @if (copied()) {
             <svg
@@ -141,7 +141,7 @@ export class NgmdCodeBlock {
         if (cancelled) return;
         const html = await codeToHtml(code, {
           lang: lang || 'text',
-          themes: {light: 'github-light', dark: 'github-dark'},
+          themes: {light: 'github-light-default', dark: 'github-dark-default'},
           defaultColor: false,
         });
         if (!cancelled) {

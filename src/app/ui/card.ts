@@ -1,6 +1,6 @@
-import {Component, computed, input} from '@angular/core';
+import {Component, computed, inject, input} from '@angular/core';
 import {NgTemplateOutlet} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {
   LucideDynamicIcon,
   type LucideIcon,
@@ -73,7 +73,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
         </a>
       } @else {
         <a
-          [routerLink]="link()"
+          [routerLink]="route()"
           class="h-full flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5 text-inherit no-underline transition-colors hover:border-zinc-400 dark:hover:border-zinc-600"
         >
           <ng-container *ngTemplateOutlet="body"></ng-container>
@@ -91,7 +91,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
       @if (image()) {
         <img
           [src]="image()"
-          [alt]="title() || ''"
+          alt=""
           class="mb-4"
           [class]="avatar() ? 'size-14 rounded-full object-cover' : 'size-8 object-contain'"
           aria-hidden="true"
@@ -118,14 +118,15 @@ const ICON_MAP: Record<string, LucideIcon> = {
         <ng-content></ng-content>
       </div>
       @if (cta()) {
-        <span class="mt-3 inline-block text-sm font-medium text-[color:var(--accent)]"
-          >{{ cta() }} →</span
+        <span class="mt-3 inline-block text-sm font-medium text-[color:var(--accent-strong)]"
+          >{{ cta() }} <span aria-hidden="true">→</span></span
         >
       }
     </ng-template>
   `,
 })
 export class NgmdCard {
+  private readonly router = inject(Router);
   readonly title = input<string>('');
   readonly link = input<string>('');
   readonly cta = input<string>('');
@@ -133,6 +134,7 @@ export class NgmdCard {
   // External = anything with a scheme (http, https, mailto, tel). RouterLink
   // would interpret these as relative routes and fail to navigate.
   readonly isExternal = computed(() => /^(https?|mailto|tel):/.test(this.link()));
+  protected readonly route = computed(() => this.router.parseUrl(this.link()));
   readonly icon = input<string>('');
   /**
    * Optional image URL (brand logo etc.). Takes priority over `icon` when

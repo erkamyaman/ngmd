@@ -1,23 +1,27 @@
-import {create, insertMultiple, search as oramaSearch, type AnyOrama} from '@orama/orama';
-import {searchIndex} from 'virtual:ngmd/search-index';
-import {apiIndex} from 'virtual:ngmd/api-index';
+import type {AnyOrama, search as oramaSearch} from '@orama/orama';
 import type {IndexDoc, SearchHit, SearchHitKind, SearchProvider} from '../../../types/search';
-import type {SymbolRecord} from '../../../types/api';
+import {symbolUrl, type SymbolRecord} from '../../../types/api';
+import {escapeHtml} from './escape-html';
 
 /**
- * Default search backend. Builds an in-memory Orama index once on init,
- * queries it on every search. Index source is the build-time JSON emitted
+ * Default search backend. Builds an in-memory Orama index on the first
+ * query (Orama and the index are lazy chunks), queries it on every search. Index source is the build-time JSON emitted
  * by `search-index.plugin.ts` under `virtual:ngmd/search-index`.
  *
  * Result shape mirrors Algolia's hierarchical (page → section → snippet)
  * model so the same UI works against either backend.
  */
 export class OramaSearchProvider implements SearchProvider {
-  private dbPromise: Promise<AnyOrama> | null = null;
+  private dbPromise: Promise<{db: AnyOrama; search: typeof oramaSearch}> | null = null;
 
-  private async getDb(): Promise<AnyOrama> {
+  private getDb() {
     if (this.dbPromise) return this.dbPromise;
     this.dbPromise = (async () => {
+      const [{create, insertMultiple, search}, {searchIndex}, {apiIndex}] = await Promise.all([
+        import('@orama/orama'),
+        import('virtual:ngmd/search-index'),
+        import('virtual:ngmd/api-index'),
+      ]);
       const db = create({
         schema: {
           id: 'string',
@@ -42,16 +46,17 @@ export class OramaSearchProvider implements SearchProvider {
       if (allDocs.length) {
         await insertMultiple(db, allDocs as unknown as Array<Record<string, string>>, 50);
       }
-      return db;
+      return {db, search};
     })();
+    this.dbPromise.catch(() => (this.dbPromise = null));
     return this.dbPromise;
   }
 
   async search(query: string): Promise<SearchHit[]> {
     const trimmed = query.trim();
     if (!trimmed) return [];
-    const db = await this.getDb();
-    const result = await oramaSearch(db, {
+    const {db, search} = await this.getDb();
+    const result = await search(db, {
       term: trimmed,
       properties: ['pageTitle', 'heading', 'body'],
       // Heading > title > body so a query that matches a heading ranks above
@@ -113,20 +118,13 @@ function pickLabel(doc: IndexDoc): string {
  * shape so the palette UI can render either backend identically.
  */
 function highlight(text: string, query: string): string {
-  if (!query) return escapeHtml(text);
   const tokens = query.split(/\s+/).filter(Boolean).map(escapeRegex);
   if (!tokens.length) return escapeHtml(text);
-  const safe = escapeHtml(text);
   const re = new RegExp(`(${tokens.join('|')})`, 'gi');
-  return safe.replace(re, '<mark>$1</mark>');
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  return text
+    .split(re)
+    .map((part, i) => (i % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)))
+    .join('');
 }
 
 function escapeRegex(s: string): string {
@@ -141,13 +139,10 @@ function escapeRegex(s: string): string {
  * JSDoc description so prose queries can pull symbols in too.
  */
 function symbolToIndexDoc(sym: SymbolRecord): IndexDoc {
-  // Encode both segments consistently so reserved characters in a symbol
-  // name (or raw slashes in a group) never leak into the id or url.
-  const encGroup = encodeURIComponent(sym.group);
-  const encName = encodeURIComponent(sym.name);
+  const url = symbolUrl(sym);
   return {
-    id: `symbol:${encGroup}/${encName}`,
-    url: `/api/${encGroup}/${encName}`,
+    id: `symbol:${url}`,
+    url,
     anchor: '',
     kind: 'symbol',
     pageTitle: sym.name,

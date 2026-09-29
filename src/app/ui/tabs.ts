@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  contentChildren,
   DestroyRef,
   ElementRef,
   inject,
@@ -83,7 +84,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 @Component({
   selector: 'ngmd-tab',
-  host: {role: 'tabpanel', '[hidden]': '!active()'},
+  host: {
+    role: 'tabpanel',
+    tabindex: '0',
+    class:
+      'block focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[color:var(--accent)]',
+    '[hidden]': '!active()',
+  },
   template: `
     <div class="p-5 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0" [hidden]="!active()">
       <ng-content></ng-content>
@@ -95,13 +102,11 @@ export class NgmdTab {
   readonly icon = input<string>('');
   readonly image = input<string>('');
   readonly active = signal(false);
+  readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   constructor() {
     // Parent (`<ngmd-tabs>`) toggles `data-active` on each child host.
-    // Server-side falls back to "inactive" — the parent will hydrate state
-    // when the bundle runs on the client.
-    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-    const stop = watchHostAttribute(host, 'data-active', (value) =>
+    const stop = watchHostAttribute(this.host, 'data-active', (value) =>
       this.active.set(value === 'true'),
     );
     inject(DestroyRef).onDestroy(stop);
@@ -127,7 +132,7 @@ export class NgmdTab {
             [tabindex]="active() === tab.key ? 0 : -1"
             (click)="setActive(tab.key)"
             (keydown)="onKey($event, i)"
-            class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100 bg-transparent"
+            class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px cursor-pointer transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent-strong)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 dark:[&[aria-selected=false]]:text-zinc-400 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100 bg-transparent"
           >
             @if (tab.image) {
               <img
@@ -153,6 +158,7 @@ export class NgmdTab {
 export class NgmdTabs implements AfterViewInit {
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly uid = ++idCounter;
+  private readonly panels = contentChildren(NgmdTab, {descendants: true});
   readonly tabs = signal<
     {
       key: string;
@@ -165,13 +171,10 @@ export class NgmdTabs implements AfterViewInit {
   readonly active = signal('');
 
   ngAfterViewInit(): void {
-    if (typeof document === 'undefined') return;
-    // `:scope ngmd-tab` because the `<ngmd-tab>` children land in the
-    // light DOM of `<ngmd-tabs>` — they project through `<ng-content>` but
-    // remain queryable via querySelectorAll on the host element.
-    const els = Array.from(
-      this.host.nativeElement.querySelectorAll<HTMLElement>(':scope ngmd-tab'),
-    );
+    // `<ngmd-tab>` children land in the light DOM of `<ngmd-tabs>` — they
+    // project through `<ng-content>` but remain queryable via
+    // querySelectorAll on the host element.
+    const els = Array.from(this.host.nativeElement.querySelectorAll<HTMLElement>('ngmd-tab'));
     const list = els.map((el, i) => ({
       key: `ngmd-tabs-${this.uid}-${i}`,
       label: el.getAttribute('title') ?? '',
@@ -191,6 +194,9 @@ export class NgmdTabs implements AfterViewInit {
     this.active.set(key);
     for (const tab of this.tabs()) {
       tab.el.setAttribute('data-active', tab.key === key ? 'true' : 'false');
+    }
+    for (const panel of this.panels()) {
+      panel.active.set(panel.host.getAttribute('data-active') === 'true');
     }
   }
 

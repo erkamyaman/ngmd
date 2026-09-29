@@ -203,9 +203,10 @@ import {ToastService} from '../../services/toast/toast.service';
         </p>
         <div class="mt-4">
           <ngmd-image
-            src="https://angular.dev/assets/images/ng-image.jpg"
-            alt="Angular open-graph banner"
-            caption="Angular open-graph banner pulled from angular.dev."
+            src="/images/cats.jpg"
+            alt="Two tabby kittens, Angular and Excel, looking up, one sitting in a flower pot"
+            caption="Angular and Excel."
+            width="360"
           />
         </div>
         <ngmd-code-block header="page.ts" language="html" [code]="imageCode" />
@@ -353,7 +354,7 @@ import {ToastService} from '../../services/toast/toast.service';
               <a
                 routerLink="/concepts/markdown-routes"
                 fragment="sidebar-status-badges"
-                class="text-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
+                class="text-[color:var(--accent-strong)] hover:underline"
                 >sidebar status badges</a
               >
               for the full list and colour mapping.
@@ -475,9 +476,10 @@ export default class ComponentsPage {
 
   readonly imageCode = [
     '<ngmd-image',
-    '  src="/screenshot.png"',
-    '  alt="Sidebar accordion"',
-    '  caption="The sidebar reads from ngmd.config.ts."',
+    '  src="/images/cats.jpg"',
+    '  alt="Two tabby kittens, Angular and Excel, looking up, one sitting in a flower pot"',
+    '  caption="Angular and Excel."',
+    '  width="360"',
     '/>',
   ].join('\n');
 

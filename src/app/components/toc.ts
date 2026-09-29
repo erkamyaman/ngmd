@@ -27,9 +27,9 @@ interface Heading {
           @for (h of headings(); track h.id) {
             <li [style.padding-left.rem]="(h.level - 2) * 0.75">
               <a
-                [href]="'#' + h.id"
+                [href]="path() + '#' + h.id"
                 (click)="scrollToHeading(h.id, $event)"
-                class="block rounded px-2 -mx-2 py-0.5 text-zinc-500 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-none"
+                class="block rounded px-2 -mx-2 py-0.5 text-zinc-500 dark:text-zinc-400 hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] focus:outline-none focus-visible:outline-none"
                 [class]="
                   isActive(h.id)
                     ? 'bg-[color:var(--accent-soft)]! text-[color:var(--accent-strong)]! font-medium'
@@ -52,21 +52,31 @@ export class Toc implements AfterViewInit {
   readonly showActive = input<boolean>(true);
   readonly headings = signal<Heading[]>([]);
   readonly active = signal<string>('');
+  readonly path = signal('');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       const id = this.active();
       if (!this.showActive() || !id) return;
-      this.revealActive(id);
+      const frame = requestAnimationFrame(() => this.revealActive(id));
+      onCleanup(() => cancelAnimationFrame(frame));
     });
   }
 
-  private revealActive(id: string): void {
-    const link = this.host.nativeElement.querySelector<HTMLElement>(`a[href="#${CSS.escape(id)}"]`);
+  private scrollBox(): HTMLElement | null {
     let box = this.host.nativeElement.parentElement;
-    while (box && box.scrollHeight <= box.clientHeight) box = box.parentElement;
-    if (!link || !box || box === document.documentElement || box === document.body) return;
+    while (box && box !== document.body && !/auto|scroll/.test(getComputedStyle(box).overflowY)) {
+      box = box.parentElement;
+    }
+    return box === document.body ? null : box;
+  }
+
+  private revealActive(id: string): void {
+    const index = this.headings().findIndex((h) => h.id === id);
+    const link = this.host.nativeElement.querySelectorAll('a')[index];
+    const box = this.scrollBox();
+    if (!link || !box) return;
     const linkRect = link.getBoundingClientRect();
     const boxRect = box.getBoundingClientRect();
     const margin = 48;
@@ -76,7 +86,8 @@ export class Toc implements AfterViewInit {
       box.scrollTop += linkRect.bottom - (boxRect.bottom - margin);
     }
   }
-  private observer?: IntersectionObserver;
+  private nodes: HTMLElement[] = [];
+  private pinned: string | null = null;
   private contentObserver?: MutationObserver;
   private retryTimer?: ReturnType<typeof setTimeout>;
 
@@ -88,45 +99,37 @@ export class Toc implements AfterViewInit {
     this.scanWithRetry();
     onNavigation(this.router, this.destroyRef, () => {
       this.headings.set([]);
+      this.nodes = [];
+      this.active.set('');
+      this.scrollBox()?.scrollTo({top: 0});
       this.scanWithRetry();
     });
 
-    // Bottom-of-page guard. Registered once here; reads the live
-    // `headings` signal so each scroll tick picks up the current last
-    // heading without re-binding. Previously this lived inside
-    // `setupObserver` which fires on every navigation, leaking a stale
-    // handler each time.
     if (typeof window !== 'undefined') {
-      const onScroll = () => {
-        const list = this.headings();
-        if (list.length === 0) return;
-        const scrolled = window.innerHeight + window.scrollY;
-        const fullHeight = document.documentElement.scrollHeight;
-        if (scrolled >= fullHeight - 100) {
-          this.active.set(list[list.length - 1].id);
-        }
-      };
+      const onScroll = () => this.updateActive();
+      const unpin = () => (this.pinned = null);
+      const inputs = ['wheel', 'touchstart', 'keydown', 'mousedown'] as const;
       window.addEventListener('scroll', onScroll, {passive: true});
-      this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
+      inputs.forEach((type) => window.addEventListener(type, unpin, {passive: true}));
+      this.destroyRef.onDestroy(() => {
+        window.removeEventListener('scroll', onScroll);
+        inputs.forEach((type) => window.removeEventListener(type, unpin));
+      });
     }
 
     this.destroyRef.onDestroy(() => {
       clearTimeout(this.retryTimer);
       this.contentObserver?.disconnect();
-      this.observer?.disconnect();
     });
   }
 
   scrollToHeading(id: string, event: MouseEvent): void {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({behavior: 'smooth', block: 'start'});
-      // Force-activate the clicked id. The IntersectionObserver uses a
-      // `rootMargin: '0px 0px -70% 0px'` so only the top 30% of viewport
-      // counts as "in view"; the LAST heading can't reach that region if
-      // there isn't enough content below it, leaving scroll-spy stuck on
-      // an earlier heading. Setting active directly here bypasses that.
+      this.pinned = id;
       this.active.set(id);
       // index.html has <base href="/">, so a relative `#frag` resolves to
       // `/#frag` and strips the path. Pass the full path explicitly.
@@ -193,26 +196,32 @@ export class Toc implements AfterViewInit {
       nodes.push(node);
       result.push({id: node.id, text, level});
     }
+    this.path.set(`${location.pathname}${location.search}`);
     this.headings.set(result);
-    this.setupObserver(nodes);
+    this.nodes = nodes;
+    const hash = location.hash.slice(1);
+    this.pinned = !hash ? nodes[0].id : nodes.some((node) => node.id === hash) ? hash : null;
+    this.updateActive();
   }
 
-  private setupObserver(nodes: HTMLElement[]): void {
-    this.observer?.disconnect();
-    if (nodes.length === 0) return;
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            this.active.set(entry.target.id);
-            break;
-          }
-        }
-      },
-      {rootMargin: '0px 0px -70% 0px', threshold: 0},
-    );
-    nodes.forEach((node) => this.observer!.observe(node));
-    // The bottom-of-page scroll guard lives in `ngAfterViewInit` so it
-    // registers exactly once across the component's lifetime.
+  private updateActive(): void {
+    const nodes = this.nodes;
+    if (!this.showActive() || nodes.length === 0) return;
+    if (this.pinned) {
+      this.active.set(this.pinned);
+      return;
+    }
+    const scrolled = window.innerHeight + window.scrollY;
+    if (window.scrollY > 0 && scrolled >= document.documentElement.scrollHeight - 100) {
+      this.active.set(nodes[nodes.length - 1].id);
+      return;
+    }
+    const line = window.innerHeight * 0.3;
+    let id = nodes[0].id;
+    for (const node of nodes) {
+      if (node.getBoundingClientRect().top > line) break;
+      id = node.id;
+    }
+    this.active.set(id);
   }
 }

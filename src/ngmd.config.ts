@@ -72,6 +72,10 @@ export interface SiteConfig {
    *  "view source" link on API symbol pages). Defaults to `main` when
    *  omitted. Set this if the repo's default branch isn't `main`. */
   githubBranch?: string;
+  /** Path from the repository root to this site, for sites inside a
+   *  monorepo (e.g. `apps/docs`). Prefixes the file paths in GitHub edit and
+   *  source links. Omit when the site is the repository root. */
+  githubDir?: string;
   /** Optional community links. `discord` adds an icon to the header and a
    *  link to the footer; `sponsor` adds a "Sponsor" link to the footer. */
   links?: {
@@ -105,7 +109,7 @@ export interface NgmdConfig {
    *  paths route in-app; `http(s)` URLs open in a new tab. Leave undefined
    *  for no header links. */
   headerNav?: NavItem[];
-  /** Sponsors listed by `<ngmd-sponsors>`. Leave undefined to render
+  /** Sponsors listed by `<app-sponsor-list>`. Leave undefined to render
    *  nothing. */
   sponsors?: Sponsor[];
   /** Sidebar sections, in render order. */
@@ -202,8 +206,8 @@ const config: NgmdConfig = {
   // The live deployment renders one version; clicking a non-self entry
   // opens its deployment in a new tab.
   versions: {
-    self: 'v0.3.0',
-    list: [{label: 'v0.4.3', url: 'https://ngmd.netlify.app', status: 'current'}],
+    self: 'v0.5.0',
+    list: [{label: 'v0.5.0', url: 'https://ngmd.netlify.app', status: 'current'}],
   },
 };
 

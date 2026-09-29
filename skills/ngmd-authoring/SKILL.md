@@ -35,7 +35,7 @@ NgMd supports two patterns. Pick one per page.
 
 ## 2. Authoring components (the `NgmdUi` set)
 
-All seventeen components are barrelled from `src/app/ui/index.ts`. The catch-all (`src/app/pages/[...slug].page.ts`) already spreads `...NgmdUi` into its imports, so every component works inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
+All seventeen components are barrelled from `src/app/ui/index.ts`. Sixteen of them are registered as Custom Elements (`src/app/register-elements.ts`), so they work inline in any `.md` file rendered by the catch-all (which is every prose route). For a named component page, import the bundle yourself:
 
 ```ts
 import {Component} from '@angular/core';
@@ -51,7 +51,7 @@ export default class MyPage {}
 
 For lighter pages, import only what you use (`import { NgmdCallout } from '../ui';`).
 
-In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered components inline as raw HTML. (Code-block isn't one of them. Use fenced ` ``` ` instead for code in prose.) The catch-all spreads `NgmdUi` into its imports, so analog-markdown compiles every NgmdUi selector during runtime markdown rendering. `<ngmd-video>` and `<ngmd-image>` are additionally wired as marked extensions (build-time HTML rewrites), so they work even outside the catch-all (e.g. in any custom `.page.ts` route).
+In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered components inline as raw HTML. (Code-block isn't one of them. Use fenced ` ``` ` instead for code in prose.) Angular does not compile selectors inside the `innerHTML` that `<analog-markdown>` renders; the browser upgrades the Custom Elements instead. `<ngmd-video>` and `<ngmd-image>` are additionally wired as runtime marked extensions (`src/marked-extensions/runtime.ts`), so they work in markdown rendered anywhere, including an `<analog-markdown>` inside a custom `.page.ts` route.
 
 ### `<ngmd-callout>` — bordered notice with coloured side stripe
 
@@ -194,8 +194,8 @@ In a **prose page** (`.md`), drop any of the sixteen Custom-Element-registered c
 </ngmd-accordion>
 ```
 
-- Backed by native `<details>` element. Keyboard nav and a11y for free.
-- `title` required on each item. `open` (boolean) starts that item expanded.
+- Each item is a `<button>` with `aria-expanded` and `aria-controls` over a labelled region.
+- `title` required on each item. `open` (boolean) starts that item expanded. `image="<url>"` shows a small logo before the title.
 - Use for: FAQ pages, "show details" sections, anything disclosable.
 
 ### `<ngmd-card-grid>` — n-up card layout
@@ -250,14 +250,14 @@ NgMd builds on *AnalogJS and *Angular.
 Import code from a real file so doc examples stay in sync with source:
 
 ````md
-```ts file="src/app/pages/welcome.page.ts"
+```ts file="src/app/pages/index.page.ts"
 
 ```
 ````
 
 - GitHub-style line ranges work: `file="src/app/foo.ts#L1-L5"`.
 - Lines tagged `// ngmd-ignore-line` in the source file are stripped from the imported snippet, so you can hide setup boilerplate while keeping the source runnable.
-- The fence body stays empty; the extension fills it from disk.
+- The fence body stays empty; the extension fills it from disk. A body is ignored: the whole file (or range) replaces it, so never put a hand-written snippet under a `file=` fence.
 
 ### `group="..."` code tabs
 
@@ -310,9 +310,9 @@ description: One-line summary for downstream consumers.
 ---
 ```
 
-- `title` is consumed by `NgmdTitleStrategy` to set `<title>`. Without it, the route falls back to a generic title.
+- `title` is consumed by `NgmdTitleStrategy` to set `<title>` as `<site name> | <title>`. Without it, the route falls back to its nav label, then to the prettified last URL segment.
 - `description` is a recommended convention. It is not auto-injected into the page yet (the `<meta name="description">` tag in `index.html` is the static site-wide fallback); pull it with `injectContent<{ description: string }>(...)` if a custom `.page.ts` needs it.
-- `noIndex: true` (optional) excludes the page from the Cmd+K search index, which builds from each page's title, headings, and body. Use for stub pages, scaffold-only pages, or anything you don't want surfacing in search. Default is to index.
+- `noIndex: true` (optional) excludes the page from the Cmd+K search index (built from each page's title, headings, and body) and from `sitemap.xml`. Use for stub pages, scaffold-only pages, or anything you don't want surfacing in search. Default is to index.
 - Add custom keys (`order: 1`, `tags: ['intro']`) and read them as a typed shape: `injectContent<{ title: string; order: number }>(...)`.
 
 Sidebar lifecycle chips (`new`, `updated`, `beta`, etc.) live on the nav item in `ngmd.config.ts`, not in frontmatter. Set `status: 'beta'` on the relevant `NavItem` to render a coloured pill next to the sidebar label. Matches adev's `NavigationItem.status` pattern.
@@ -345,9 +345,11 @@ When in doubt, read the surrounding paragraphs and mirror their cadence. Do not 
 ## 6. Internal vs external links
 
 - **Internal**: write as standard markdown `[label](/route)` or `[label](/route#fragment)`. The internal link guard verifies the target resolves and the fragment matches a real heading. A bad link **fails the build** rather than shipping a 404.
-- **External**: write as standard markdown `[label](https://example.com)`. The external link guard auto-adds `target="_blank" rel="noopener noreferrer"` at build time. If you write external links as raw HTML, you must include `target="_blank"` yourself or the build fails.
+- **External**: write as standard markdown `[label](https://example.com)`. `<app-external-links>` adds `target="_blank" rel="noopener noreferrer"` to rendered external links. If you write external links as raw HTML, you must include `target="_blank"` yourself or the build fails.
 
-Heading IDs are slugified from the heading text by the TOC component. So `## Quick start` produces `id="quick-start"`. Match that slug in any link fragment.
+In the dev server, a broken internal link is a terminal warning and the page still renders; only production builds fail on it.
+
+Heading IDs are slugified from the heading text by the shared slugger in `src/app/utils/heading-slug.ts`, which the TOC, link guard and search index all use. So `## Quick start` produces `id="quick-start"`. Match that slug in any link fragment.
 
 ## 7. Add a new page (checklist)
 
@@ -357,7 +359,7 @@ Heading IDs are slugified from the heading text by the TOC component. So `## Qui
    - Component: `src/app/pages/<path>/<name>.page.ts` with `default export` and `@Component`. Only when the page needs a bespoke layout or composes `NgmdUi` directly.
 3. **Add the route to the nav** in `src/ngmd.config.ts > nav`. Pick the section that fits or add a new one. Top-level header links live in `headerNav` in the same file; only add one there when the user asks for it.
 4. **Run the dev server.** The new route should appear in the sidebar and TOC.
-5. **Run `pnpm run build`.** Link guards run only at build time, so verify before pushing.
+5. **Run `pnpm run build`.** Only the build fails on a broken link (dev just warns), so verify before pushing.
 
 ## 8. Edit an existing page
 
@@ -373,7 +375,7 @@ When asked to edit a page:
 - **Inventing components.** The seventeen components listed in section 2 are the complete set. Do not write `<ngmd-button>`, `<ngmd-dropdown>`, etc. If you need a new affordance, the user should add it as a real component first.
 - **Hardcoding URLs.** Use the `keywords` map in `ngmd.config.ts` for repeated external links so the URL changes in one place.
 - **Skipping frontmatter.** A `.md` file without `title:` will render but the page `<title>` and command palette entry will be wrong.
-- **Mixing prose and component patterns thoughtlessly.** Embedding a single `<ngmd-callout>` inside an otherwise prose-only page works (because most component pages import `NgmdUi` somewhere), but if you need three or more components, switch the whole page to the component pattern.
+- **Reaching for `.page.ts` too early.** Any number of `<ngmd-*>` components work inline in a `.md` page through the Custom Elements. Switch to the component pattern only when the page needs a layout markdown cannot express.
 - **Using raw `<a href>` for external links.** The link guard catches missing `target="_blank"` and fails the build. Prefer markdown `[label](url)`.
 
 ## 10. Toast notifications (service, not a component)
@@ -399,7 +401,7 @@ export default class MyPage {
 
 - The stack is mounted once in `app.ts` via `<app-toaster>`. Do not mount it again per page.
 - Default duration is 3 seconds. Pass 0 as the second arg to keep the toast until the user dismisses it: `this.toast.info('Heads up.', 0)`.
-- Already wired in NgMd's own UI for clipboard failures (code-copy, install picker, "Copy Markdown Link"). Don't add your own try/catch around `navigator.clipboard.*` calls in those components.
+- Already wired in NgMd's own UI for clipboard feedback (code-copy, "Copy Markdown", "Copy Markdown Link"). Don't add your own try/catch around `navigator.clipboard.*` calls in those components.
 
 ## 11. Build before declaring done
 

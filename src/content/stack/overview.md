@@ -59,7 +59,7 @@ Three decisions worth surfacing because they're what make NgMd feel different fr
     Utility CSS that doesn't impose a design system. Theme tokens live as CSS variables; the rest is regular Tailwind. <code>&#64;variant dark</code> powers class-based dark mode.
   </ngmd-accordion-item>
   <ngmd-accordion-item title="Shiki 1.29.2" image="https://shiki.style/logo.svg">
-    VS Code-quality syntax highlighting. Held at 1.x because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.7's peer dep. Dual-theme HTML output: github-light + github-dark in one pass.
+    VS Code-quality syntax highlighting. Held at 1.x because newer 4.x conflicts with <code>&#64;analogjs/platform</code> 2.7's peer dep. Dual-theme HTML output: github-light-default + github-dark-default in one pass.
   </ngmd-accordion-item>
 </ngmd-accordion>
 

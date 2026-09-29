@@ -34,18 +34,81 @@ export class CodeGroup implements AfterViewInit {
 
   private enhance(group: HTMLElement): void {
     group.setAttribute('data-enhanced', 'true');
-    const tabs = group.querySelectorAll<HTMLButtonElement>('.ngmd-code-group__tab');
-    const panels = group.querySelectorAll<HTMLElement>('.ngmd-code-group__panel');
+    const tabs = [...group.querySelectorAll<HTMLButtonElement>('.ngmd-code-group__tab')];
+    group.querySelector('.ngmd-code-group__tabs')?.setAttribute('role', 'tablist');
 
-    tabs.forEach((tab) => {
+    for (const tab of tabs) {
+      const target = tab.getAttribute('data-target');
+      const panel = target ? group.querySelector<HTMLElement>(`[data-id="${target}"]`) : null;
+      if (!target || !panel) continue;
+      tab.id = `${target}-tab`;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-controls', target);
+      panel.id = target;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.tabIndex = 0;
+
       tab.addEventListener('click', () => {
-        const target = tab.getAttribute('data-target');
-        if (!target) return;
-        tabs.forEach((t) => t.setAttribute('data-active', t === tab ? 'true' : 'false'));
-        panels.forEach((p) =>
-          p.setAttribute('data-active', p.getAttribute('data-id') === target ? 'true' : 'false'),
-        );
+        selectTab(tab);
+        const label = tabLabel(tab);
+        try {
+          localStorage.setItem(STORAGE_KEY, label);
+        } catch {}
+        for (const other of document.querySelectorAll<HTMLButtonElement>(
+          '.ngmd-code-group[data-enhanced] .ngmd-code-group__tab',
+        )) {
+          if (other !== tab && tabLabel(other) === label) selectTab(other);
+        }
       });
-    });
+      tab.addEventListener('keydown', (event) => {
+        const index = tabs.indexOf(tab);
+        const next =
+          event.key === 'ArrowRight'
+            ? (index + 1) % tabs.length
+            : event.key === 'ArrowLeft'
+              ? (index - 1 + tabs.length) % tabs.length
+              : event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                  ? tabs.length - 1
+                  : -1;
+        if (next === -1) return;
+        event.preventDefault();
+        tabs[next].focus();
+        tabs[next].click();
+      });
+    }
+
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } catch {}
+    const initial =
+      tabs.find((t) => stored !== null && tabLabel(t) === stored) ??
+      tabs.find((t) => t.getAttribute('data-active') === 'true') ??
+      tabs[0];
+    if (initial) selectTab(initial);
+  }
+}
+
+const STORAGE_KEY = 'ngmd-code-group';
+
+function tabLabel(tab: HTMLElement): string {
+  return tab.textContent?.trim() ?? '';
+}
+
+function selectTab(tab: HTMLButtonElement): void {
+  const group = tab.closest('.ngmd-code-group');
+  if (!group) return;
+  for (const t of group.querySelectorAll<HTMLButtonElement>('.ngmd-code-group__tab')) {
+    const active = t === tab;
+    t.setAttribute('data-active', String(active));
+    t.setAttribute('aria-selected', String(active));
+    t.tabIndex = active ? 0 : -1;
+  }
+  const target = tab.getAttribute('data-target');
+  for (const p of group.querySelectorAll<HTMLElement>('.ngmd-code-group__panel')) {
+    p.setAttribute('data-active', String(p.getAttribute('data-id') === target));
   }
 }

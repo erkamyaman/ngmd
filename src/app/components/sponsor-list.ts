@@ -18,7 +18,7 @@ import siteConfig from '../../ngmd.config';
                 [src]="'https://github.com/' + sponsor.login + '.png?size=' + size() * 2"
                 [width]="size()"
                 [height]="size()"
-                [alt]="sponsor.name"
+                [alt]="showNames() ? '' : sponsor.name"
                 loading="lazy"
                 class="rounded-full border border-zinc-200 dark:border-zinc-800"
               />

@@ -1,7 +1,7 @@
 import {existsSync} from 'node:fs';
-import {join, relative} from 'node:path';
-import type {Plugin} from 'vite';
-import {Project, ts} from 'ts-morph';
+import {join, posix} from 'node:path';
+import type {ModuleNode, Plugin, ViteDevServer} from 'vite';
+import {Node, Project, ts} from 'ts-morph';
 import type {ApiConfig, SymbolRecord, SymbolKind} from './src/types/api.ts';
 
 /**
@@ -31,11 +31,18 @@ const RESOLVED_INDEX_ID = '\0' + VIRTUAL_INDEX_ID;
 
 export function apiGenPlugin(): Plugin {
   let root = process.cwd();
+  const configPath = () => posix.join(root, 'ngmd.api.ts');
   let project: Project | null = null;
   let recordsMemo: SymbolRecord[] | null = null;
+  let configMemo: ApiConfig | null | undefined;
 
   function loadConfig(): ApiConfig | null {
-    const path = join(root, 'ngmd.api.ts');
+    if (configMemo === undefined) configMemo = readConfig();
+    return configMemo;
+  }
+
+  function readConfig(): ApiConfig | null {
+    const path = configPath();
     if (!existsSync(path)) return null;
     try {
       const proj = new Project({
@@ -70,13 +77,10 @@ export function apiGenPlugin(): Plugin {
         : undefined,
       skipAddingFilesFromTsConfig: true,
     });
-    for (const pattern of config.scope) {
-      project.addSourceFilesAtPaths(join(root, pattern));
-    }
-    for (const pattern of config.exclude ?? []) {
-      const matches = project.getSourceFiles(pattern);
-      for (const f of matches) project.removeSourceFile(f);
-    }
+    project.addSourceFilesAtPaths([
+      ...config.scope.map((pattern) => posix.join(root, pattern)),
+      ...(config.exclude ?? []).map((pattern) => '!' + posix.join(root, pattern)),
+    ]);
     return project;
   }
 
@@ -84,44 +88,49 @@ export function apiGenPlugin(): Plugin {
     if (recordsMemo) return recordsMemo;
     const proj = ensureProject(config);
     const records: SymbolRecord[] = [];
+    const seen = new Set<string>();
     const badgeTags = new Set(config.badgesFromJsDoc ?? []);
 
     for (const sourceFile of proj.getSourceFiles()) {
-      const filePath = relative(root, sourceFile.getFilePath());
-      const group = groupNameFor(filePath, config.groupBy ?? 'directory');
-
-      for (const [name, declarations] of sourceFile.getExportedDeclarations()) {
-        const first = declarations[0];
+      for (const [exportName, declarations] of sourceFile.getExportedDeclarations()) {
+        const decls = declarations.filter((d) => symbolKindOf(d));
+        const first = decls[0];
         if (!first) continue;
-        const kind = symbolKindOf(first);
-        if (!kind) continue;
-        // `VariableDeclaration` nodes don't expose `getJsDocs()`; the JSDoc
-        // is attached to the enclosing `VariableStatement`. Resolve the
-        // right host so `export const` symbols pick up their description
-        // and `@deprecated`/`@experimental`/`@beta` badges.
-        const jsDocHost = jsDocHostFor(first);
-        const jsDoc = (
-          jsDocHost && 'getJsDocs' in jsDocHost
-            ? (jsDocHost as {getJsDocs: () => unknown[]}).getJsDocs()
-            : []
-        ) as Array<{
-          getDescription: () => string;
-          getTags: () => Array<{getTagName: () => string}>;
-        }>;
-        const description = jsDoc[0]?.getDescription().trim() ?? '';
-        const tags = jsDoc.flatMap((d) => d.getTags().map((t) => t.getTagName()));
-        const badges = tags.filter((t) => badgeTags.has(t));
-        const signature = first.getText().split('\n')[0]?.trim() ?? name;
+        const declFile = first.getSourceFile();
+        if (declFile.isInNodeModules() || declFile.isDeclarationFile()) continue;
+        const kind = symbolKindOf(first)!;
+        const name =
+          exportName === 'default'
+            ? ((first as {getName?: () => string | undefined}).getName?.() ?? exportName)
+            : exportName;
+        const filePath = posix.relative(root, declFile.getFilePath());
+        const key = `${filePath}:${first.getStart()}:${name}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        const jsDocsPerDecl = decls.map((d) => {
+          const host = jsDocHostFor(d);
+          return Node.isJSDocable(host) ? host.getJsDocs() : [];
+        });
+        const jsDocs = jsDocsPerDecl.flat();
+        const description =
+          jsDocsPerDecl
+            .find((docs) => docs.length)
+            ?.at(-1)
+            ?.getDescription()
+            .trim() ?? '';
+        const tags = jsDocs.flatMap((d) => d.getTags().map((t) => t.getTagName()));
+        const badges = [...new Set(tags.filter((t) => badgeTags.has(t)))];
 
         records.push({
           kind,
           name,
           filePath,
           line: first.getStartLineNumber(),
-          signature,
+          signature: signatureOf(decls),
           description,
           badges,
-          group,
+          group: groupNameFor(filePath, config.groupBy ?? 'directory', kind),
         });
       }
     }
@@ -136,6 +145,7 @@ export function apiGenPlugin(): Plugin {
       root = cfg.root;
       project = null;
       recordsMemo = null;
+      configMemo = undefined;
     },
     resolveId(id) {
       if (id === VIRTUAL_INDEX_ID) return RESOLVED_INDEX_ID;
@@ -148,47 +158,50 @@ export function apiGenPlugin(): Plugin {
       const records = extractRecords(config);
       return `export const apiIndex = ${JSON.stringify(records, null, 2)};\n`;
     },
-    handleHotUpdate({file, server}) {
-      // Invalidate the project cache when any source under scope changes.
-      // Cheap because `Project` re-uses TypeScript's incremental machinery.
-      const configPath = join(root, 'ngmd.api.ts');
-      if (!existsSync(configPath)) return undefined;
-      if (file === configPath || project?.getSourceFile(file)) {
-        project = null;
-        recordsMemo = null;
-        // Clearing the memo isn't enough — Vite caches the virtual module's
-        // `load()` result, so invalidate it explicitly and return it so the
-        // client gets a fresh `apiIndex` without a full reload.
-        const mod = server.moduleGraph.getModuleById(RESOLVED_INDEX_ID);
-        if (mod) {
-          server.moduleGraph.invalidateModule(mod);
-          return [mod];
-        }
-      }
-      return undefined;
+    configureServer(server) {
+      server.watcher.on('all', (event, file) => {
+        if (event !== 'add' && event !== 'unlink') return;
+        const mod = invalidate(file, server);
+        if (mod) void server.reloadModule(mod);
+      });
+    },
+    handleHotUpdate({file, server, modules}) {
+      const mod = invalidate(file, server);
+      return mod ? [...modules, mod] : undefined;
     },
   };
+
+  function invalidate(file: string, server: ViteDevServer): ModuleNode | undefined {
+    const isConfig = file === configPath();
+    if (!isConfig && !project?.getSourceFile(file) && !inScope(file)) return;
+    if (isConfig) configMemo = undefined;
+    project = null;
+    recordsMemo = null;
+    const mod = server.moduleGraph.getModuleById(RESOLVED_INDEX_ID);
+    if (mod) server.moduleGraph.invalidateModule(mod);
+    return mod;
+  }
+
+  function inScope(file: string): boolean {
+    if (!file.endsWith('.ts')) return false;
+    const config = loadConfig();
+    if (!config) return false;
+    const rel = posix.relative(root, file);
+    return (
+      config.scope.some((pattern) => posix.matchesGlob(rel, pattern)) &&
+      !(config.exclude ?? []).some((pattern) => posix.matchesGlob(rel, pattern))
+    );
+  }
 }
 
-function symbolKindOf(decl: unknown): SymbolKind | null {
-  const kindGetter = (decl as {getKindName?: () => string}).getKindName;
-  const kindName = typeof kindGetter === 'function' ? kindGetter.call(decl) : '';
-  switch (kindName) {
-    case 'ClassDeclaration':
-      return 'class';
-    case 'InterfaceDeclaration':
-      return 'interface';
-    case 'FunctionDeclaration':
-      return 'function';
-    case 'VariableDeclaration':
-      return 'const';
-    case 'TypeAliasDeclaration':
-      return 'type';
-    case 'EnumDeclaration':
-      return 'enum';
-    default:
-      return null;
-  }
+function symbolKindOf(decl: Node): SymbolKind | null {
+  if (Node.isClassDeclaration(decl)) return 'class';
+  if (Node.isInterfaceDeclaration(decl)) return 'interface';
+  if (Node.isFunctionDeclaration(decl)) return 'function';
+  if (Node.isVariableDeclaration(decl)) return 'const';
+  if (Node.isTypeAliasDeclaration(decl)) return 'type';
+  if (Node.isEnumDeclaration(decl)) return 'enum';
+  return null;
 }
 
 /**
@@ -196,19 +209,61 @@ function symbolKindOf(decl: unknown): SymbolKind | null {
  * Most declarations are themselves JSDocable, but a `VariableDeclaration`
  * (`export const`) keeps its JSDoc on the enclosing `VariableStatement`.
  */
-function jsDocHostFor(decl: unknown): unknown {
-  const node = decl as {
-    getKindName?: () => string;
-    getFirstAncestorByKind?: (kind: ts.SyntaxKind) => unknown;
-  };
-  if (typeof node.getKindName === 'function' && node.getKindName() === 'VariableDeclaration') {
-    return node.getFirstAncestorByKind?.(ts.SyntaxKind.VariableStatement) ?? node;
+function jsDocHostFor(decl: Node): Node {
+  if (Node.isVariableDeclaration(decl)) {
+    return decl.getFirstAncestorByKind(ts.SyntaxKind.VariableStatement) ?? decl;
   }
-  return node;
+  return decl;
 }
 
-function groupNameFor(filePath: string, strategy: NonNullable<ApiConfig['groupBy']>): string {
-  if (strategy === 'kind') return 'symbols';
+/**
+ * Declaration text without decorators, `export`/`default` modifiers or
+ * implementation bodies. Overloaded functions list every overload
+ * signature; classes stop at the opening brace; interfaces, type aliases
+ * and enums keep their full shape.
+ */
+function signatureOf(decls: Node[]): string {
+  const [first] = decls;
+  if (Node.isFunctionDeclaration(first)) {
+    const overloads = decls.filter(Node.isFunctionDeclaration).filter((d) => d.isOverload());
+    return (overloads.length ? overloads : [first])
+      .map((d) => stripExport(textBefore(d, d.getBody())))
+      .join('\n');
+  }
+  if (Node.isClassDeclaration(first)) {
+    const decorators = first.getDecorators();
+    const start = decorators.length ? decorators.at(-1)!.getEnd() : first.getStart();
+    const brace = first.getFirstChildByKind(ts.SyntaxKind.OpenBraceToken);
+    const end = brace?.getStart() ?? first.getEnd();
+    return stripExport(first.getSourceFile().getFullText().slice(start, end));
+  }
+  if (Node.isVariableDeclaration(first)) {
+    const statement = first.getVariableStatement();
+    const keyword = statement?.getDeclarationKind() ?? 'const';
+    const type = first.getTypeNode()?.getText() ?? first.getType().getText(first);
+    return `${keyword} ${first.getName()}: ${type}`;
+  }
+  return stripExport(first.getText());
+}
+
+function textBefore(node: Node, body: Node | undefined): string {
+  const text = node.getText();
+  return body ? text.slice(0, body.getStart() - node.getStart()) : text;
+}
+
+function stripExport(text: string): string {
+  return text
+    .trim()
+    .replace(/^export\s+(default\s+)?/, '')
+    .replace(/;$/, '');
+}
+
+function groupNameFor(
+  filePath: string,
+  strategy: NonNullable<ApiConfig['groupBy']>,
+  kind: SymbolKind,
+): string {
+  if (strategy === 'kind') return kind;
   if (strategy === 'package') {
     const match = filePath.match(/^packages\/([^/]+)\//);
     return match?.[1] ?? 'root';

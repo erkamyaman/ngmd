@@ -1,7 +1,14 @@
 import {readFileSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
+import {
+  gitDate,
+  isNoIndex,
+  parseFrontmatter,
+  routeFromPagePath,
+  walkContentFiles,
+  walkPageFiles,
+} from './plugin-utils.ts';
 
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
@@ -56,11 +63,7 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
       try {
         statSync(contentDir);
         for (const [rel, route] of walkContentFiles(contentDir, root)) {
-          if (
-            /^---[\s\S]*?^noIndex:\s*(true|yes|1)\s*$[\s\S]*?^---/m.test(
-              readFileSync(join(root, rel), 'utf8'),
-            )
-          ) {
+          if (isNoIndex(parseFrontmatter(readFileSync(join(root, rel), 'utf8')).attributes)) {
             continue;
           }
           entries.set(route, gitDate(rel, root, today));
@@ -72,7 +75,7 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
       const urls = [...entries.entries()]
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([route, lastmod]) => {
-          const loc = escapeXml(`${siteUrl}${route}`);
+          const loc = escapeXml(`${siteUrl}${encodeURI(route)}`);
           return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
         })
         .join('\n');

@@ -1,7 +1,9 @@
 import {Component, computed} from '@angular/core';
 import {RouterLink} from '@angular/router';
+import type {RouteMeta} from '@analogjs/router';
 import {apiIndex} from 'virtual:ngmd/api-index';
 import {ApiBadges} from '../../ui/api/api-badges';
+import {symbolUrl} from '../../../types/api';
 
 /**
  * API reference landing page. Renders every symbol the api-gen plugin
@@ -12,6 +14,8 @@ import {ApiBadges} from '../../ui/api/api-badges';
  * page renders an "API generation is off" empty state. The route itself
  * stays valid so the sidebar can include it unconditionally.
  */
+export const routeMeta: RouteMeta = {title: 'API reference'};
+
 @Component({
   selector: 'app-api-index',
   imports: [RouterLink, ApiBadges],
@@ -47,13 +51,13 @@ import {ApiBadges} from '../../ui/api/api-badges';
               class="mb-4 text-xl font-semibold tracking-tight border-b border-zinc-200 dark:border-zinc-800 pb-2"
             >
               {{ group.name }}
-              <span class="ml-2 text-sm font-normal text-zinc-500"
+              <span class="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400"
                 >{{ group.symbols.length }} symbols</span
               >
             </h2>
 
             <ul class="grid gap-3">
-              @for (sym of group.symbols; track sym.name) {
+              @for (sym of group.symbols; track sym.filePath + ':' + sym.name) {
                 <li>
                   <a
                     [routerLink]="urlFor(sym)"
@@ -61,7 +65,7 @@ import {ApiBadges} from '../../ui/api/api-badges';
                   >
                     <div class="flex items-baseline gap-2">
                       <span
-                        class="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[0.625rem] uppercase tracking-wider text-zinc-500"
+                        class="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[0.625rem] uppercase tracking-wider text-zinc-600 dark:text-zinc-300"
                       >
                         {{ sym.kind }}
                       </span>
@@ -104,12 +108,14 @@ export default class ApiIndexPage {
 
   readonly groupCount = computed(() => this.groups().length);
 
-  urlFor(sym: (typeof apiIndex)[number]): string {
-    return `/api/${encodeURIComponent(sym.group)}/${sym.name}`;
-  }
+  readonly urlFor = symbolUrl;
 
   shortDescription(desc: string): string {
-    const firstSentence = desc.split('\n')[0].split('. ')[0];
+    const plain = desc.replace(
+      /\{@link(?:code|plain)?\s+([^\s|}]+)(?:\s*\|\s*|\s+)?([^}]*)\}/g,
+      (_, target, label) => label.trim() || target,
+    );
+    const firstSentence = plain.split('\n')[0].split('. ')[0];
     return firstSentence.length > 140 ? firstSentence.slice(0, 137) + '…' : firstSentence;
   }
 }

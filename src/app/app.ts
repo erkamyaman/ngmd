@@ -5,11 +5,13 @@ import {
   Injector,
   afterNextRender,
   computed,
+  effect,
   inject,
   OnInit,
   signal,
   viewChild,
 } from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {
   LucideDynamicIcon,
@@ -41,9 +43,13 @@ import {MediaEnhancer} from './components/media-enhancer';
 import {SiteFooter} from './components/site-footer';
 import {Toaster} from './components/toaster';
 import {VersionSwitcher} from './components/version-switcher';
+import {ContentBanners} from './components/content-banners';
 
 @Component({
   selector: 'app-root',
+  host: {
+    '(document:keydown)': 'onDocumentKeydown($event)',
+  },
   imports: [
     RouterLink,
     RouterOutlet,
@@ -64,11 +70,12 @@ import {VersionSwitcher} from './components/version-switcher';
     SiteFooter,
     Toaster,
     VersionSwitcher,
+    ContentBanners,
   ],
   template: `
     <div class="min-h-screen flex flex-col">
       <header
-        class="sticky top-0 z-30 flex items-center gap-4 border-b border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm px-4 py-3"
+        class="sticky top-0 z-30 flex items-center gap-2 sm:gap-4 border-b border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm px-4 py-3"
       >
         @if (showSidebar()) {
           <button
@@ -96,7 +103,7 @@ import {VersionSwitcher} from './components/version-switcher';
         </a>
 
         @if (headerNav.length > 0) {
-          <nav class="hidden sm:flex items-center gap-1 text-sm">
+          <nav aria-label="Main" class="hidden sm:flex items-center gap-1 text-sm">
             @for (item of headerNav; track item.href) {
               @if (isExternal(item.href)) {
                 <a
@@ -119,12 +126,12 @@ import {VersionSwitcher} from './components/version-switcher';
           </nav>
         }
 
-        <div class="ml-auto flex items-center gap-2">
+        <div class="ml-auto flex items-center gap-1 sm:gap-2">
           <app-version-switcher></app-version-switcher>
           <button
             type="button"
             (click)="palette.toggle()"
-            class="hidden lg:inline-flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-w-56"
+            class="hidden lg:inline-flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-w-56"
           >
             <svg [lucideIcon]="searchIcon" class="size-4"></svg>
             <span class="flex-1 text-left">Search documentation...</span>
@@ -149,7 +156,7 @@ import {VersionSwitcher} from './components/version-switcher';
           >
             <svg [lucideIcon]="searchIcon" class="size-5"></svg>
           </button>
-          <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
+          <span class="hidden sm:block h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <a
             [href]="githubUrl"
             target="_blank"
@@ -170,7 +177,7 @@ import {VersionSwitcher} from './components/version-switcher';
               <svg ngmdDiscordIcon class="size-5"></svg>
             </a>
           }
-          <span class="h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
+          <span class="hidden sm:block h-4 w-px bg-zinc-300/60 dark:bg-zinc-700/60"></span>
           <button
             type="button"
             (click)="theme.cycle()"
@@ -191,6 +198,7 @@ import {VersionSwitcher} from './components/version-switcher';
       <div class="flex flex-1">
         @if (showSidebar()) {
           <aside
+            aria-label="Sidebar"
             class="ngmd-scroll-track-mini hidden lg:flex w-64 shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800 p-4 overflow-y-auto sticky top-[57px] self-start h-[calc(100vh-57px)]"
           >
             <app-sidebar />
@@ -210,7 +218,7 @@ import {VersionSwitcher} from './components/version-switcher';
           ></div>
           <aside
             #drawer
-            (keydown.escape)="closeDrawer()"
+            aria-label="Documentation menu"
             class="lg:hidden fixed left-0 top-[57px] bottom-0 z-40 w-64 overflow-y-auto border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 transform transition-transform duration-200 ease-out"
             [class.-translate-x-full]="!drawerOpen()"
             [class.translate-x-0]="drawerOpen()"
@@ -228,9 +236,11 @@ import {VersionSwitcher} from './components/version-switcher';
             }
             @if (showFooter()) {
               <app-source-actions />
+              <app-content-banners class="block mx-auto max-w-3xl px-4 sm:px-8" />
             }
             @if (showToc()) {
               <details
+                #tocDetails
                 class="xl:hidden mx-4 sm:mx-6 mt-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 group"
               >
                 <summary
@@ -239,7 +249,7 @@ import {VersionSwitcher} from './components/version-switcher';
                   On this page
                   <span class="text-zinc-400 transition-transform group-open:rotate-180">▾</span>
                 </summary>
-                <div class="px-4 pb-4">
+                <div class="px-4 pb-4" (click)="tocDetails.open = false">
                   <app-toc [showActive]="false" />
                 </div>
               </details>
@@ -256,6 +266,7 @@ import {VersionSwitcher} from './components/version-switcher';
 
         @if (showToc()) {
           <aside
+            aria-label="On this page"
             class="ngmd-scroll-track-mini hidden xl:block w-56 shrink-0 border-l border-zinc-200 dark:border-zinc-800 p-6 sticky top-[57px] self-start max-h-[calc(100vh-57px)] overflow-y-auto"
           >
             <p class="mb-3 text-sm font-semibold">On this page</p>
@@ -281,6 +292,7 @@ export class App implements OnInit {
   protected readonly layout = inject(LayoutMode);
   private readonly routeUrl = inject(RouteUrlService);
   private readonly injector = inject(Injector);
+  private readonly document = inject(DOCUMENT);
   private readonly menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
   private readonly drawer = viewChild<ElementRef<HTMLElement>>('drawer');
 
@@ -297,6 +309,19 @@ export class App implements OnInit {
   readonly headerNav = siteConfig.headerNav ?? [];
 
   readonly drawerOpen = signal(false);
+
+  constructor() {
+    effect(() =>
+      this.document.documentElement.classList.toggle('max-lg:overflow-hidden', this.drawerOpen()),
+    );
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const desktop = window.matchMedia('(min-width: 64rem)');
+    const onChange = () => {
+      if (desktop.matches) this.drawerOpen.set(false);
+    };
+    desktop.addEventListener('change', onChange);
+    this.destroyRef.onDestroy(() => desktop.removeEventListener('change', onChange));
+  }
 
   private readonly isDocsRoute = computed(() => {
     const url = this.routeUrl.cleanUrl();
@@ -327,6 +352,26 @@ export class App implements OnInit {
     if (!this.drawerOpen()) return;
     this.drawerOpen.set(false);
     this.menuButton()?.nativeElement.focus();
+  }
+
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (!this.drawerOpen()) return;
+    if (event.key === 'Escape') {
+      this.closeDrawer();
+      return;
+    }
+    const menuButton = this.menuButton()?.nativeElement;
+    const drawer = this.drawer()?.nativeElement;
+    if (event.key !== 'Tab' || !menuButton || !drawer) return;
+    const focusable = [
+      menuButton,
+      ...drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+    ];
+    const index = focusable.indexOf(this.document.activeElement as HTMLElement);
+    const step = event.shiftKey ? -1 : 1;
+    const next = index === -1 ? (event.shiftKey ? focusable.length - 1 : 0) : index + step;
+    event.preventDefault();
+    focusable[(next + focusable.length) % focusable.length].focus();
   }
 
   ngOnInit(): void {

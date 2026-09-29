@@ -105,6 +105,10 @@ function replacePlaceholders(target, name) {
           .replace(/<title>[^<]*<\/title>/, `<title>${name}</title>`)
           .replace(/og:title"\s+content="[^"]*"/, `og:title" content="${name}"`),
     },
+    {
+      file: 'README.md',
+      replacer: (s) => s.replace(/^# NgMd starter$/m, `# ${name}`),
+    },
   ];
 
   for (const {file, replacer} of subs) {
@@ -171,7 +175,7 @@ async function main() {
     },
   });
 
-  // npm rewrites .gitignore → .npmignore on publish; restore the dotfile.
+  // npm drops .gitignore on publish, so the template ships it as `gitignore`.
   const gitignoreFromNpm = join(target, 'gitignore');
   if (existsSync(gitignoreFromNpm)) {
     cpSync(gitignoreFromNpm, join(target, '.gitignore'));

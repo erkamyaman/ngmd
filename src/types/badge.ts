@@ -15,7 +15,7 @@ export const BADGE_VARIANTS = {
   alpha: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300',
   beta: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
   stable: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
-  deprecated: 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 line-through',
+  deprecated: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 line-through',
 } as const satisfies Record<string, string>;
 
 export type BadgeVariant = keyof typeof BADGE_VARIANTS;

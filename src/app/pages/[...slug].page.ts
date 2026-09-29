@@ -9,13 +9,14 @@ import {
   resource,
 } from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {Title} from '@angular/platform-browser';
 import {Router, RouterLink} from '@angular/router';
 import {injectContent, MarkdownComponent} from '@analogjs/content';
 import {LucideDynamicIcon, LucideArrowRight, LucideSearch} from '@lucide/angular';
 import {LayoutMode} from '../layout-mode.service';
 import {SearchService} from '../services/search/search.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
-import {ContentBanners} from '../components/content-banners';
+import siteConfig from '../../ngmd.config';
 
 /**
  * Catch-all route for every markdown page.
@@ -45,14 +46,14 @@ const NOT_FOUND = '__ngmd-not-found__';
 @Component({
   selector: 'app-doc',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideDynamicIcon, ContentBanners],
+  imports: [AsyncPipe, MarkdownComponent, RouterLink, LucideDynamicIcon],
   template: `
     @if (content$ | async; as doc) {
       @if (doc.content === notFound) {
         <section
           class="mx-auto max-w-xl w-full px-6 py-16 text-center flex flex-col items-center justify-center min-h-[calc(100vh-12rem)]"
         >
-          <p class="text-sm font-medium tracking-[0.2em] text-zinc-400 dark:text-zinc-500">404</p>
+          <p class="text-sm font-medium tracking-[0.2em] text-zinc-500 dark:text-zinc-400">404</p>
           <h1 class="mt-3 text-3xl sm:text-4xl font-bold tracking-tight">Page not found</h1>
           <p class="mt-4 text-base text-zinc-600 dark:text-zinc-400">
             The page you're looking for doesn't exist or has moved.
@@ -65,7 +66,9 @@ const NOT_FOUND = '__ngmd-not-found__';
               class="mt-8 w-full max-w-sm flex items-center gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-3 text-left hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--accent-strong)] hover:border-transparent transition-colors"
             >
               <span class="flex-1 min-w-0">
-                <span class="block text-[0.625rem] uppercase tracking-[0.2em] text-zinc-400">
+                <span
+                  class="block text-[0.625rem] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400"
+                >
                   Maybe you meant
                 </span>
                 <span class="mt-1 block text-sm font-medium truncate">{{
@@ -95,7 +98,6 @@ const NOT_FOUND = '__ngmd-not-found__';
         </section>
       } @else {
         <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
-          <app-content-banners />
           <analog-markdown [content]="doc.content" />
         </article>
       }
@@ -107,6 +109,7 @@ export default class DocPage implements OnDestroy {
   private readonly router = inject(Router);
   private readonly search = inject(SearchService);
   private readonly route = inject(RouteUrlService);
+  private readonly title = inject(Title);
   private readonly cleanUrl = this.route.cleanUrl;
   protected readonly notFound = NOT_FOUND;
 
@@ -139,7 +142,11 @@ export default class DocPage implements OnDestroy {
   protected readonly suggestion = computed(() => this.suggestionsResource.value()?.[0] ?? null);
 
   constructor() {
-    effect(() => this.layout.chromeHidden.set(this.missing()));
+    effect(() => {
+      const missing = this.doc()?.content === NOT_FOUND;
+      this.layout.chromeHidden.set(missing);
+      if (missing) this.title.setTitle(`${siteConfig.site.name} | Page not found`);
+    });
   }
 
   protected searchInPalette(): void {

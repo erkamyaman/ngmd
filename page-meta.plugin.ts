@@ -1,6 +1,6 @@
 import {statSync} from 'node:fs';
 import {join} from 'node:path';
-import type {Plugin} from 'vite';
+import type {Plugin, ViteDevServer} from 'vite';
 import {gitDate, routeFromPagePath, walkContentFiles, walkPageFiles} from './plugin-utils.ts';
 
 /**
@@ -24,21 +24,24 @@ export interface PageMeta {
 const VIRTUAL_ID = 'virtual:ngmd/page-meta';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
 
-export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin {
+export function pageMetaPlugin(opts: {repoUrl: string; branch?: string; dir?: string}): Plugin {
   const branch = opts.branch ?? 'main';
+  const dir = opts.dir ? `${opts.dir.replace(/^\/+|\/+$/g, '')}/` : '';
   let root = process.cwd();
+  let server: ViteDevServer | undefined;
 
   return {
     name: 'ngmd-page-meta',
     configResolved(cfg) {
       root = cfg.root;
     },
-    /** Invalidate the virtual module when any markdown file changes so
-     * `lastUpdated` reflows without a full restart. */
-    handleHotUpdate(ctx) {
-      if (!ctx.file.endsWith('.md')) return;
-      const mod = ctx.server.moduleGraph.getModuleById(RESOLVED_ID);
-      if (mod) ctx.server.moduleGraph.invalidateModule(mod);
+    configureServer(s) {
+      server = s;
+    },
+    watchChange(id) {
+      if (!server || !(id.endsWith('.md') || id.endsWith('.page.ts'))) return;
+      const mod = server.moduleGraph.getModuleById(RESOLVED_ID);
+      if (mod) server.moduleGraph.invalidateModule(mod);
     },
     resolveId(id) {
       if (id === VIRTUAL_ID) return RESOLVED_ID;
@@ -55,7 +58,7 @@ export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin
           const route = routeFromPagePath(rel);
           if (!route) continue;
           map[route] = {
-            editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
+            editUrl: `${opts.repoUrl}/edit/${branch}/${dir}${rel}`,
             lastUpdated: gitDate(rel, root),
           };
         }
@@ -72,7 +75,7 @@ export function pageMetaPlugin(opts: {repoUrl: string; branch?: string}): Plugin
           if (!date) continue;
           // .md edit URL wins when present (more useful for prose pages)
           map[route] = {
-            editUrl: `${opts.repoUrl}/edit/${branch}/${rel}`,
+            editUrl: `${opts.repoUrl}/edit/${branch}/${dir}${rel}`,
             lastUpdated: date,
           };
         }

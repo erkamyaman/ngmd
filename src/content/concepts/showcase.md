@@ -199,14 +199,16 @@ export const authGuard: CanActivateFn = () => {
 ## And an image, because docs
 
 <ngmd-image
-  src="https://angular.dev/assets/images/ng-image.jpg"
-  alt="Angular open-graph banner"
-  caption="Banner pulled from angular.dev to round out the showcase."
+  src="/images/cats.jpg"
+  alt="Two tabby kittens, Angular and Excel, looking up, one sitting in a flower pot"
+  width="360"
 ></ngmd-image>
+
+<p style="max-width: 360px; margin-top: -1rem; text-align: center; font-size: 0.875rem; color: var(--muted)">Say hi to <a href="https://github.com/erkamyaman" target="_blank" rel="noopener noreferrer">my</a> cats Angular and Excel 👋</p>
 
 ## Inline pieces
 
-Status flags work inline. The forms API is <ngmd-badge variant="stable">Stable</ngmd-badge>, the new `linkedSignal` primitive is <ngmd-badge variant="beta">Beta</ngmd-badge>, and `NgModule`-based bootstrapping is <ngmd-badge variant="deprecated">Deprecated</ngmd-badge>. New helpers ship with a <ngmd-badge variant="new">New</ngmd-badge> tag.
+Status flags work inline. A settled API is <ngmd-badge variant="stable">Stable</ngmd-badge>, an experimental one is <ngmd-badge variant="beta">Beta</ngmd-badge>, and a removed option is <ngmd-badge variant="deprecated">Deprecated</ngmd-badge>. New helpers ship with a <ngmd-badge variant="new">New</ngmd-badge> tag.
 
 Auto-linked keywords resolve from `ngmd.config.ts`: this guide builds on *Angular and *AnalogJS, with *Tailwind for the form styling and *Shiki for the code blocks you see above.
 

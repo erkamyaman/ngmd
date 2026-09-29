@@ -1,6 +1,7 @@
 import {Component, computed, inject} from '@angular/core';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {toSignal} from '@angular/core/rxjs-interop';
+import type {RouteMeta} from '@analogjs/router';
 import {LucideDynamicIcon, LucideArrowLeft, LucideExternalLink} from '@lucide/angular';
 import {apiIndex} from 'virtual:ngmd/api-index';
 import {ApiBadges} from '../../../ui/api/api-badges';
@@ -16,6 +17,10 @@ import config from '../../../../ngmd.config';
  * renders an empty state directing the user back to the index instead of
  * 404-ing — this is friendlier for stale bookmarks after a refactor.
  */
+export const routeMeta: RouteMeta = {
+  title: (route) => `${route.params['symbol'] ?? 'Symbol'} | API reference`,
+};
+
 @Component({
   selector: 'app-api-symbol',
   imports: [RouterLink, LucideDynamicIcon, ApiBadges, ApiSignature, ApiJsDoc],
@@ -23,7 +28,7 @@ import config from '../../../../ngmd.config';
     <article class="max-w-3xl mx-auto pt-8 px-8 pb-4">
       <a
         routerLink="/api"
-        class="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[color:var(--accent-strong)] mb-6"
+        class="inline-flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400 hover:text-[color:var(--accent-strong)] mb-6"
       >
         <svg [lucideIcon]="backIcon" class="size-3.5"></svg>
         All symbols
@@ -33,21 +38,21 @@ import config from '../../../../ngmd.config';
         <header class="mb-6">
           <div class="flex items-baseline gap-3 flex-wrap">
             <span
-              class="rounded bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs uppercase tracking-wider text-zinc-500"
+              class="rounded bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs uppercase tracking-wider text-zinc-600 dark:text-zinc-300"
             >
               {{ sym.kind }}
             </span>
             <h1 class="font-mono text-3xl font-bold tracking-tight">{{ sym.name }}</h1>
             <app-api-badges [tags]="sym.badges" />
           </div>
-          <p class="mt-2 text-sm text-zinc-500">
+          <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             <span class="font-mono">{{ sym.filePath }}:{{ sym.line }}</span>
             @if (sourceUrl(); as url) {
               <a
                 [href]="url"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="ml-2 inline-flex items-center gap-1 text-zinc-500 hover:text-[color:var(--accent-strong)]"
+                class="ml-2 inline-flex items-center gap-1 text-zinc-500 dark:text-zinc-400 hover:text-[color:var(--accent-strong)]"
               >
                 view source
                 <svg [lucideIcon]="externalIcon" class="size-3"></svg>
@@ -57,7 +62,9 @@ import config from '../../../../ngmd.config';
         </header>
 
         <section class="mb-6">
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+          <h2
+            class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2"
+          >
             Signature
           </h2>
           <app-api-signature [text]="sym.signature" />
@@ -65,7 +72,9 @@ import config from '../../../../ngmd.config';
 
         @if (sym.description) {
           <section class="mb-6">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-2">
+            <h2
+              class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2"
+            >
               Description
             </h2>
             <app-api-jsdoc [text]="sym.description" />
@@ -75,7 +84,7 @@ import config from '../../../../ngmd.config';
         <section
           class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-6 py-8 text-center"
         >
-          <p class="font-medium">Symbol not found.</p>
+          <h1 class="font-medium">Symbol not found.</h1>
           <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             <code class="rounded bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 text-[0.85em]">{{
               requested()
@@ -101,13 +110,14 @@ export default class ApiSymbolPage {
     const name = this.requested();
     const group = this.requestedGroup();
     if (!name) return null;
-    return apiIndex.find((s) => s.name === name && s.group === decodeURIComponent(group)) ?? null;
+    return apiIndex.find((s) => s.name === name && s.group === group) ?? null;
   });
 
   readonly sourceUrl = computed(() => {
     const sym = this.symbol();
     if (!sym || !config.site.githubUrl) return '';
     const branch = config.site.githubBranch ?? 'main';
-    return `${config.site.githubUrl}/blob/${branch}/${sym.filePath}#L${sym.line}`;
+    const dir = config.site.githubDir ? `${config.site.githubDir.replace(/^\/+|\/+$/g, '')}/` : '';
+    return `${config.site.githubUrl}/blob/${branch}/${dir}${sym.filePath}#L${sym.line}`;
   });
 }

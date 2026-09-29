@@ -30,6 +30,9 @@ let ok = false;
 try {
   run(process.execPath, [join(HERE, 'build-template.mjs')], HERE);
   run(process.execPath, [join(HERE, 'index.mjs'), 'ngmd-smoke'], work);
+  for (const file of ['.gitignore', '.prettierrc.json', '.prettierignore']) {
+    if (!existsSync(join(project, file))) throw new Error(`scaffolded project is missing ${file}`);
+  }
   run('pnpm', ['install'], project);
   run('pnpm', ['build'], project);
   run('pnpm', ['exec', 'vitest', 'run'], project);

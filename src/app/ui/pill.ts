@@ -1,5 +1,5 @@
-import {Component, computed, input} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Component, computed, inject, input} from '@angular/core';
+import {Router, RouterLink} from '@angular/router';
 import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/angular';
 
 /**
@@ -18,7 +18,7 @@ import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/a
         [href]="href()"
         target="_blank"
         rel="noopener noreferrer"
-        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
       >
         <span>{{ title() }}</span>
         <svg
@@ -29,8 +29,8 @@ import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/a
       </a>
     } @else {
       <a
-        [routerLink]="href()"
-        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+        [routerLink]="route()"
+        class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-sm font-medium text-zinc-900 dark:text-zinc-100 no-underline transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
       >
         <span>{{ title() }}</span>
         <svg
@@ -43,10 +43,13 @@ import {LucideDynamicIcon, LucideArrowRight, LucideArrowUpRight} from '@lucide/a
   `,
 })
 export class NgmdPill {
+  private readonly router = inject(Router);
+
   readonly href = input.required<string>();
   readonly title = input.required<string>();
 
-  readonly isExternal = computed(() => /^https?:\/\//.test(this.href()));
+  readonly isExternal = computed(() => /^(https?|mailto|tel):/.test(this.href()));
+  protected readonly route = computed(() => this.router.parseUrl(this.href()));
 
   protected readonly internalIcon = LucideArrowRight;
   protected readonly externalIcon = LucideArrowUpRight;

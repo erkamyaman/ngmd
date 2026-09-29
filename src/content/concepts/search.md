@@ -19,7 +19,7 @@ A vite plugin walks `src/content/**/*.md` at build time and emits a list of reco
 - **section** record. One per heading (`##` or deeper). Anchored at the heading's slug so clicking jumps straight to it.
 - **snippet** record. Paragraph-sized chunks of the body (~280 chars, sentence-aware). Each snippet carries its enclosing heading's anchor so a click lands you in the right section, not at the page top.
 
-The plugin runs on every dev-server `.md` change via Vite's `handleHotUpdate`, so authoring a page reflects in the palette immediately.
+The plugin runs on every dev-server `.md` change through Vite's file watcher (`watchChange`), including added and deleted pages, so authoring a page reflects in the palette immediately.
 
 ## Opting a page out
 
@@ -38,7 +38,7 @@ The palette UI consumes a small `SearchProvider` interface (`src/types/search.ts
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="box" title="Orama (default)">
-    Bundled. Builds an in-memory index from the JSON shipped above and queries it client-side with BM25 ranking + 1-edit fuzzy tolerance. Headings boost <code>3×</code>, page titles <code>2×</code>, body <code>1×</code>.
+    Bundled. Builds an in-memory index from the JSON shipped above and queries it client-side with BM25 ranking, plus 1-edit fuzzy tolerance for queries of six or more characters. Headings boost <code>3×</code>, page titles <code>2×</code>, body <code>1×</code>.
   </ngmd-card>
   <ngmd-card icon="rocket" title="Algolia DocSearch (opt-in)">
     Hosted. Same hierarchical (page → section → snippet) result shape as the Orama provider, so the UI is identical. Set <code>site.algolia</code> in <code>ngmd.config.ts</code> to switch.
@@ -59,7 +59,7 @@ When the application is approved, Algolia sends you three values: `appId`, `apiK
 pnpm add algoliasearch
 ```
 
-```ts file="src/ngmd.config.ts"
+```ts
 site: {
   // ...existing site fields
   algolia: {
@@ -74,7 +74,7 @@ The palette swaps backends on the next page load. Match highlighting works the s
 
 ## Search history
 
-Every successful navigation from the palette is appended to a `localStorage`-backed history (`ngmd-search-history-v1`), capped at ten entries. The empty-query state renders the list newest-first with a `Clear` action.
+Every successful navigation from the palette is appended to a `localStorage`-backed history (`ngmd-search-history-v1`). The empty-query state renders it newest-first with a `Clear` action. Star a recent entry to pin it as a favorite: favorites render above recents and are never trimmed, while recents are capped at ten entries.
 
 ## Where to next
 

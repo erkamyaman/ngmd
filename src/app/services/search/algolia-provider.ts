@@ -1,4 +1,8 @@
 import type {SearchHit, SearchHitKind, SearchProvider} from '../../../types/search';
+import {escapeHtml} from './escape-html';
+
+const PRE_TAG = '__ngmd_mark__';
+const POST_TAG = '__/ngmd_mark__';
 
 /**
  * Optional Algolia DocSearch backend. Activated when the user populates
@@ -21,7 +25,13 @@ export interface AlgoliaConfig {
 interface AlgoliaHit {
   objectID: string;
   url: string;
-  hierarchy: {lvl0?: string; lvl1?: string; lvl2?: string; lvl3?: string; lvl4?: string};
+  hierarchy: {
+    lvl0?: string | null;
+    lvl1?: string | null;
+    lvl2?: string | null;
+    lvl3?: string | null;
+    lvl4?: string | null;
+  };
   content?: string;
   _snippetResult?: {
     content?: {value: string};
@@ -90,8 +100,8 @@ export class AlgoliaSearchProvider implements SearchProvider {
           attributesToRetrieve: ['hierarchy', 'content', 'url'],
           attributesToSnippet: ['hierarchy.lvl1:10', 'hierarchy.lvl2:10', 'content:10'],
           snippetEllipsisText: '…',
-          highlightPreTag: '<mark>',
-          highlightPostTag: '</mark>',
+          highlightPreTag: PRE_TAG,
+          highlightPostTag: POST_TAG,
         },
       },
     ]);
@@ -101,20 +111,26 @@ export class AlgoliaSearchProvider implements SearchProvider {
 }
 
 function toSearchHit(hit: AlgoliaHit): SearchHit {
-  const snippet = hit._snippetResult?.content?.value;
-  const lvl2 = hit._snippetResult?.hierarchy?.lvl2?.value ?? hit.hierarchy.lvl2;
-  const lvl1 = hit._snippetResult?.hierarchy?.lvl1?.value ?? hit.hierarchy.lvl1;
-  const pageTitle = hit.hierarchy.lvl1 ?? hit.hierarchy.lvl0 ?? '';
+  const snippet = toHtml(hit._snippetResult?.content?.value);
+  const lvl2 = toHtml(hit._snippetResult?.hierarchy?.lvl2?.value ?? hit.hierarchy.lvl2);
+  const lvl1 = toHtml(hit._snippetResult?.hierarchy?.lvl1?.value ?? hit.hierarchy.lvl1);
+  const lvl0 = toHtml(hit.hierarchy.lvl0);
   const kind: SearchHitKind = lvl2 ? 'section' : snippet ? 'snippet' : 'page';
   return {
     id: hit.objectID,
     kind,
     url: toRelativeUrl(hit.url),
-    labelHtml: lvl2 ?? lvl1 ?? hit.hierarchy.lvl0 ?? '',
+    labelHtml: lvl2 ?? lvl1 ?? lvl0 ?? '',
     subLabelHtml: lvl2 ? (lvl1 ?? '') : '',
     contentHtml: snippet ?? undefined,
     score: undefined,
   };
+}
+
+function toHtml(value: string | null | undefined): string | undefined {
+  return !value
+    ? undefined
+    : escapeHtml(value).replaceAll(PRE_TAG, '<mark>').replaceAll(POST_TAG, '</mark>');
 }
 
 /**

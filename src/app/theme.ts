@@ -7,7 +7,8 @@ const STORAGE_KEY = 'ngmd-theme';
 @Injectable({providedIn: 'root'})
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
-  private readonly isBrowser = typeof window !== 'undefined';
+  private readonly isBrowser =
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function';
 
   readonly mode = signal<Mode>(this.read());
 
@@ -36,7 +37,10 @@ export class ThemeService {
 
   private read(): Mode {
     if (!this.isBrowser) return 'auto';
-    const stored = localStorage.getItem(STORAGE_KEY) as Mode | null;
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } catch {}
     if (stored === 'light' || stored === 'dark' || stored === 'auto') return stored;
     return 'auto';
   }
@@ -51,6 +55,8 @@ export class ThemeService {
           : 'light'
         : mode;
     root.classList.toggle('dark', resolved === 'dark');
-    localStorage.setItem(STORAGE_KEY, mode);
+    try {
+      localStorage.setItem(STORAGE_KEY, mode);
+    } catch {}
   }
 }

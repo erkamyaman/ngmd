@@ -54,7 +54,7 @@ The `'slug'` argument names the route param that the catch-all populates with th
 
 Add `status:` to any nav item in `ngmd.config.ts` and a coloured chip renders next to its sidebar label. Same pattern adev uses on its `NavigationItem`. Lives on the config so all the lifecycle markers for the site sit in one file.
 
-```ts file="src/ngmd.config.ts"
+```ts
 {label: 'Search', href: '/concepts/search', status: 'new'},
 ```
 
@@ -114,13 +114,15 @@ Layouts are just Angular components rendered around the `&lt;router-outlet&gt;`.
 
 ## Code highlighting
 
-All fenced code blocks pass through Shiki at build time. NgMd emits dual-theme HTML (github-light and github-dark in one pass) and swaps the active palette under `.dark` via a small CSS rule in `styles.css`. To change themes, edit `shikiOptions` in `vite.config.ts`:
+All fenced code blocks pass through Shiki at build time. NgMd emits dual-theme HTML (github-light-default and github-dark-default in one pass) and swaps the active palette under `.dark` via a small CSS rule in `styles.css`. To change themes, edit `shikiOptions` in `vite.config.ts`:
 
 ```ts
 analog({
   content: {
     highlighter: 'shiki',
-    shikiOptions: { themes: { light: 'github-light', dark: 'github-dark' } },
+    shikiOptions: {
+      highlight: { themes: { light: 'github-light-default', dark: 'github-dark-default' }, defaultColor: false },
+    },
   },
 });
 ```
@@ -132,7 +134,7 @@ Two marked extensions ship runtime-side so you can drop media into prose without
 ```html
 <ngmd-video src="https://www.youtube.com/watch?v=..." title="Demo"></ngmd-video>
 
-<ngmd-image src="/screenshot.png" alt="Sidebar accordion" caption="The sidebar reads from ngmd.config.ts"></ngmd-image>
+<ngmd-image src="/images/cats.jpg" alt="Two tabby kittens, Angular and Excel, looking up, one sitting in a flower pot" caption="Local images live in public/"></ngmd-image>
 ```
 
 YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus caption plus lazy-load by default.
@@ -143,7 +145,7 @@ YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus 
   The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code> and <code>/route#fragment</code> markdown links must resolve to real headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
 </ngmd-alert>
 
-This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404. In the dev server, editing a page refreshes the heading index, so a link to a heading you just added resolves without a restart.
+This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404. In the dev server, a broken internal link is a terminal warning and the page still renders. Editing a page refreshes the heading index, so a link to a heading you just added resolves without a restart.
 
 Heading ids are slugs of the heading text. When two headings on a page share the same text, the second gets `-1`, the third `-2`, and so on, like GitHub. Two `### Flags` headings become `#flags` and `#flags-1`. The TOC, the link guard and the search index all use the same ids.
 
@@ -230,7 +232,7 @@ Unknown keywords (`*WrongName`) log a warning at build time and fall back to lit
 
 Status badges work inline: API stability tags like <ngmd-badge variant="beta">Beta</ngmd-badge> or <ngmd-badge variant="deprecated">Deprecated</ngmd-badge> sit next to text without breaking the line.
 
-`ngmd-video` and `ngmd-image` are wired separately as marked extensions (build-time HTML rewrites), so they work in markdown regardless of what the catch-all imports.
+`ngmd-video` and `ngmd-image` are wired separately as runtime marked extensions (`src/marked-extensions/runtime.ts`), so they work in markdown regardless of what the catch-all imports.
 
 ## Per-instance spacing
 

@@ -107,7 +107,7 @@ import {writeToClipboard} from '../utils/clipboard';
 
         <!-- Stack badges -->
         <div class="mt-14">
-          <p class="text-xs font-medium tracking-[0.2em] text-zinc-400 dark:text-zinc-500 mb-5">
+          <p class="text-xs font-medium tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-5">
             BUILT ON
           </p>
           <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
@@ -118,7 +118,7 @@ import {writeToClipboard} from '../utils/clipboard';
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 rounded-lg border border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/30 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 transition-colors"
               >
-                <img [src]="tech.logo" [alt]="tech.name" class="size-5 object-contain" />
+                <img [src]="tech.logo" alt="" class="size-5 object-contain" />
                 {{ tech.name }}
               </a>
             }
@@ -143,31 +143,31 @@ import {writeToClipboard} from '../utils/clipboard';
             class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden"
           >
             <div
-              class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500"
+              class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500 dark:text-zinc-400"
             >
               <span>src/content/welcome.md</span>
-              <span class="text-zinc-400">markdown</span>
+              <span class="text-zinc-500 dark:text-zinc-400">markdown</span>
             </div>
             <pre
               class="p-4 text-sm overflow-x-auto text-zinc-700 dark:text-zinc-300 leading-relaxed"
-            ><code><span class="text-[color:var(--accent)] font-semibold"># Welcome</span>
+            ><code><span class="text-[color:var(--accent-strong)] font-semibold"># Welcome</span>
 
 NgMd is a modern Angular docs starter.
 
-<span class="text-[color:var(--accent)] font-semibold">## Quick start</span>
+<span class="text-[color:var(--accent-strong)] font-semibold">## Quick start</span>
 
-<span class="text-zinc-400">-</span> Drop a .md file
-<span class="text-zinc-400">-</span> Get a route
-<span class="text-zinc-400">-</span> Done.</code></pre>
+<span class="text-zinc-500 dark:text-zinc-400">-</span> Drop a .md file
+<span class="text-zinc-500 dark:text-zinc-400">-</span> Get a route
+<span class="text-zinc-500 dark:text-zinc-400">-</span> Done.</code></pre>
           </div>
           <div
             class="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-hidden"
           >
             <div
-              class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500"
+              class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs font-mono text-zinc-500 dark:text-zinc-400"
             >
               <span>Browser → /welcome</span>
-              <span class="text-[color:var(--accent)]">live</span>
+              <span class="text-[color:var(--accent-strong)]">live</span>
             </div>
             <div class="p-6">
               <h3 class="text-2xl font-bold mb-3">Welcome</h3>
@@ -225,27 +225,40 @@ NgMd is a modern Angular docs starter.
         <div
           class="mt-8 inline-block w-[23rem] max-w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 overflow-hidden text-left"
         >
-          <div role="tablist" class="flex border-b border-zinc-200 dark:border-zinc-800">
+          <div
+            role="tablist"
+            aria-label="Package manager"
+            class="flex border-b border-zinc-200 dark:border-zinc-800"
+            (keydown)="onTabKeydown($event)"
+          >
             @for (cmd of installCommands; track cmd.pm) {
               <button
                 type="button"
                 role="tab"
+                [id]="'install-tab-' + cmd.pm"
+                aria-controls="install-panel"
                 [attr.aria-selected]="activePM() === cmd.pm"
+                [tabIndex]="activePM() === cmd.pm ? 0 : -1"
                 (click)="activePM.set(cmd.pm)"
-                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors aria-selected:border-[color:var(--accent)] aria-selected:text-[color:var(--accent-strong)] [&[aria-selected=false]]:border-transparent [&[aria-selected=false]]:text-zinc-500 dark:[&[aria-selected=false]]:text-zinc-400 [&[aria-selected=false]]:hover:text-zinc-900 dark:[&[aria-selected=false]]:hover:text-zinc-100"
               >
                 <img [src]="cmd.logo" alt="" aria-hidden="true" class="size-4 object-contain" />
                 {{ cmd.pm }}
               </button>
             }
           </div>
-          <div class="flex items-center gap-3 pl-4 pr-2 py-2.5 font-mono text-sm">
-            <span class="text-zinc-400">$</span>
+          <div
+            id="install-panel"
+            role="tabpanel"
+            [attr.aria-labelledby]="'install-tab-' + activePM()"
+            class="flex items-center gap-3 pl-4 pr-2 py-2.5 font-mono text-sm"
+          >
+            <span class="text-zinc-500 dark:text-zinc-400">$</span>
             <span>{{ activeCmd() }}</span>
             <button
               type="button"
               (click)="copyCmd(activeCmd())"
-              [attr.aria-label]="copied() === activeCmd() ? 'Copied' : 'Copy'"
+              [attr.aria-label]="copied() === activeCmd() ? 'Copied' : 'Copy install command'"
               class="ml-auto inline-flex items-center justify-center size-7 rounded-md text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
               <svg
@@ -258,7 +271,7 @@ NgMd is a modern Angular docs starter.
         <div class="mt-8">
           <a
             routerLink="/welcome"
-            class="inline-flex items-center gap-2 text-base font-medium text-[color:var(--accent)] hover:opacity-80"
+            class="inline-flex items-center gap-2 text-base font-medium text-[color:var(--accent-strong)] hover:opacity-80"
           >
             Read the docs
             <svg [lucideIcon]="arrowIcon" class="size-4"></svg>
@@ -306,11 +319,33 @@ export default class Home implements AfterViewInit {
     () => this.installCommands.find((c) => c.pm === this.activePM())?.cmd ?? '',
   );
 
+  protected onTabKeydown(event: KeyboardEvent): void {
+    const pms = this.installCommands.map((c) => c.pm);
+    const index = pms.indexOf(this.activePM());
+    const next =
+      event.key === 'ArrowRight'
+        ? (index + 1) % pms.length
+        : event.key === 'ArrowLeft'
+          ? (index - 1 + pms.length) % pms.length
+          : event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? pms.length - 1
+              : -1;
+    if (next === -1) return;
+    event.preventDefault();
+    this.activePM.set(pms[next]);
+    (event.currentTarget as HTMLElement)
+      .querySelector<HTMLElement>(`#install-tab-${pms[next]}`)
+      ?.focus();
+  }
+
   async copyCmd(cmd: string): Promise<void> {
     if (!(await writeToClipboard(cmd))) {
       this.toast.error('Could not copy command.');
       return;
     }
+    this.toast.success('Command copied to clipboard.');
     this.copied.set(cmd);
     clearTimeout(this.copyTimer);
     this.copyTimer = setTimeout(() => this.copied.set(''), 1500);

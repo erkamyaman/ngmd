@@ -44,3 +44,15 @@ describe('headingText', () => {
     );
   });
 });
+
+describe('slugify edge cases', () => {
+  it('folds accents and never returns an empty slug', () => {
+    expect(slugify('Café Über')).toBe('cafe-uber');
+    expect(slugify('日本語')).toBe('section');
+    expect(slugify('🚀 Launch')).toBe('launch');
+  });
+
+  it('decodes hex entities like the rendered heading', () => {
+    expect(headingText('Install &#x40;scope/pkg')).toBe('Install @scope/pkg');
+  });
+});

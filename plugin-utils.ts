@@ -1,6 +1,7 @@
 import {execFileSync} from 'node:child_process';
 import {readdirSync, realpathSync, statSync} from 'node:fs';
 import {isAbsolute, join, relative, resolve} from 'node:path';
+import frontMatter from 'front-matter';
 
 export {createSlugger, headingText, slugify} from './src/app/utils/heading-slug.ts';
 
@@ -50,7 +51,10 @@ export function walkContentFiles(
       walkContentFiles(full, root, baseDir, out);
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       const rel = relative(root, full);
-      const fromContent = relative(baseDir, full).replace(/\\/g, '/').replace(/\.md$/, '');
+      const fromContent = relative(baseDir, full)
+        .replace(/\\/g, '/')
+        .replace(/\.md$/, '')
+        .replace(/(^|\/)index$/, '');
       out.push([rel, '/' + fromContent]);
     }
   }
@@ -60,10 +64,27 @@ export function walkContentFiles(
 /** `src/app/pages/foo/bar.page.ts` → `/foo/bar`. `index.page.ts` → `/`.
  * Dynamic / catch-all (`[...slug].page.ts`) returns `''`, signalling "skip". */
 export function routeFromPagePath(rel: string): string {
-  const trimmed = rel.replace(/^src\/app\/pages\//, '').replace(/\.page\.ts$/, '');
-  if (trimmed === 'index') return '/';
-  if (trimmed.startsWith('[')) return '';
-  return '/' + trimmed;
+  const segments = pageRouteSegments(rel);
+  if (!segments || segments.some((s) => s.startsWith('['))) return '';
+  return '/' + segments.join('/');
+}
+
+export function pageRouteMatcher(rel: string): RegExp | null {
+  const segments = pageRouteSegments(rel);
+  if (!segments || !segments.some((s) => s.startsWith('['))) return null;
+  const pattern = segments
+    .map((s) => (s.startsWith('[') ? '[^/]+' : s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+    .join('/');
+  return new RegExp(`^/${pattern}$`);
+}
+
+function pageRouteSegments(rel: string): string[] | null {
+  const trimmed = rel
+    .replace(/\\/g, '/')
+    .replace(/^src\/app\/pages\//, '')
+    .replace(/\.page\.ts$/, '');
+  if (trimmed.includes('[...')) return null;
+  return trimmed.split(/[/.]/).filter((s) => s !== 'index' && !/^\(.*\)$/.test(s));
 }
 
 /**
@@ -90,6 +111,26 @@ export function gitDate(file: string, cwd: string, mtimeFallback: () => string =
   }
 }
 
+export function parseFrontmatter(text: string): {
+  attributes: Record<string, unknown>;
+  body: string;
+} {
+  try {
+    const {attributes, body} = frontMatter<unknown>(text);
+    return {
+      attributes:
+        attributes && typeof attributes === 'object' ? (attributes as Record<string, unknown>) : {},
+      body,
+    };
+  } catch {
+    return {attributes: {}, body: text};
+  }
+}
+
+export function isNoIndex(attributes: Record<string, unknown>): boolean {
+  return /^(true|yes|1)$/i.test(String(attributes['noIndex'] ?? ''));
+}
+
 export function fenceTracker(): (line: string) => boolean {
   let open = '';
   return (line) => {
@@ -102,6 +143,15 @@ export function fenceTracker(): (line: string) => boolean {
     if (m && m[1][0] === open[0] && m[1].length >= open.length && !m[2].trim()) open = '';
     return true;
   };
+}
+
+export function withoutCode(markdown: string): string {
+  const inFence = fenceTracker();
+  return markdown
+    .split(/\r?\n/)
+    .map((line) => (inFence(line) ? '' : line))
+    .join('\n')
+    .replace(/(`+)[^\n]*?\1/g, ' ');
 }
 
 /**

@@ -10,7 +10,7 @@ title: Installation
 
 ## Path A · Scaffold a fresh project <ngmd-badge variant="stable">Recommended</ngmd-badge>
 
-The published `create-ngmd` package handles everything: scaffolds AnalogJS, installs deps, copies the NgMd site frame and authoring components, sets up the build pipeline.
+The published `create-ngmd` package copies a ready AnalogJS project with the NgMd site frame, authoring components and build pipeline. It does not install dependencies or run `git init`; the next step does the install.
 
 ```bash group="install" name="pnpm" image="https://cdn.simpleicons.org/pnpm/F69220" active
 pnpm create ngmd@latest my-docs
@@ -83,7 +83,7 @@ For when you already have an AnalogJS app and want to pull NgMd in piece by piec
 The runtime libraries NgMd composes:
 
 ```bash
-pnpm add @analogjs/content marked-shiki shiki@^1.29.2 @angular/elements
+pnpm add @analogjs/content marked-shiki shiki@^1.29.2 @angular/elements @lucide/angular @orama/orama ts-morph
 pnpm add -D @tailwindcss/typography
 ```
 
@@ -99,7 +99,9 @@ export default defineConfig({
     analog({
       content: {
         highlighter: 'shiki',
-        shikiOptions: { themes: { light: 'github-light', dark: 'github-dark' } },
+        shikiOptions: {
+          highlight: { themes: { light: 'github-light-default', dark: 'github-dark-default' }, defaultColor: false },
+        },
       },
     }),
   ],
@@ -124,11 +126,11 @@ export const appConfig: ApplicationConfig = {
 
 ### 4. Copy the NgMd source
 
-From a scaffolded NgMd project, copy these directories into yours:
+From a scaffolded NgMd project, copy these into yours, along with `src/app/services/`, `src/app/utils/`, `src/types/` and `src/app/register-elements.ts`:
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="layers" title="src/app/components/">
-    Sidebar, palette, breadcrumb, TOC, code-copy, external-links, heading-anchors, page-footer, media-enhancer, code-group, source-actions.
+    Sidebar, command palette, breadcrumb, TOC, page footer, site footer, source actions, LLM actions, version switcher, content banners, toaster, sponsor list, and the code-copy, code-group, external-links, heading-anchors and media-enhancer DOM helpers.
   </ngmd-card>
   <ngmd-card icon="box" title="src/app/ui/">
     All 17 authoring components: callout, alert, card, card-grid, tabs, pill-row, workflow, hero, code-block, accordion, badge, video, image (plus pill, step, tab, accordion-item).
@@ -143,13 +145,13 @@ From a scaffolded NgMd project, copy these directories into yours:
     Nav, brand, keyword auto-link map.
   </ngmd-card>
   <ngmd-card icon="wrench" title="*.plugin.ts at repo root">
-    page-meta, link-guard, sitemap, search-index, raw-md. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
+    page-meta, link-guard, sitemap, search-index, raw-md, vars, api-gen, and their shared <code>plugin-utils.ts</code>. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
   </ngmd-card>
 </ngmd-card-grid>
 
 ### 5. Wire the plugins in vite.config.ts
 
-Import and register the NgMd plugins next to the analog plugin: `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`.
+Import and register the NgMd plugins next to the analog plugin: `varsPlugin`, `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`.
 
 ### 6. Deploy
 

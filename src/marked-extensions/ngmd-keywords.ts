@@ -1,5 +1,6 @@
-import type {MarkedExtension, Tokens} from 'marked';
+import type {MarkedExtension, TokenizerThis, Tokens} from 'marked';
 import config from '../ngmd.config.ts';
+import {escapeHtml} from './escape-html.ts';
 
 /**
  * Inline keyword auto-linking. Any `*Keyword` token (where `Keyword` is
@@ -27,14 +28,11 @@ interface NgmdKeywordToken extends Tokens.Generic {
 // of `**Keyword**` (which would leave one stray `*` and one stray `**`).
 const KEYWORD_RE = /^\*(?!\*)([A-Z][a-zA-Z0-9]+)\b(?!\*)/;
 const HINT_RE = /\*(?!\*)[A-Z]/;
+const EMPHASIS_RE = /^\*[^*\n]*[^*\s]\*/;
 const warned = new Set<string>();
 
 function lookup(keyword: string): string | undefined {
   return config.keywords?.[keyword];
-}
-
-function escapeAttr(s: string): string {
-  return s.replace(/"/g, '&quot;');
 }
 
 export const ngmdKeywordsExtension: MarkedExtension = {
@@ -45,12 +43,12 @@ export const ngmdKeywordsExtension: MarkedExtension = {
       start(src: string) {
         return src.match(HINT_RE)?.index;
       },
-      tokenizer(src: string): NgmdKeywordToken | undefined {
+      tokenizer(this: TokenizerThis, src: string): Tokens.Generic | undefined {
         const m = KEYWORD_RE.exec(src);
         if (!m) return undefined;
         const url = lookup(m[1]);
         if (!url) {
-          if (!warned.has(m[1])) {
+          if (!warned.has(m[1]) && !EMPHASIS_RE.test(src)) {
             warned.add(m[1]);
             console.warn(
               `[ngmd-keywords] unknown keyword "${m[1]}" — add it to ngmd.config.ts > keywords or escape the asterisk.`,
@@ -58,6 +56,7 @@ export const ngmdKeywordsExtension: MarkedExtension = {
           }
           return undefined;
         }
+        if (this.lexer.state.inLink) return {type: 'text', raw: m[0], text: m[1]};
         return {
           type: 'ngmdKeyword',
           raw: m[0],
@@ -69,7 +68,7 @@ export const ngmdKeywordsExtension: MarkedExtension = {
         const t = token as NgmdKeywordToken;
         const isExternal = /^https?:\/\//.test(t.url);
         const targetAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
-        return `<a href="${escapeAttr(t.url)}"${targetAttrs}>${t.keyword}</a>`;
+        return `<a href="${escapeHtml(t.url)}"${targetAttrs}>${t.keyword}</a>`;
       },
     },
   ],

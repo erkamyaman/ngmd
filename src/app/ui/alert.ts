@@ -28,11 +28,11 @@ const STRIPE: Record<AlertSeverity, string> = {
 };
 
 const ACCENT: Record<AlertSeverity, string> = {
-  info: 'text-blue-600 dark:text-blue-400',
-  warning: 'text-amber-600 dark:text-amber-400',
-  critical: 'text-red-600 dark:text-red-400',
-  helpful: 'text-teal-600 dark:text-teal-400',
-  important: 'text-purple-600 dark:text-purple-400',
+  info: 'text-blue-700 dark:text-blue-400',
+  warning: 'text-amber-700 dark:text-amber-400',
+  critical: 'text-red-700 dark:text-red-400',
+  helpful: 'text-teal-700 dark:text-teal-400',
+  important: 'text-purple-700 dark:text-purple-400',
 };
 
 const BOX =

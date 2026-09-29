@@ -1,6 +1,7 @@
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS} from './shiki-shared.ts';
+import {highlightCode} from './shiki-shared.ts';
 import {escapeHtml} from './escape-html.ts';
+import {findFences, getAttr, hasFlag, replaceFences, type Fence} from './fences.ts';
 
 /**
  * Adjacent fenced code blocks tagged with `group="..."` merge into a tabbed
@@ -25,57 +26,23 @@ import {escapeHtml} from './escape-html.ts';
 
 let groupCounter = 0;
 
-const FENCE_WITH_GROUP_RE =
-  /^(`{3,})([\w-]+)?[\t ]+([^\n]*?\bgroup="([^"]+)"[^\n]*)\n([\s\S]*?)\n\1`*$/gm;
-
-interface Fence {
-  start: number;
-  end: number;
-  lang: string;
-  attrs: string;
+interface GroupFence extends Fence {
   group: string;
-  body: string;
-}
-
-function getAttr(attrs: string, name: string): string | undefined {
-  return new RegExp(`${name}="([^"]*)"`).exec(attrs)?.[1];
-}
-
-function hasFlag(attrs: string, name: string): boolean {
-  return new RegExp(`(^|\\s)${name}(\\s|$)`).test(attrs);
-}
-
-async function renderCode(body: string, lang: string): Promise<string> {
-  const safeLang = LANGS.includes(lang) ? lang : 'text';
-  const highlighter = await getHighlighter();
-  return highlighter.codeToHtml(body, {
-    lang: safeLang,
-    themes: {light: 'github-light', dark: 'github-dark'},
-    defaultColor: false,
-  });
 }
 
 export const ngmdCodeGroupExtension: MarkedExtension = {
   hooks: {
     async preprocess(markdown: string): Promise<string> {
-      const fences: Fence[] = [];
-      const re = new RegExp(FENCE_WITH_GROUP_RE.source, FENCE_WITH_GROUP_RE.flags);
-      let m: RegExpExecArray | null;
-      while ((m = re.exec(markdown)) !== null) {
-        fences.push({
-          start: m.index,
-          end: m.index + m[0].length,
-          lang: m[2] ?? '',
-          attrs: m[3],
-          group: m[4],
-          body: m[5],
-        });
+      const fences: GroupFence[] = [];
+      for (const f of findFences(markdown)) {
+        const group = getAttr(f.attrs, 'group');
+        if (group) fences.push({...f, group});
       }
       if (fences.length === 0) return markdown;
 
       // Cluster consecutive same-group fences (whitespace-only between).
-      const clusters: Fence[][] = [];
-      let current: Fence[] = [];
+      const clusters: GroupFence[][] = [];
+      let current: GroupFence[] = [];
       for (const f of fences) {
         if (
           current.length > 0 &&
@@ -90,12 +57,9 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
       }
       if (current.length > 0) clusters.push(current);
 
-      // Replace from end to start so indices stay valid.
-      let result = markdown;
-      for (let i = clusters.length - 1; i >= 0; i--) {
-        const c = clusters[i];
-        if (c.length < 2) continue;
-
+      const merged = clusters.filter((c) => c.length > 1);
+      const wrappers: string[] = [];
+      for (const c of merged) {
         const groupId = `cg-${++groupCounter}`;
         let activeIdx = c.findIndex((f) => hasFlag(f.attrs, 'active'));
         if (activeIdx === -1) activeIdx = 0;
@@ -114,18 +78,22 @@ export const ngmdCodeGroupExtension: MarkedExtension = {
         const panels = (
           await Promise.all(
             c.map(async (f, idx) => {
-              const html = await renderCode(f.body, f.lang);
+              const html = await highlightCode(f.body, f.lang);
               return `<div class="ngmd-code-group__panel" data-id="${groupId}-${idx}" data-active="${idx === activeIdx}">${html}</div>`;
             }),
           )
         ).join('');
 
-        const wrapper = `\n\n<div class="ngmd-code-group" data-group="${groupId}"><div class="ngmd-code-group__tabs">${tabs}</div>${panels}</div>\n\n`;
-
-        result = result.slice(0, c[0].start) + wrapper + result.slice(c.at(-1)!.end);
+        wrappers.push(
+          `<div class="ngmd-code-group" data-group="${groupId}"><div class="ngmd-code-group__tabs">${tabs}</div>${panels}</div>`,
+        );
       }
 
-      return result;
+      return replaceFences(
+        markdown,
+        merged.map((c) => ({start: c[0].start, end: c.at(-1)!.end})),
+        wrappers,
+      );
     },
   },
 };

@@ -91,10 +91,10 @@ Eight accent tokens cover everything:
 NgMd uses class-based dark mode. The `ThemeService` toggles a `dark` class on `&lt;html&gt;`:
 
 ```ts
-this.document.documentElement.classList.toggle('dark', mode === 'dark');
+root.classList.toggle('dark', resolved === 'dark');
 ```
 
-User preference is persisted in localStorage and falls back to `prefers-color-scheme` on first visit. An inline boot script in `index.html` sets the class before Angular bootstraps so there is no flash on refresh.
+The mode cycles light, dark and auto, and is persisted in localStorage. Auto (the default on first visit) follows `prefers-color-scheme`. An inline boot script in `index.html` sets the class before Angular bootstraps so there is no flash on refresh.
 
 ## Picking a brand colour
 

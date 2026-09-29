@@ -61,11 +61,11 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 
 ## Deploy
 
-`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/client/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap references the right URL.
+`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/analog/public/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap references the right URL.
 
 ## Status
 
-v0. Core (markdown rendering, theming, navigation, site frame, authoring components, build pipeline) is in place. Versioning, i18n, library-style API reference, and search adapters are on the roadmap. See [BACKLOG.md](./BACKLOG.md).
+v0. Core (markdown rendering, theming, navigation, site frame, authoring components, build pipeline), Cmd+K search with an opt-in Algolia adapter, a version switcher, and an API reference scaffold are in place. The path to 1.0 is in [ROADMAP.md](./ROADMAP.md).
 
 ## Community
 

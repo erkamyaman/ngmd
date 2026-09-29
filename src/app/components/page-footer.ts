@@ -21,7 +21,7 @@ const RELATED_MAX = 4;
       <footer class="mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-5 pb-10 text-sm">
         @if (related().length && currentSection(); as section) {
           <p
-            class="text-xs font-medium tracking-[0.2em] uppercase text-zinc-400 dark:text-zinc-500 mb-3"
+            class="text-xs font-medium tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-400 mb-3"
           >
             More in {{ section }}
           </p>
@@ -40,7 +40,7 @@ const RELATED_MAX = 4;
         }
 
         @if (prev() || next()) {
-          <nav class="grid gap-3 sm:grid-cols-2">
+          <nav aria-label="Previous and next pages" class="grid gap-3 sm:grid-cols-2">
             @if (prev(); as p) {
               <a
                 [routerLink]="p.href"

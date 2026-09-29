@@ -25,7 +25,7 @@ import {VersionService} from '../services/version/version.service';
   template: `
     @if (banner(); as b) {
       <div
-        class="mb-6 flex items-start gap-3 rounded-lg border px-4 py-3"
+        class="mt-6 flex items-start gap-3 rounded-lg border px-4 py-3"
         [class]="b.containerClass"
       >
         <svg [lucideIcon]="b.icon" class="mt-0.5 size-5 shrink-0" [class]="b.iconClass"></svg>
@@ -40,9 +40,8 @@ import {VersionService} from '../services/version/version.service';
               class="inline-flex items-center gap-1 font-medium text-[color:var(--accent-strong)] underline"
             >
               {{ b.currentLabel }}
-              <svg [lucideIcon]="externalIcon" class="size-3"></svg>
-            </a>
-            .
+              <svg [lucideIcon]="externalIcon" class="size-3"></svg></a
+            >.
           </p>
         </div>
       </div>

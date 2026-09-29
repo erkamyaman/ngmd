@@ -470,7 +470,7 @@
 
   analog-markdown a:hover,
   analog-markdown-route a:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
   }
 
   analog-markdown a:focus-visible,
@@ -544,6 +544,12 @@
     line-height: 1.6;
     display: block;
     overflow-x: auto;
+  }
+
+  analog-markdown table:focus-visible,
+  analog-markdown-route table:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   analog-markdown thead,
@@ -673,7 +679,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--muted) 80%, var(--fg));
     font-family: var(--font-mono);
     transition:
       color 0.15s ease,
@@ -695,7 +701,7 @@
   }
 
   .ngmd-code-group__tab[data-active='true'] {
-    color: var(--accent);
+    color: var(--accent-strong);
     border-bottom-color: var(--accent);
   }
 
@@ -713,7 +719,7 @@
     border: 0;
   }
 
-  /* Shiki dual-theme: github-light by default, github-dark under `.dark`.
+  /* Shiki dual-theme: github-light-default by default, github-dark-default under `.dark`.
    * Shiki emits both --shiki-light and --shiki-dark CSS vars on every span
    * but never picks a default color, so we have to wire both branches. */
   /* Scoped to `.shiki-themes` (only present on dual-theme output, never on
@@ -809,13 +815,13 @@
     background: var(--bg-muted);
     font-family: var(--font-mono);
     font-size: 0.8125rem;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--muted) 80%, var(--fg));
     text-decoration: none;
     transition: color 0.15s ease;
   }
 
   .ngmd-code-import__header:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
   }
 
   .ngmd-code-import pre {

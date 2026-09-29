@@ -26,9 +26,21 @@ export const LANGS = [
 export function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['github-light', 'github-dark'],
+      themes: ['github-light-default', 'github-dark-default'],
       langs: LANGS,
+    }).catch((e: unknown) => {
+      highlighterPromise = null;
+      throw e;
     });
   }
   return highlighterPromise;
+}
+
+export async function highlightCode(code: string, lang: string): Promise<string> {
+  const highlighter = await getHighlighter();
+  return highlighter.codeToHtml(code, {
+    lang: highlighter.getLoadedLanguages().includes(lang) ? lang : 'text',
+    themes: {light: 'github-light-default', dark: 'github-dark-default'},
+    defaultColor: false,
+  });
 }

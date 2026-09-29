@@ -25,34 +25,29 @@ const EXIT_MS = 220;
   selector: 'app-toaster',
   imports: [LucideDynamicIcon],
   template: `
-    @if (toasts().length) {
-      <div
-        class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-[min(90vw,24rem)] pointer-events-none"
-        aria-live="polite"
-        aria-atomic="false"
-      >
-        @for (t of toasts(); track t.id) {
-          <div
-            role="status"
-            class="pointer-events-auto flex items-center gap-2.5 rounded-lg border bg-white dark:bg-zinc-950 px-3 py-2.5 shadow-md text-sm"
-            [class]="variantClass(t.variant) + ' ' + animClass(t.id)"
+    <div
+      class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-[min(90vw,24rem)] pointer-events-none"
+      role="status"
+      aria-live="polite"
+    >
+      @for (t of toasts(); track t.id) {
+        <div
+          class="pointer-events-auto flex items-center gap-2.5 rounded-lg border bg-white dark:bg-zinc-950 px-3 py-2.5 shadow-md text-sm"
+          [class]="variantClass(t.variant) + ' ' + animClass(t.id)"
+        >
+          <svg [lucideIcon]="iconFor(t.variant)" class="size-4 shrink-0"></svg>
+          <span class="flex-1 text-zinc-700 dark:text-zinc-200 leading-snug">{{ t.message }}</span>
+          <button
+            type="button"
+            (click)="requestDismiss(t.id)"
+            class="shrink-0 rounded p-0.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+            aria-label="Dismiss"
           >
-            <svg [lucideIcon]="iconFor(t.variant)" class="size-4 shrink-0"></svg>
-            <span class="flex-1 text-zinc-700 dark:text-zinc-200 leading-snug">{{
-              t.message
-            }}</span>
-            <button
-              type="button"
-              (click)="requestDismiss(t.id)"
-              class="shrink-0 rounded p-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-              aria-label="Dismiss"
-            >
-              <svg [lucideIcon]="closeIcon" class="size-3.5"></svg>
-            </button>
-          </div>
-        }
-      </div>
-    }
+            <svg [lucideIcon]="closeIcon" class="size-3.5"></svg>
+          </button>
+        </div>
+      }
+    </div>
   `,
 })
 export class Toaster {

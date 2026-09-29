@@ -1,6 +1,7 @@
-import {readdirSync, readFileSync, statSync} from 'node:fs';
-import {extname, join, relative} from 'node:path';
+import {readFileSync, statSync} from 'node:fs';
+import {extname, join} from 'node:path';
 import type {Plugin} from 'vite';
+import {walkContentFiles} from './plugin-utils.ts';
 import {substituteMdVars} from './vars.plugin.ts';
 
 /**
@@ -26,18 +27,16 @@ export function rawMdPlugin(): Plugin {
     const route = rawPath.slice(0, -3).replace(/^\//, '');
     if (!route) return null;
     if (route.includes('..')) return null;
-    const abs = join(root, 'src/content', `${route}.md`);
-    try {
-      const s = statSync(abs);
-      if (!s.isFile()) return null;
-    } catch {
-      return null;
+    for (const file of [`${route}.md`, `${route}/index.md`]) {
+      const abs = join(root, 'src/content', file);
+      try {
+        if (!statSync(abs).isFile()) continue;
+        return substituteMdVars(readFileSync(abs, 'utf8'), root);
+      } catch {
+        continue;
+      }
     }
-    try {
-      return substituteMdVars(readFileSync(abs, 'utf8'), root);
-    } catch {
-      return null;
-    }
+    return null;
   }
 
   return {
@@ -70,30 +69,23 @@ export function rawMdPlugin(): Plugin {
       // Emit one `<route>.md` asset per markdown source so the same URL
       // works in production. Mirrors the dev middleware.
       const contentDir = join(root, 'src/content');
-
-      const walk = (dir: string): string[] => {
-        const out: string[] = [];
-        for (const entry of readdirSync(dir, {withFileTypes: true})) {
-          const full = join(dir, entry.name);
-          if (entry.isDirectory()) out.push(...walk(full));
-          else if (entry.isFile() && entry.name.endsWith('.md')) out.push(full);
-        }
-        return out;
-      };
-
       try {
         statSync(contentDir);
       } catch {
         return;
       }
-      for (const file of walk(contentDir)) {
-        const route = relative(contentDir, file).replace(/\\/g, '/');
-        const body = substituteMdVars(readFileSync(file, 'utf8'), root);
-        this.emitFile({
-          type: 'asset',
-          fileName: route,
-          source: body,
-        });
+      const files = walkContentFiles(contentDir, contentDir).map(([rel, route]) => [
+        rel.replace(/\\/g, '/'),
+        route,
+      ]);
+      const sources = new Set(files.map(([rel]) => rel));
+      for (const [rel, route] of files) {
+        const source = substituteMdVars(readFileSync(join(contentDir, rel), 'utf8'), root);
+        this.emitFile({type: 'asset', fileName: rel, source});
+        const alias = `${route.slice(1)}.md`;
+        if (route !== '/' && !sources.has(alias)) {
+          this.emitFile({type: 'asset', fileName: alias, source});
+        }
       }
     },
   };

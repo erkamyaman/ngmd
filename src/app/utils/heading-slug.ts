@@ -7,11 +7,15 @@
  * `.`, `_`, `*`, spaces, etc.) into a single `-`, then trim outer hyphens.
  */
 export function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+  return (
+    s
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'section'
+  );
 }
 
 export function createSlugger(): (text: string) => string {
@@ -49,7 +53,8 @@ export function headingText(markdown: string): string {
     .replace(/<ngmd-badge\b[^>]*>[\s\S]*?<\/ngmd-badge>/g, '')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]+>/g, '')
-    .replace(/&#(\d+);/g, (_, n: string) => String.fromCharCode(Number(n)))
+    .replace(/&#(\d+);/g, (_, n: string) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n: string) => String.fromCodePoint(parseInt(n, 16)))
     .replace(/&(amp|lt|gt|quot|apos|nbsp);/g, (_, e: string) => ENTITIES[e])
     .replace(/\u0000(\d+)\u0000/g, (_, i: string) => code[Number(i)])
     .trim();

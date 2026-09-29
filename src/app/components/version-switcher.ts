@@ -1,4 +1,4 @@
-import {Component, computed, ElementRef, HostListener, inject, signal} from '@angular/core';
+import {Component, computed, ElementRef, inject, signal, viewChild} from '@angular/core';
 import {
   LucideDynamicIcon,
   LucideCheck,
@@ -23,15 +23,22 @@ import {VersionService} from '../services/version/version.service';
  */
 @Component({
   selector: 'app-version-switcher',
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+    '(document:keydown.escape)': 'onEscape()',
+    '(focusout)': 'onFocusOut($event)',
+  },
   imports: [LucideDynamicIcon],
   template: `
     @if (visible()) {
       <div class="relative">
         <button
+          #trigger
           type="button"
           (click)="toggle()"
           [attr.aria-expanded]="open()"
-          aria-haspopup="listbox"
+          aria-controls="ngmd-version-list"
+          [attr.aria-label]="'Documentation version: ' + triggerLabel()"
           class="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-2.5 py-1 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800"
         >
           {{ triggerLabel() }}
@@ -39,15 +46,14 @@ import {VersionService} from '../services/version/version.service';
         </button>
         @if (open()) {
           <ul
-            role="listbox"
+            id="ngmd-version-list"
             class="absolute right-0 top-[calc(100%+0.375rem)] z-40 min-w-52 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-1 shadow-lg"
           >
             @for (entry of list(); track entry.label) {
-              <li role="presentation">
+              <li>
                 @if (entry.label === selfLabel()) {
                   <span
-                    role="option"
-                    aria-selected="true"
+                    aria-current="true"
                     class="flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left text-sm bg-zinc-50 dark:bg-zinc-900"
                   >
                     <span class="flex items-center gap-2">
@@ -63,8 +69,6 @@ import {VersionService} from '../services/version/version.service';
                   </span>
                 } @else {
                   <a
-                    role="option"
-                    aria-selected="false"
                     [href]="entry.url"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -94,6 +98,7 @@ import {VersionService} from '../services/version/version.service';
 export class VersionSwitcher {
   private readonly versions = inject(VersionService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly trigger = viewChild<ElementRef<HTMLButtonElement>>('trigger');
 
   readonly chevronIcon = LucideChevronDown;
   readonly checkIcon = LucideCheck;
@@ -131,7 +136,6 @@ export class VersionSwitcher {
     return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500';
   }
 
-  @HostListener('document:click', ['$event'])
   protected onDocumentClick(event: MouseEvent): void {
     if (!this.open()) return;
     if (!this.host.nativeElement.contains(event.target as Node)) {
@@ -139,8 +143,14 @@ export class VersionSwitcher {
     }
   }
 
-  @HostListener('document:keydown.escape')
+  protected onFocusOut(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    if (next && !this.host.nativeElement.contains(next)) this.open.set(false);
+  }
+
   protected onEscape(): void {
+    if (!this.open()) return;
     this.open.set(false);
+    this.trigger()?.nativeElement.focus();
   }
 }

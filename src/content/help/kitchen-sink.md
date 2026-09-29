@@ -217,7 +217,7 @@ Text between alerts.
 
 ### Every icon
 
-<ngmd-card-grid columns="4">
+<ngmd-card-grid columns="3">
   <ngmd-card icon="book" title="book"></ngmd-card>
   <ngmd-card icon="box" title="box"></ngmd-card>
   <ngmd-card icon="code" title="code"></ngmd-card>
@@ -279,7 +279,9 @@ Text between alerts.
 
 ### Image
 
-<ngmd-image src="/logo.svg" alt="The NgMd logo" caption="An image with a caption." width="640"></ngmd-image>
+<ngmd-image src="/images/cats.jpg" alt="Two tabby kittens, Angular and Excel, looking up, one sitting in a flower pot" width="360"></ngmd-image>
+
+<p style="max-width: 360px; margin-top: -1rem; text-align: center; font-size: 0.875rem; color: var(--muted)">Say hi to <a href="https://github.com/erkamyaman" target="_blank" rel="noopener noreferrer">my</a> cats Angular and Excel 👋</p>
 
 ### Video
 

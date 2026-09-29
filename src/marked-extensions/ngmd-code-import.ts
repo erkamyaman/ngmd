@@ -1,7 +1,8 @@
 import {readFileSync} from 'node:fs';
 import type {MarkedExtension} from 'marked';
-import {getHighlighter, LANGS} from './shiki-shared.ts';
+import {highlightCode} from './shiki-shared.ts';
 import {escapeHtml} from './escape-html.ts';
+import {findFences, getAttr, replaceFences} from './fences.ts';
 import {resolveInside} from '../../plugin-utils.ts';
 import config from '../ngmd.config.ts';
 
@@ -25,23 +26,24 @@ import config from '../ngmd.config.ts';
  * self-contained HTML block — marked never sees the inner fence.
  */
 
-const FENCE_RE = /^(`{3,})([\w-]+)?[\t ]+file="([^"]+)"[^\n]*\n(?:([\s\S]*?)\n)?\1`*$/gm;
 const IGNORE_LINE_RE = /^.*\/\/\s*ngmd-ignore-line\s*$/;
 
 function loadFile(spec: string): {code: string; rangeFragment: string} {
   const [path, range] = spec.split('#');
-  let content = readFileSync(resolveInside(process.cwd(), path), 'utf8');
+  let content = readFileSync(resolveInside(process.cwd(), path), 'utf8').replace(/\r\n?/g, '\n');
 
   let rangeFragment = '';
   if (range) {
     const m = range.match(/^L(\d+)(?:-L?(\d+))?$/);
-    if (m) {
-      const start = parseInt(m[1], 10);
-      const end = m[2] ? parseInt(m[2], 10) : start;
-      const lines = content.split('\n');
-      content = lines.slice(start - 1, end).join('\n');
-      rangeFragment = m[2] ? `#L${start}-L${end}` : `#L${start}`;
+    if (!m) throw new Error(`invalid line range "#${range}", expected #L5 or #L5-L20`);
+    const start = parseInt(m[1], 10);
+    const end = m[2] ? parseInt(m[2], 10) : start;
+    const lines = content.replace(/\n$/, '').split('\n');
+    if (start < 1 || end < start || end > lines.length) {
+      throw new Error(`line range "#${range}" does not fit the file's ${lines.length} lines`);
     }
+    content = lines.slice(start - 1, end).join('\n');
+    rangeFragment = m[2] ? `#L${start}-L${end}` : `#L${start}`;
   }
 
   const filtered = content
@@ -56,14 +58,13 @@ function githubBlobUrl(filePath: string, rangeFragment: string): string {
   const repo = config.site.githubUrl.replace(/\.git$/, '');
   // encodeURI keeps `/` and `.` as-is but escapes brackets, so paths like
   // `src/app/pages/[...slug].page.ts` resolve on GitHub instead of breaking.
-  return `${repo}/blob/main/${encodeURI(filePath)}${rangeFragment}`;
+  const dir = config.site.githubDir ? `${config.site.githubDir.replace(/^\/+|\/+$/g, '')}/` : '';
+  return `${repo}/blob/${config.site.githubBranch ?? 'main'}/${dir}${encodeURI(filePath)}${rangeFragment}`;
 }
 
 export const ngmdCodeImportExtension: MarkedExtension = {
   hooks: {
     async preprocess(markdown: string): Promise<string> {
-      if (!/^`{3,}[\w-]*[\t ]+file="/m.test(markdown)) return markdown;
-
       const matches: {
         start: number;
         end: number;
@@ -73,17 +74,15 @@ export const ngmdCodeImportExtension: MarkedExtension = {
         code: string;
       }[] = [];
 
-      const re = new RegExp(FENCE_RE.source, FENCE_RE.flags);
-      let m: RegExpExecArray | null;
-      while ((m = re.exec(markdown)) !== null) {
-        const lang = m[2] ?? '';
-        const spec = m[3];
+      for (const f of findFences(markdown)) {
+        const spec = getAttr(f.attrs, 'file');
+        if (!spec) continue;
         try {
           const {code, rangeFragment} = loadFile(spec);
           matches.push({
-            start: m.index,
-            end: m.index + m[0].length,
-            lang,
+            start: f.start,
+            end: f.end,
+            lang: f.lang,
             filePath: spec.split('#')[0],
             rangeFragment,
             code,
@@ -95,25 +94,15 @@ export const ngmdCodeImportExtension: MarkedExtension = {
       }
       if (matches.length === 0) return markdown;
 
-      const highlighter = await getHighlighter();
-      const renders = matches.map((mt) => {
-        const safeLang = LANGS.includes(mt.lang) ? mt.lang : 'text';
-        const codeHtml = highlighter.codeToHtml(mt.code, {
-          lang: safeLang,
-          themes: {light: 'github-light', dark: 'github-dark'},
-          defaultColor: false,
-        });
-        const headerLabel = mt.filePath + (mt.rangeFragment || '');
-        const headerHtml = `<a class="ngmd-code-import__header" href="${escapeHtml(githubBlobUrl(mt.filePath, mt.rangeFragment))}" target="_blank" rel="noopener noreferrer">${escapeHtml(headerLabel)}</a>`;
-        return `<div class="ngmd-code-import">${headerHtml}${codeHtml}</div>`;
-      });
-
-      let result = markdown;
-      for (let i = matches.length - 1; i >= 0; i--) {
-        const mt = matches[i];
-        result = result.slice(0, mt.start) + `\n\n${renders[i]}\n\n` + result.slice(mt.end);
-      }
-      return result;
+      const renders = await Promise.all(
+        matches.map(async (mt) => {
+          const codeHtml = await highlightCode(mt.code, mt.lang);
+          const headerLabel = mt.filePath + (mt.rangeFragment || '');
+          const headerHtml = `<a class="ngmd-code-import__header" href="${escapeHtml(githubBlobUrl(mt.filePath, mt.rangeFragment))}" target="_blank" rel="noopener noreferrer">${escapeHtml(headerLabel)}</a>`;
+          return `<div class="ngmd-code-import">${headerHtml}${codeHtml}</div>`;
+        }),
+      );
+      return replaceFences(markdown, matches, renders);
     },
   },
 };

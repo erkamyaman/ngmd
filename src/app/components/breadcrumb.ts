@@ -1,6 +1,7 @@
 import {Component, computed, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {LucideDynamicIcon, LucideChevronRight, LucideHouse} from '@lucide/angular';
+import {navItems} from '../../ngmd.config';
 import {RouteUrlService} from '../services/route-url/route-url.service';
 
 interface Crumb {
@@ -8,19 +9,14 @@ interface Crumb {
   href: string;
 }
 
-const LABELS: Record<string, string> = {
-  '': 'Home',
-  welcome: 'Introduction',
-  'getting-started': 'Getting Started',
-  installation: 'Installation',
-  'quick-start': 'Quick Start',
-  introduction: 'Introduction',
-  about: 'About & Credits',
-  concepts: 'Core Concepts',
-  'markdown-routes': 'Markdown Routes',
-  theming: 'Theming',
-  components: 'Components',
-};
+export function crumbLabel(href: string): string | null {
+  const item = navItems.find((n) => n.href === href);
+  if (item) return item.label;
+  const sections = new Set(
+    navItems.filter((n) => n.href.startsWith(href + '/')).map((n) => n.section),
+  );
+  return sections.size === 1 ? [...sections][0] : null;
+}
 
 @Component({
   selector: 'app-breadcrumb',
@@ -28,19 +24,30 @@ const LABELS: Record<string, string> = {
   template: `
     @if (crumbs().length > 0) {
       <nav
-        class="flex items-center gap-1.5 px-6 py-3 text-sm border-b border-zinc-200 dark:border-zinc-800"
+        aria-label="Breadcrumb"
+        class="px-6 py-3 text-sm border-b border-zinc-200 dark:border-zinc-800"
       >
-        <a routerLink="/" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50">
-          <svg [lucideIcon]="home" class="size-4"></svg>
-        </a>
-        @for (crumb of crumbs(); track crumb.href; let last = $last) {
-          <svg [lucideIcon]="chevron" class="size-3.5 text-zinc-400"></svg>
-          @if (last) {
-            <span class="font-medium">{{ crumb.label }}</span>
-          } @else {
-            <span class="text-zinc-500">{{ crumb.label }}</span>
+        <ol class="flex flex-wrap items-center gap-1.5">
+          <li class="flex">
+            <a
+              routerLink="/"
+              aria-label="Home"
+              class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
+            >
+              <svg [lucideIcon]="home" class="size-4"></svg>
+            </a>
+          </li>
+          @for (crumb of crumbs(); track crumb.href; let last = $last) {
+            <li class="flex items-center gap-1.5">
+              <svg [lucideIcon]="chevron" class="size-3.5 text-zinc-400"></svg>
+              @if (last) {
+                <span class="font-medium" aria-current="page">{{ crumb.label }}</span>
+              } @else {
+                <span class="text-zinc-500 dark:text-zinc-400">{{ crumb.label }}</span>
+              }
+            </li>
           }
-        }
+        </ol>
       </nav>
     }
   `,
@@ -54,10 +61,10 @@ export class Breadcrumb {
     const segments = this.cleanUrl()
       .split('/')
       .filter((s) => s.length > 0);
-    return segments.map((segment, i) => ({
-      label: LABELS[segment] ?? this.humanize(segment),
-      href: '/' + segments.slice(0, i + 1).join('/'),
-    }));
+    return segments.map((segment, i) => {
+      const href = '/' + segments.slice(0, i + 1).join('/');
+      return {href, label: crumbLabel(href) ?? this.humanize(segment)};
+    });
   });
 
   private humanize(segment: string): string {

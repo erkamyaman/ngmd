@@ -31,10 +31,10 @@ Open `http://localhost:5173`.
 A working AnalogJS + Tailwind v4 + Shiki docs site with:
 
 - File-based markdown routes — drop `.md` under `src/content/`, get a route
-- Authoring components: accordion, alert, badge, callout, card, card-grid, code-block, hero, image, pill, pill-row, step, tab, tabs, video, workflow (all under `src/app/ui/`)
+- Seventeen authoring components: accordion, accordion-item, alert, badge, callout, card, card-grid, code-block, hero, image, pill, pill-row, step, tab, tabs, video, workflow (all under `src/app/ui/`)
 - Toast notifications via `ToastService`
 - Sticky translucent header, sidebar, breadcrumb, scroll-spy TOC, Cmd+K palette
-- Per-page footer: prev/next navigation, edit-on-github, last-updated
+- Per-page prev/next navigation, edit-on-GitHub and view-source actions
 - Heading anchor copy buttons, code-block copy buttons
 - Build-time link guards (external + internal)
 - Sitemap + robots.txt auto-generated
@@ -48,14 +48,14 @@ See the [NgMd repo](https://github.com/erkamyaman/ngmd) for the feature list.
 
 1. Edit `src/content/welcome.md` to make the first page your own.
 2. Edit `src/ngmd.config.ts` to set brand name, navigation, and accent.
-3. Drop more `.md` files in `src/app/pages/` or `src/content/`.
-4. Build with `pnpm run build`, deploy `dist/` to any static host.
+3. Drop more `.md` files in `src/content/`, or `.page.ts` components in `src/app/pages/`.
+4. Build with `pnpm run build` and deploy `dist/analog/public/` to any static host (with a fallback to `/index.html`), or run `dist/analog/server/` on Node.
 
 Inside a monorepo, keep the scaffolded `.prettierrc.json` and `.prettierignore` in the NgMd folder. Otherwise the root Prettier config reformats NgMd's files (bracket spacing, for example) and they drift from upstream.
 
 ## How it works
 
-`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand, `index.html` title) so the new project matches the name you passed.
+`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand and GitHub URL, `index.html` title, `README.md` heading) so the new project matches the name you passed. It refuses a non-empty target directory, and does not install dependencies or run `git init`.
 
 `template/` is generated from the parent ngmd repo by `build-template.mjs` and is git-ignored. The `prepublishOnly` script regenerates it before every publish, so the npm artifact always carries an up-to-date starter.
 

@@ -37,7 +37,7 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
     For missing markdown affordances. Runtime extensions live under <code>src/marked-extensions/</code>.
   </ngmd-card>
   <ngmd-card icon="wrench" title="Build-pipeline improvements">
-    Smarter link guards, sitemap entries, page-meta hooks, API auto-gen. Six user-visible Vite plugins live at the repo root (<code>link-guard</code>, <code>page-meta</code>, <code>sitemap</code>, <code>raw-md</code>, <code>search-index</code>, <code>api-gen</code>); the external-link guard lives inline in <code>vite.config.ts</code> and <code>vars</code> is repo-only.
+    Smarter link guards, sitemap entries, page-meta hooks, API auto-gen. Six user-visible Vite plugins live at the repo root (<code>link-guard</code>, <code>page-meta</code>, <code>sitemap</code>, <code>raw-md</code>, <code>search-index</code>, <code>api-gen</code>); the external-link guard lives inline in <code>vite.config.ts</code>, and <code>vars</code> substitutes the version token in markdown.
   </ngmd-card>
   <ngmd-card icon="file" title="Doc edits">
     Match the prose voice (no marketing fluff, terse, direct). Read the surrounding paragraphs first.
@@ -56,10 +56,11 @@ Bug fixes, new authoring components, marked extensions, build-pipeline improveme
 ## Before pushing
 
 1. **`pnpm run build` passes locally.** Link guards, page-meta, and sitemap all run at build time.
-2. **`pnpm format:check` is clean.** Prettier config mirrors the Angular monorepo. Run `pnpm format` to auto-fix.
-3. **Manual smoke test** in the dev server: load the affected route, navigate, toggle dark mode.
-4. **No `console.log`** left in committed code.
-5. **Commit message** follows the existing log style: `<type>: short imperative summary` (`feat`, `fix`, `docs`, `refactor`, `build`, `chore`).
+2. **`pnpm exec vitest run` passes.** CI runs the tests on every push and pull request.
+3. **`pnpm format:check` is clean.** Prettier config mirrors the Angular monorepo. Run `pnpm format` to auto-fix.
+4. **Manual smoke test** in the dev server: load the affected route, navigate, toggle dark mode.
+5. **No `console.log`** left in committed code.
+6. **Commit message** follows the existing log style: `<type>: short imperative summary` (`feat`, `fix`, `docs`, `refactor`, `build`, `chore`).
 
 ## Where to next
 

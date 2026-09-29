@@ -1,9 +1,9 @@
-import {Component, input} from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 
 @Component({
   selector: 'ngmd-image',
   template: `
-    <figure class="mx-0" [style.max-width]="width()">
+    <figure class="mx-0" [style.max-width]="maxWidth()">
       <img
         [src]="src()"
         [alt]="alt()"
@@ -23,4 +23,9 @@ export class NgmdImage {
   readonly alt = input<string>('');
   readonly caption = input<string>('');
   readonly width = input<string>('');
+
+  protected readonly maxWidth = computed(() => {
+    const width = this.width().trim();
+    return /^\d+(\.\d+)?$/.test(width) ? `${width}px` : width || null;
+  });
 }

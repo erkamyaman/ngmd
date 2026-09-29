@@ -1,6 +1,6 @@
 # Road to 1.0
 
-What needs to land between 0.1.7 (current) and a 1.0 release. Companion to [BACKLOG.md](BACKLOG.md) (menu of every candidate feature) and [PLAN.md](PLAN.md) (concrete work plan for the next sprint).
+What needs to land between 0.4.4 (current) and a 1.0 release. Companion to [BACKLOG.md](BACKLOG.md) (menu of every candidate feature) and [PLAN.md](PLAN.md) (concrete work plan for the next sprint).
 
 The framing: 1.0 is the release where NgMd stops being "the docs starter for Angular apps" and becomes "the docs starter for any Angular project, including the libraries". That means we ship three load-bearing features, declare the public surface stable, hit a real quality bar, and bundle the polish that every modern docs site is judged against.
 
@@ -10,7 +10,7 @@ Estimated runway: 4-5 months of focused work.
 
 ## 1. Load-bearing features
 
-The two things missing from 0.1.7 that block 1.0.
+The two things that were missing from 0.1.7. Both shipped in 0.2.0: the API reference as a scaffold (index page, per-symbol pages, palette search), and the version switcher as described in 1.2. The design notes below are kept for the remaining API work.
 
 ### 1.1 API reference auto-generation
 
@@ -101,7 +101,7 @@ Document every token with its semantic role on `/concepts/theming`. No renames w
 
 ### 2.3 Build plugin freeze
 
-Treat the six plugin signatures (`pageMetaPlugin`, `internalLinkGuard`, `externalLinkGuard`, `sitemapPlugin`, `searchIndexPlugin`, `rawMdPlugin`) as public API. Anyone scaffolding can rely on them. Document on `/stack/installation`.
+Treat the eight plugin signatures (`pageMetaPlugin`, `internalLinkGuard`, `externalLinkGuard`, `sitemapPlugin`, `searchIndexPlugin`, `rawMdPlugin`, `varsPlugin`, `apiGenPlugin`) as public API. Anyone scaffolding can rely on them. Document on `/stack/installation`.
 
 ### 2.4 Migration guide
 
@@ -175,9 +175,9 @@ Explicitly not in scope. Documented here so they stop being asked about for 1.0.
 
 Suggested order. Items in the same sprint can be parallelised by a single maintainer over their respective weeks; the boundaries between sprints are barriers because each leans on the previous.
 
-### Sprint 1: versioned docs (1-2 weeks)
+### Sprint 1: versioned docs (done in 0.2.0)
 
-Rework the catch-all to parse `/v/<version>/` prefixes. Add the version switcher, version-aware sidebar (`navByVersion`), archived banner, redirect from unversioned URLs, and per-version sitemap entries.
+Shipped as the external-deployment switcher from 1.2, with the status banner. No `/v/<version>/` routing.
 
 ### Sprint 2: API reference auto-generation (3 weeks)
 
@@ -208,7 +208,7 @@ Total: ~11-13 weeks.
 A release qualifies as 1.0 when all of the following are true.
 
 - [ ] API reference auto-generation shipped, with at least one real Angular library using it end-to-end as a smoke test
-- [ ] Versioned docs shipped (multi-version routing, switcher, sidebar configs)
+- [x] Versioned docs shipped (switcher over per-version deployments, status banner)
 - [ ] NgmdUi inputs, CSS tokens, plugin signatures all frozen and documented as stable
 - [ ] Migration guide from 0.1.7 published
 - [ ] Test coverage on every NgmdUi component + integration on routing + Playwright golden path + API auto-gen fixtures

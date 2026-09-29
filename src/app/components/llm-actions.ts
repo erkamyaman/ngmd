@@ -1,4 +1,14 @@
-import {Component, DestroyRef, HostListener, computed, inject, signal} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   LucideDynamicIcon,
   type LucideIcon,
@@ -43,6 +53,10 @@ interface MenuItem {
  */
 @Component({
   selector: 'app-llm-actions',
+  host: {
+    '(document:click)': 'close()',
+    '(document:keydown.escape)': 'onEscape()',
+  },
   imports: [LucideDynamicIcon, GithubIcon, ClaudeIcon, OpenaiIcon],
   template: `
     @if (hasMdSource()) {
@@ -64,6 +78,7 @@ interface MenuItem {
             <span>{{ copied() ? 'Copied!' : 'Copy Markdown' }}</span>
           </button>
           <button
+            #trigger
             type="button"
             (click)="toggle($event)"
             class="inline-flex items-center px-1.5 border-l border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
@@ -80,8 +95,11 @@ interface MenuItem {
         </div>
         @if (open()) {
           <div
+            #menu
             role="menu"
+            aria-label="Markdown actions"
             (click)="$event.stopPropagation()"
+            (keydown)="onMenuKeydown($event)"
             class="absolute right-0 mt-1 z-20 w-56 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-lg overflow-hidden text-sm"
           >
             @for (item of items(); track item.label) {
@@ -92,7 +110,7 @@ interface MenuItem {
                   target="_blank"
                   rel="noopener noreferrer"
                   class="flex items-center gap-2.5 px-3 py-2 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-                  (click)="close()"
+                  (click)="dismiss()"
                 >
                   @switch (item.icon) {
                     @case ('github') {
@@ -143,6 +161,9 @@ interface MenuItem {
 })
 export class LlmActions {
   private readonly toast = inject(ToastService);
+  private readonly injector = inject(Injector);
+  private readonly trigger = viewChild<ElementRef<HTMLButtonElement>>('trigger');
+  private readonly menu = viewChild<ElementRef<HTMLElement>>('menu');
   private readonly cleanUrl = inject(RouteUrlService).cleanUrl;
   private copiedTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -176,14 +197,14 @@ export class LlmActions {
    * dead `.md` URL. */
   protected readonly hasMdSource = computed(() => {
     const edit = this.editUrl();
-    return !!edit && /\/src\/content\/.+\.md$/.test(edit);
+    return !!edit && this.cleanUrl() !== '/' && /\/src\/content\/.+\.md$/.test(edit);
   });
 
   /** Permalink to the raw `.md`. Built from the current pathname + `.md`,
    * served by `raw-md.plugin.ts` in dev and emitted as a static asset in
    * production. Absolute (with origin) so LLM URLs are shareable. */
   protected readonly mdUrl = computed(() => {
-    const path = this.cleanUrl();
+    const path = this.cleanUrl().replace(/\/+$/, '');
     if (typeof window === 'undefined') return `${path}.md`;
     return `${window.location.origin}${path}.md`;
   });
@@ -210,6 +231,50 @@ export class LlmActions {
   toggle(event: Event): void {
     event.stopPropagation();
     this.open.update((v) => !v);
+    if (!this.open()) return;
+    afterNextRender(() => this.menuItems()[0]?.focus(), {injector: this.injector});
+  }
+
+  protected onMenuKeydown(event: KeyboardEvent): void {
+    const items = this.menuItems();
+    const index = items.indexOf(event.target as HTMLElement);
+    let next: number;
+    switch (event.key) {
+      case 'ArrowDown':
+        next = (index + 1) % items.length;
+        break;
+      case 'ArrowUp':
+        next = (index - 1 + items.length) % items.length;
+        break;
+      case 'Home':
+        next = 0;
+        break;
+      case 'End':
+        next = items.length - 1;
+        break;
+      case 'Tab':
+        this.close();
+        return;
+      default:
+        return;
+    }
+    event.preventDefault();
+    items[next]?.focus();
+  }
+
+  protected onEscape(): void {
+    if (this.open()) this.dismiss();
+  }
+
+  protected dismiss(): void {
+    this.close();
+    this.trigger()?.nativeElement.focus();
+  }
+
+  private menuItems(): HTMLElement[] {
+    return [
+      ...(this.menu()?.nativeElement.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []),
+    ];
   }
 
   /** Main split-button action: copies the markdown directly and flashes a
@@ -225,6 +290,7 @@ export class LlmActions {
       this.toast.error('Could not copy markdown.');
       return;
     }
+    this.toast.success('Markdown copied to clipboard.');
     this.copied.set(true);
     this.clearCopiedTimer();
     this.copiedTimer = setTimeout(() => this.copied.set(false), 1500);
@@ -238,16 +304,8 @@ export class LlmActions {
     try {
       await fn();
     } finally {
-      this.close();
+      this.dismiss();
     }
-  }
-
-  @HostListener('document:click') onDocClick(): void {
-    if (this.open()) this.close();
-  }
-
-  @HostListener('document:keydown.escape') onEsc(): void {
-    if (this.open()) this.close();
   }
 
   private async copyMarkdown(): Promise<boolean> {

@@ -32,9 +32,12 @@ export class RouteUrlService {
   readonly cleanUrl = computed(() => stripUrl(this.url()));
 }
 
-/** Strip query + fragment from a URL string. Exported for non-component
+/** Strip query, fragment and trailing slash from a URL string. Exported for non-component
  * consumers (e.g. `NgmdTitleStrategy`) that work with the snapshot URL
  * directly and don't need the signal. */
 export function stripUrl(url: string): string {
-  return url.split('?')[0].split('#')[0];
+  return url
+    .split('?')[0]
+    .split('#')[0]
+    .replace(/(.)\/+$/, '$1');
 }

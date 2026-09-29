@@ -22,16 +22,22 @@ export {ngmdRuntimeExtensions};
 // never resolves their `node:fs` / `shiki` imports. The async getter is
 // called by `vite.config.ts` (Node context) only.
 export async function getBuildExtensions(): Promise<MarkedExtension[]> {
-  const [{ngmdCodeImportExtension}, {ngmdCodeGroupExtension}, {ngmdCodeHighlightExtension}] =
-    await Promise.all([
-      import('./ngmd-code-import.ts'),
-      import('./ngmd-code-group.ts'),
-      import('./ngmd-code-highlight.ts'),
-    ]);
+  const [
+    {ngmdCodeImportExtension},
+    {ngmdCodeGroupExtension},
+    {ngmdCodeHighlightExtension},
+    {substituteMdVars},
+  ] = await Promise.all([
+    import('./ngmd-code-import.ts'),
+    import('./ngmd-code-group.ts'),
+    import('./ngmd-code-highlight.ts'),
+    import('../../vars.plugin.ts'),
+  ]);
   return [
     ...ngmdRuntimeExtensions,
     ngmdCodeImportExtension,
     ngmdCodeGroupExtension,
     ngmdCodeHighlightExtension,
+    {hooks: {preprocess: (markdown: string) => substituteMdVars(markdown)}},
   ];
 }

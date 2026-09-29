@@ -60,7 +60,7 @@ export class MediaEnhancer implements AfterViewInit {
     // Replace the placeholder with an actual <figure>
     const figure = document.createElement('figure');
     figure.className = 'ngmd-image';
-    if (width) figure.style.maxWidth = width;
+    if (width) figure.style.maxWidth = /^\d+(\.\d+)?$/.test(width) ? `${width}px` : width;
 
     const img = document.createElement('img');
     img.src = src;

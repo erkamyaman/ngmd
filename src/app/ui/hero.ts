@@ -12,13 +12,13 @@ import {Component, computed, input} from '@angular/core';
         @if (logo()) {
           <img [src]="logo()" alt="" aria-hidden="true" class="size-9 sm:size-10 object-contain" />
         }
-        <h1
+        <p
           class="text-3xl sm:text-4xl font-bold tracking-tight m-0"
           [class]="titleClass()"
           [style.background-image]="gradient() ? 'var(--accent-gradient)' : null"
         >
           {{ title() }}
-        </h1>
+        </p>
       </div>
       <div
         class="text-base sm:text-lg leading-relaxed max-w-prose [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"

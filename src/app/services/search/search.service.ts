@@ -88,8 +88,10 @@ export class SearchService {
       (next === undefined && this.query().trim() ? prev?.value : next) ?? [],
   });
 
-  /** True while the resource has a request in flight. */
-  readonly loading: Signal<boolean> = this.resultsResource.isLoading;
+  /** True while the query is debouncing or the resource has a request in flight. */
+  readonly loading = computed(
+    () => this.resultsResource.isLoading() || this.debouncedQuery() !== this.query().trim(),
+  );
 
   /** Most-recently navigated hits, newest first. */
   readonly history: Signal<HistoryItem[]> = this.historyState.asReadonly();
@@ -154,10 +156,15 @@ export class SearchService {
   toggleFavorite(url: string): void {
     if (!this.isBrowser) return;
     this.historyState.update((items) => {
-      const flipped = items.map((h) => (h.url === url ? {...h, isFavorite: !h.isFavorite} : h));
-      const favorites = flipped.filter((h) => h.isFavorite);
-      const recents = flipped.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
-      return [...favorites, ...recents];
+      const target = items.find((h) => h.url === url);
+      if (!target) return items;
+      const flipped = {...target, isFavorite: !target.isFavorite};
+      const others = items.filter((h) => h !== target);
+      const favorites = others.filter((h) => h.isFavorite);
+      const recents = others.filter((h) => !h.isFavorite);
+      return flipped.isFavorite
+        ? [flipped, ...favorites, ...recents.slice(0, HISTORY_MAX)]
+        : [...favorites, flipped, ...recents].slice(0, favorites.length + HISTORY_MAX);
     });
     this.persistHistory();
   }
@@ -216,18 +223,31 @@ export class SearchService {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
       if (!raw) return;
-      const parsed = JSON.parse(raw) as HistoryItem[];
+      const parsed: unknown = JSON.parse(raw);
       if (!Array.isArray(parsed)) return;
+      const urls = new Set<string>();
+      const valid = parsed.filter((h): h is HistoryItem => {
+        const ok =
+          typeof h?.url === 'string' &&
+          typeof h.id === 'string' &&
+          typeof h.labelHtml === 'string' &&
+          typeof h.subLabelHtml === 'string' &&
+          !urls.has(h.url);
+        if (ok) urls.add(h.url);
+        return ok;
+      });
       // Preserve every favourite (never capped — users pinned them on
       // purpose), only trim non-favourites to HISTORY_MAX. Otherwise a
       // user with >10 pinned items would silently lose anything past
       // the first 10 on the next page load.
-      const favourites = parsed.filter((h) => h.isFavorite);
-      const recents = parsed.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
+      const favourites = valid.filter((h) => h.isFavorite);
+      const recents = valid.filter((h) => !h.isFavorite).slice(0, HISTORY_MAX);
       this.historyState.set([...favourites, ...recents]);
     } catch {
       // Corrupt entry — wipe and move on.
-      localStorage.removeItem(HISTORY_KEY);
+      try {
+        localStorage.removeItem(HISTORY_KEY);
+      } catch {}
     }
   }
 

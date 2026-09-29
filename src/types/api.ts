@@ -50,3 +50,7 @@ export interface SymbolRecord {
   badges: string[];
   group: string;
 }
+
+export function symbolUrl(sym: Pick<SymbolRecord, 'group' | 'name'>): string {
+  return `/api/${encodeURIComponent(sym.group)}/${encodeURIComponent(sym.name)}`;
+}

@@ -6,7 +6,29 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## 0.4.3 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.5.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+A full review of every component, plugin and page, tested in a real browser. Every page now passes axe (WCAG 2.2 AA).
+
+**Accessibility.** The command palette is a proper dialog and combobox: focus moves into it and back, arrow keys, Home and End work, and results are announced. The mobile drawer traps focus, locks page scroll and closes on Escape or resize. The Copy Markdown menu, version switcher, code-group tabs and `<ngmd-tabs>` are fully keyboard operable. Breadcrumbs and landmarks are labelled, toasts are announced, wide tables can be scrolled by keyboard, and the hero title no longer adds a second `<h1>`. Contrast is fixed across alerts, badges, cards, pills, tabs, the TOC and the home page, and code blocks use the `github-light-default` and `github-dark-default` themes, which pass AA.
+
+**TOC.** The active heading comes from the scroll position, so it stays right when you scroll fast or upwards. A clicked heading stays active until you scroll yourself, a `#hash` URL starts on that heading, and the list follows the page on long pages. TOC links keep the page path, and the mobile panel closes when you pick a heading.
+
+**Search.** The index loads on the first query, which cuts the main bundle by about 240 KB. Section results land on the heading, highlighting no longer breaks HTML entities, Algolia results are escaped, and blocked or corrupt storage no longer breaks the palette. New and deleted pages show up in dev search without a restart.
+
+**Markdown and build.** Examples inside longer fences stay as code, tilde fences and CRLF files work, highlight ranges can't crash the build, and language aliases keep their colours. The version token now works on rendered pages, and the external link guard now actually runs. The link guard accepts images, query strings, trailing slashes, encoded paths and dynamic routes. The sitemap skips dynamic routes and reads `noIndex` from real frontmatter. Heading anchors handle accents and non-Latin text, and an empty `file=` block no longer swallows the next one.
+
+**API reference.** Re-exports are listed once with the right source line, signatures show the full declaration, `{@link}` renders as a link, `groupBy: 'kind'` works, pages have titles, and HMR picks up added and deleted files.
+
+**Components.** Card and pill links with `#fragment` or `?query` work, `mailto:` pills work, image `width` accepts plain numbers, cards sit flush in their grid, tabs render on the server without a jump, and the code copy button shows on touch devices. The version banner now appears on docs pages, the footer uses your site name, and the sidebar keeps its open sections.
+
+**Monorepos.** A new `site.githubDir` option (for example `apps/docs`) prefixes the file paths in edit and source links, for sites that live in a subfolder.
+
+**Scaffolder.** Sites installed from npm get their `.gitignore`, and new sites no longer carry NgMd's URL, tagline, versions or README heading. The home page no longer hides the sidebar on other pages, and every generated file passes its own format check.
+
+**Docs.** The docs, skills, README, CONTRIBUTING and ROADMAP were checked against the code and corrected.
+
+## 0.4.3
 
 **The TOC follows the page.** On long pages the "On this page" list scrolls on its own to keep the active heading in view.
 
@@ -76,7 +98,7 @@ Release notes and version history for NgMd.
 
 **StackBlitz playground removed.** The `<ngmd-stackblitz>` component shipped briefly in 0.1.6 and was ripped out before the npm release went live, but the component, its docs, and its surrounding chrome (Components reference section, Showcase playground, FAQ, about credit, home features grid, COEP plugin, `netlify.toml` headers, `Play` icon import) lived on in the source tree. All of it is gone. The repo and the published scaffold now match.
 
-**`{{ngmd-version}}` markdown token.** New `vars.plugin.ts` substitutes `{{ngmd-version}}` in any `.md` source with the current `create-ngmd/package.json` version at build time. The changelog and stack/technologies pages used to hand-track the published version in two places; they now reference the token so the next `pnpm publish` keeps them in sync without an edit. The substitution runs in both the rendered route and the raw-md "Copy Markdown" download so LLM consumers see the substituted text. Extend the `vars` map for more tokens (site URL, build date, etc.).
+**Version markdown token.** New `vars.plugin.ts` substitutes an `ngmd-version` token (in double curly braces) in any `.md` source with the current `create-ngmd/package.json` version at build time. The changelog and stack/technologies pages used to hand-track the published version in two places; they now reference the token so the next `pnpm publish` keeps them in sync without an edit. The substitution runs in both the rendered route and the raw-md "Copy Markdown" download so LLM consumers see the substituted text. Extend the `vars` map for more tokens (site URL, build date, etc.).
 
 **Docs accuracy sweep.** Five audit passes against components, content, skills, changelog, and landing pages surfaced six stale claims. Fixed: `0.1.3` create-ngmd version refs in `technologies.md` + `changelog.md` (now use the new token), the wrong plugin filename in `installation.md:146` (`internal-link-guard` → `link-guard`), the four-plugins-count claim in the same file and in `ngmd-new-site` skill (actual six), `ngmd-new-site` skill's wrong Toaster component path (`src/app/services/toast/` → `src/app/components/toaster.ts`), `ngmd-authoring` skill's "eleven components" contradiction with the rest of the document (now "seventeen"), and the `create-ngmd/README.md` component list (was ten, now sixteen). The auditing process itself surfaced a real dead-code find: a dangling `NgmdCodeBlock` import in `register-elements.ts` (the component intentionally isn't a Custom Element since fenced ``` blocks already cover it; docstring now spells out the deliberate exclusion so future audits don't re-flag it).
 
@@ -296,7 +318,7 @@ Two agent skills shipped under `skills/` (`ngmd-new-site` and `ngmd-authoring`),
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="rocket" title="Distribution">
-    <code>create-ngmd@{{ngmd-version}}</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
+    <code>create-ngmd</code> on npm. Scaffold with <code>pnpm create ngmd&#64;latest my-docs</code> (also <code>npm</code>, <code>yarn</code>, <code>bun</code>). Live at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
   </ngmd-card>
   <ngmd-card icon="box" title="Authoring">
     Seventeen Angular components under <code>src/app/ui/</code>. Code fences gained <code>file="..."</code> imports, <code>group="..."</code> tabs, <code>{1,3-5}</code> line highlighting, and <code>*Keyword</code> auto-linking.

@@ -1,18 +1,19 @@
 import {
   Component,
   ElementRef,
-  HostListener,
   computed,
   effect,
   inject,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
-import {NgTemplateOutlet} from '@angular/common';
+import {NgTemplateOutlet, ViewportScroller} from '@angular/common';
 import {Router} from '@angular/router';
 import {
   LucideDynamicIcon,
   LucideArrowRight,
+  LucideBraces,
   LucideClock,
   LucideFileText,
   LucideHash,
@@ -22,21 +23,23 @@ import {
   LucideX,
 } from '@lucide/angular';
 import type {SearchHit} from '../../types/search';
-import {SearchService} from '../services/search/search.service';
+import {SearchService, type HistoryItem} from '../services/search/search.service';
 
 /**
  * Cmd+K palette. The heavy lifting lives in `SearchService`; this component
  * is the open / close / navigation shell on top of it.
  *
- * Empty state shows recent visits from localStorage. Typing kicks the
- * service (debounced) and renders highlighted hits. Hover highlights a
- * row, click navigates and records the visit. Esc closes. Keyboard
- * navigation (arrow + Enter) is intentionally not wired yet — planned
- * for a future polish pass.
+ * Empty state shows recent visits from localStorage as plain buttons
+ * (arrow keys move between them). Typing kicks the service (debounced) and
+ * renders highlighted hits as a combobox listbox: arrows, Home/End and
+ * Enter drive `aria-activedescendant`, pointer movement highlights a row,
+ * click navigates and records the visit. Esc closes and focus returns to
+ * whatever opened the palette.
  */
 @Component({
   selector: 'app-command-palette',
   imports: [LucideDynamicIcon, NgTemplateOutlet],
+  host: {'(document:keydown)': 'onKeydown($event)'},
   template: `
     @if (open()) {
       <div
@@ -44,70 +47,92 @@ import {SearchService} from '../services/search/search.service';
         (click)="close()"
       >
         <div
+          #dialog
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search docs"
           class="w-full max-w-2xl rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden"
           (click)="$event.stopPropagation()"
+          (keydown)="onDialogKeydown($event)"
         >
           <div class="flex items-center gap-3 px-5 py-4">
             <svg [lucideIcon]="searchIcon" class="size-6 text-zinc-400"></svg>
             <input
               #input
               type="text"
+              role="combobox"
               placeholder="Search docs"
               aria-label="Search docs"
-              class="flex-1 bg-transparent text-lg outline-none placeholder:text-zinc-400"
+              aria-autocomplete="list"
+              autocomplete="off"
+              spellcheck="false"
+              class="flex-1 min-w-0 bg-transparent text-lg outline-none placeholder:text-zinc-500 dark:placeholder:text-zinc-400"
+              [attr.aria-expanded]="expanded()"
+              [attr.aria-controls]="expanded() ? listboxId : null"
+              [attr.aria-activedescendant]="expanded() && active() >= 0 ? optionId(active()) : null"
               [value]="search.query()"
               (input)="onInput($event)"
+              (keydown)="onInputKeydown($event)"
             />
             @if (search.loading()) {
-              <span class="text-xs text-zinc-400">…</span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400" aria-hidden="true">…</span>
             }
           </div>
 
           <div
+            tabindex="0"
             class="ngmd-scroll-track-mini border-t border-zinc-200 dark:border-zinc-800 max-h-[60vh] overflow-y-auto p-3"
           >
             @if (showingHistory()) {
               @if (search.favorites().length) {
-                <div class="px-4 py-2 text-xs uppercase tracking-wider text-zinc-500">
+                <div
+                  id="ngmd-search-favourites"
+                  class="px-4 py-2 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+                >
                   Favourites
                 </div>
-                @for (item of search.favorites(); track item.url) {
-                  <ng-container
-                    *ngTemplateOutlet="historyRow; context: {$implicit: item, favorite: true}"
-                  />
-                }
+                <ul aria-labelledby="ngmd-search-favourites">
+                  @for (item of search.favorites(); track item.url) {
+                    <ng-container
+                      *ngTemplateOutlet="historyRow; context: {$implicit: item, favorite: true}"
+                    />
+                  }
+                </ul>
               }
               @if (search.recents().length) {
                 <div
-                  class="flex items-center justify-between px-4 py-2 text-xs uppercase tracking-wider text-zinc-500"
+                  class="flex items-center justify-between px-4 py-2 text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
                 >
-                  <span>Recent</span>
+                  <span id="ngmd-search-recents">Recent</span>
                   <button
                     type="button"
                     class="inline-flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    (click)="search.clearRecents()"
+                    (click)="clearRecents()"
                   >
                     <svg [lucideIcon]="trashIcon" class="size-3"></svg>
                     Clear
                   </button>
                 </div>
-                @for (item of search.recents(); track item.url) {
-                  <ng-container
-                    *ngTemplateOutlet="historyRow; context: {$implicit: item, favorite: false}"
-                  />
-                }
+                <ul aria-labelledby="ngmd-search-recents">
+                  @for (item of search.recents(); track item.url) {
+                    <ng-container
+                      *ngTemplateOutlet="historyRow; context: {$implicit: item, favorite: false}"
+                    />
+                  }
+                </ul>
               }
 
               <ng-template #historyRow let-item let-favorite="favorite">
-                <div
-                  class="group flex w-full cursor-pointer items-center gap-2 rounded-lg pr-2 text-left"
+                <li
+                  class="group flex w-full items-center gap-2 rounded-lg pr-2 text-left focus-within:bg-[color:var(--accent-soft)]"
                   [class]="hoverUrl() === item.url ? 'bg-[color:var(--accent-soft)]' : ''"
                   (mouseenter)="hoverUrl.set(item.url)"
                   (mouseleave)="hoverUrl.set(null)"
                 >
                   <button
                     type="button"
-                    class="flex flex-1 min-w-0 items-center gap-4 px-4 py-3 text-left"
+                    data-history-item
+                    class="flex flex-1 min-w-0 cursor-pointer items-center gap-4 rounded-lg px-4 py-3 text-left"
                     (click)="selectHistory(item)"
                   >
                     <svg
@@ -122,7 +147,7 @@ import {SearchService} from '../services/search/search.service';
                       ></div>
                       @if (item.subLabelHtml) {
                         <div
-                          class="text-sm text-zinc-500 truncate"
+                          class="text-sm text-zinc-600 dark:text-zinc-400 truncate"
                           [innerHTML]="item.subLabelHtml"
                         ></div>
                       }
@@ -131,70 +156,74 @@ import {SearchService} from '../services/search/search.service';
                   @if (!favorite) {
                     <button
                       type="button"
-                      class="rounded p-1.5 text-zinc-400 hover:text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      class="rounded p-1.5 text-zinc-500 dark:text-zinc-400 hover:text-amber-500 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity"
                       aria-label="Pin to favourites"
-                      (click)="search.toggleFavorite(item.url)"
+                      (click)="toggleFavorite(item.url)"
                     >
                       <svg [lucideIcon]="starIcon" class="size-4"></svg>
                     </button>
                   }
                   <button
                     type="button"
-                    class="rounded p-1.5 text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    class="rounded p-1.5 text-zinc-500 dark:text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity"
                     aria-label="Remove from history"
                     (click)="removeAt(item.url)"
                   >
                     <svg [lucideIcon]="closeIcon" class="size-4"></svg>
                   </button>
-                </div>
+                </li>
               </ng-template>
             } @else if (search.loading() && !search.results().length) {
-              <div class="p-3 text-zinc-500">
+              <div class="p-3 text-zinc-500 dark:text-zinc-400">
                 <span>Searching docs…</span>
               </div>
             } @else if (search.hasNoResults()) {
-              <div class="p-3 text-zinc-500">
+              <div class="p-3 text-zinc-500 dark:text-zinc-400">
                 <span>No results found</span>
               </div>
             } @else if (search.results().length) {
-              @for (item of search.results(); track item.id; let i = $index) {
-                <button
-                  type="button"
-                  class="flex w-full cursor-pointer items-start gap-4 rounded-lg px-4 py-3 text-left"
-                  [class]="i === active() ? 'bg-[color:var(--accent-soft)]' : ''"
-                  (mouseenter)="active.set(i)"
-                  (click)="select(item)"
-                >
-                  <svg [lucideIcon]="iconFor(item)" class="mt-0.5 size-5 text-zinc-400"></svg>
-                  <div class="flex-1 min-w-0">
-                    <div
-                      class="text-base font-semibold truncate"
-                      [innerHTML]="item.labelHtml"
-                    ></div>
-                    @if (item.subLabelHtml) {
+              <div role="listbox" aria-label="Search results" [id]="listboxId">
+                @for (item of search.results(); track item.id; let i = $index) {
+                  <div
+                    role="option"
+                    class="flex w-full cursor-pointer items-start gap-4 rounded-lg px-4 py-3 text-left"
+                    [id]="optionId(i)"
+                    [class]="i === active() ? 'bg-[color:var(--accent-soft)]' : ''"
+                    [attr.aria-selected]="i === active()"
+                    (mousemove)="active.set(i)"
+                    (click)="select(item)"
+                  >
+                    <svg [lucideIcon]="iconFor(item)" class="mt-0.5 size-5 text-zinc-400"></svg>
+                    <div class="flex-1 min-w-0">
                       <div
-                        class="text-sm text-zinc-500 truncate"
-                        [innerHTML]="item.subLabelHtml"
+                        class="text-base font-semibold truncate"
+                        [innerHTML]="item.labelHtml"
                       ></div>
-                    }
-                    @if (item.contentHtml) {
-                      <div
-                        class="mt-1 text-sm text-zinc-500 line-clamp-2"
-                        [innerHTML]="item.contentHtml"
-                      ></div>
-                    }
+                      @if (item.subLabelHtml) {
+                        <div
+                          class="text-sm text-zinc-600 dark:text-zinc-400 truncate"
+                          [innerHTML]="item.subLabelHtml"
+                        ></div>
+                      }
+                      @if (item.contentHtml) {
+                        <div
+                          class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2"
+                          [innerHTML]="item.contentHtml"
+                        ></div>
+                      }
+                    </div>
                   </div>
-                </button>
-              }
+                }
+              </div>
             } @else if (!search.query().trim() && !search.history().length) {
-              <div class="p-3 text-zinc-500">
+              <div class="p-3 text-zinc-500 dark:text-zinc-400">
                 <span>Start typing to see results</span>
               </div>
             }
           </div>
-
+          <div role="status" class="sr-only">{{ status() }}</div>
           <div
-            class="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500"
+            class="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-500 dark:text-zinc-400"
           >
             <span class="flex items-center gap-3">
               <kbd class="rounded border border-zinc-200 dark:border-zinc-700 px-1.5">esc</kbd>
@@ -279,21 +308,24 @@ import {SearchService} from '../services/search/search.service';
 })
 export class CommandPalette {
   private readonly router = inject(Router);
+  private readonly scroller = inject(ViewportScroller);
   protected readonly search = inject(SearchService);
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
+  private readonly dialog = viewChild<ElementRef<HTMLElement>>('dialog');
 
   readonly searchIcon = LucideSearch;
   readonly arrowIcon = LucideArrowRight;
   readonly hashIcon = LucideHash;
   readonly fileIcon = LucideFileText;
+  readonly symbolIcon = LucideBraces;
   readonly clockIcon = LucideClock;
   readonly trashIcon = LucideTrash;
   readonly starIcon = LucideStar;
   readonly closeIcon = LucideX;
 
+  readonly listboxId = 'ngmd-search-results';
   readonly open = signal(false);
-  /** Mouse-hover highlight only. Arrow-key keyboard nav is intentionally
-   * not wired yet; the focus/scroll polish wasn't worth shipping rough. */
+  /** Index of the highlighted result, shared by keyboard and pointer. */
   readonly active = signal(-1);
 
   /** Tracks which history row the pointer is over so the row, the star
@@ -302,20 +334,35 @@ export class CommandPalette {
    * as two lists with independent indices. */
   readonly hoverUrl = signal<string | null>(null);
 
+  private returnFocus: HTMLElement | null = null;
+
   readonly showingHistory = computed(
     () => !this.search.query().trim() && this.search.history().length > 0,
   );
+
+  readonly expanded = computed(() => !this.showingHistory() && this.search.results().length > 0);
+
+  readonly status = computed(() => {
+    if (this.showingHistory() || !this.search.query().trim() || this.search.loading()) return '';
+    const count = this.search.results().length;
+    if (!count) return 'No results found';
+    return count === 1 ? '1 result' : `${count} results`;
+  });
 
   constructor() {
     effect(() => {
       if (typeof document === 'undefined') return;
       document.body.style.overflow = this.open() ? 'hidden' : '';
     });
-    // Clear hover highlight whenever the visible list changes.
     effect(() => {
-      this.search.results();
-      this.search.history();
-      this.active.set(-1);
+      const results = this.search.results();
+      this.active.set(results.length ? 0 : -1);
+    });
+    effect(() => this.input()?.nativeElement.focus());
+    effect(() => {
+      const i = this.active();
+      if (i < 0 || typeof document === 'undefined') return;
+      document.getElementById(this.optionId(i))?.scrollIntoView({block: 'nearest'});
     });
     // External components (404 catch-all, etc.) can pop the palette open
     // pre-filled by calling `search.requestOpen(query)`. The initial tick
@@ -323,21 +370,23 @@ export class CommandPalette {
     effect(() => {
       const tick = this.search.openTick();
       if (tick === 0) return;
-      this.open.set(true);
-      this.active.set(-1);
-      queueMicrotask(() => this.input()?.nativeElement.focus());
+      untracked(() => this.show());
     });
+  }
+
+  optionId(i: number): string {
+    return `ngmd-search-option-${i}`;
   }
 
   iconFor(item: SearchHit) {
     if (item.kind === 'section') return this.hashIcon;
     if (item.kind === 'snippet') return this.fileIcon;
+    if (item.kind === 'symbol') return this.symbolIcon;
     return this.arrowIcon;
   }
 
-  @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent) {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    if ((event.metaKey || event.ctrlKey) && event.key?.toLowerCase() === 'k') {
       event.preventDefault();
       this.toggle();
       return;
@@ -349,20 +398,79 @@ export class CommandPalette {
   }
 
   toggle() {
-    this.open.update((v) => !v);
     if (this.open()) {
-      this.search.query.set('');
-      this.active.set(-1);
-      queueMicrotask(() => this.input()?.nativeElement.focus());
+      this.close();
+      return;
     }
+    this.search.query.set('');
+    this.show();
   }
 
   close() {
+    if (!this.open()) return;
     this.open.set(false);
+    this.hoverUrl.set(null);
+    this.returnFocus?.focus({preventScroll: true});
+    this.returnFocus = null;
   }
 
   onInput(event: Event) {
     this.search.query.set((event.target as HTMLInputElement).value);
+  }
+
+  onInputKeydown(event: KeyboardEvent) {
+    if (event.isComposing) return;
+    if (this.showingHistory()) {
+      const items = this.historyItems();
+      if (event.key === 'ArrowDown' && items.length) items[0].focus();
+      else if (event.key === 'ArrowUp' && items.length) items[items.length - 1].focus();
+      else return;
+      event.preventDefault();
+      return;
+    }
+    const results = this.search.results();
+    if (!results.length) return;
+    const last = results.length - 1;
+    const i = this.active();
+    switch (event.key) {
+      case 'ArrowDown':
+        this.active.set(i >= last ? 0 : i + 1);
+        break;
+      case 'ArrowUp':
+        this.active.set(i <= 0 ? last : i - 1);
+        break;
+      case 'Home':
+        this.active.set(0);
+        break;
+      case 'End':
+        this.active.set(last);
+        break;
+      case 'Enter':
+        this.select(results[Math.max(i, 0)]);
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
+  }
+
+  onDialogKeydown(event: KeyboardEvent) {
+    if (event.key === 'Tab') {
+      this.trapTab(event);
+      return;
+    }
+    const target = event.target as HTMLElement;
+    if (!target.hasAttribute('data-history-item')) return;
+    const items = this.historyItems();
+    const i = items.indexOf(target as HTMLButtonElement);
+    let next: HTMLElement | undefined;
+    if (event.key === 'ArrowDown') next = items[i + 1] ?? this.input()?.nativeElement;
+    else if (event.key === 'ArrowUp') next = items[i - 1] ?? this.input()?.nativeElement;
+    else if (event.key === 'Home') next = items[0];
+    else if (event.key === 'End') next = items[items.length - 1];
+    if (!next) return;
+    event.preventDefault();
+    next.focus();
   }
 
   select(hit: SearchHit) {
@@ -370,7 +478,7 @@ export class CommandPalette {
     this.navigateTo(hit.url);
   }
 
-  selectHistory(item: {id: string; url: string; labelHtml: string; subLabelHtml: string}) {
+  selectHistory(item: HistoryItem) {
     // Re-record so a re-visited recent moves to the top of the list.
     this.search.recordVisit({
       id: item.id,
@@ -382,38 +490,77 @@ export class CommandPalette {
     this.navigateTo(item.url);
   }
 
+  toggleFavorite(url: string): void {
+    this.search.toggleFavorite(url);
+    this.focusInput();
+  }
+
+  clearRecents(): void {
+    this.search.clearRecents();
+    this.focusInput();
+  }
+
   /** Drop a row and clear the hover highlight if it was on this URL.
    * Without this, a later row that happens to share the URL would render
    * pre-highlighted before the user moves the pointer over it. */
   removeAt(url: string): void {
     this.search.removeFromHistory(url);
     if (this.hoverUrl() === url) this.hoverUrl.set(null);
+    this.focusInput();
+  }
+
+  private show(): void {
+    if (!this.open() && typeof document !== 'undefined') {
+      this.returnFocus = document.activeElement as HTMLElement | null;
+    }
+    this.open.set(true);
+    this.focusInput();
+  }
+
+  private focusInput(): void {
+    this.input()?.nativeElement.focus();
+  }
+
+  private historyItems(): HTMLButtonElement[] {
+    const root = this.dialog()?.nativeElement;
+    return root ? Array.from(root.querySelectorAll('button[data-history-item]')) : [];
+  }
+
+  private trapTab(event: KeyboardEvent): void {
+    const root = this.dialog()?.nativeElement;
+    if (!root) return;
+    const focusable = Array.from(
+      root.querySelectorAll<HTMLElement>('input, button:not([disabled]), a[href]'),
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first) return;
+    const current = document.activeElement;
+    if (event.shiftKey && (current === first || !root.contains(current))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (current === last || !root.contains(current))) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   private navigateTo(url: string): void {
+    const [pathAndQuery, fragment] = url.split('#');
+    const samePath = this.router.url.split('#')[0] === pathAndQuery;
     this.close();
-    const [path, hash] = url.split('#');
-    const samePath = this.router.url.split('#')[0].split('?')[0] === path;
-    if (samePath) {
-      // Already on the target route. Skip the router round-trip and just
-      // scroll, otherwise Angular short-circuits and nothing happens.
-      if (hash) this.scrollToWhenReady(hash);
-      else window.scrollTo({top: 0, behavior: 'smooth'});
-      return;
-    }
-    this.router.navigateByUrl(path).then(() => {
-      if (hash) this.scrollToWhenReady(hash);
+    this.router.navigateByUrl(url).then(() => {
+      if (fragment) this.scrollToWhenReady(fragment);
+      else if (samePath) this.scroller.scrollToPosition([0, 0], {behavior: 'smooth'});
     });
   }
 
   private scrollToWhenReady(slug: string, attempt = 0): void {
     if (typeof document === 'undefined' || attempt > 30) return;
-    const el = document.getElementById(slug);
-    if (!el) {
+    if (!document.getElementById(slug)) {
       setTimeout(() => this.scrollToWhenReady(slug, attempt + 1), 50);
       return;
     }
-    el.scrollIntoView({behavior: 'smooth', block: 'start'});
-    history.replaceState(null, '', `${location.pathname}#${slug}`);
+    this.scroller.scrollToAnchor(slug, {behavior: 'smooth'});
   }
 }

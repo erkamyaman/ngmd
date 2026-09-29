@@ -27,7 +27,7 @@ export class ExternalLinks implements AfterViewInit {
       (node) => {
         const a = node as HTMLAnchorElement;
         a.setAttribute('data-external-enhanced', 'true');
-        if (a.href.startsWith(window.location.origin)) return;
+        if (a.origin === window.location.origin) return;
         a.setAttribute('target', '_blank');
         a.setAttribute('rel', 'noopener noreferrer');
       },

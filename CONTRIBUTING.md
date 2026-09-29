@@ -16,7 +16,8 @@ src/
 └── ngmd.config.ts        Site config: brand, nav, keyword auto-link map.
 
 create-ngmd/              The scaffolder published to npm.
-*.plugin.ts               Vite plugins (page-meta, link-guard, sitemap).
+*.plugin.ts               Vite plugins (page-meta, link-guard, sitemap, search-index, raw-md, vars, api-gen).
+plugin-utils.ts           Helpers shared by the plugins.
 skills/                   Agent skills shipped for Claude Code / Gemini CLI / Antigravity.
 ```
 
@@ -85,16 +86,17 @@ Examples from the existing log:
 ## Before pushing your PR
 
 1. **`pnpm run build` passes** locally. Link guards, page-meta, and sitemap all run at build time. If they error, the CI build will too.
-2. **Manual smoke test** in the dev server. Open the affected route, navigate around, click links, toggle dark mode.
-3. **No `console.log`** left in committed code.
-4. **Commit message** follows the convention above.
+2. **`pnpm exec vitest run` and `pnpm format:check` pass.** CI runs both, plus `pnpm --dir create-ngmd smoke` to scaffold, install, build and test a fresh site.
+3. **Manual smoke test** in the dev server. Open the affected route, navigate around, click links, toggle dark mode.
+4. **No `console.log`** left in committed code.
+5. **Commit message** follows the convention above.
 
 ## Releasing
 
 Releases are automated by `.github/workflows/release.yml`:
 
 1. Bump `version` in `create-ngmd/package.json` (and the root `package.json`) and merge it to `main`.
-2. Tag the merge commit with the same version and push the tag: `git tag v0.3.0 && git push origin v0.3.0`.
+2. Tag the merge commit with the same version and push the tag: `git tag v0.5.0 && git push origin v0.5.0`.
 3. The workflow checks the tag matches the version, runs the format check, tests, build and the scaffolder smoke test, publishes `create-ngmd` to npm, and creates the GitHub release with generated notes.
 
 Publishing uses npm trusted publishing: `create-ngmd` trusts `erkamyaman/ngmd` with the `release.yml` workflow, so no npm token is stored in the repository, and npm adds provenance automatically. If the workflow file is renamed, update the trusted publisher on npmjs.com.

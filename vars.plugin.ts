@@ -41,7 +41,7 @@ function readVars(root: string): Record<string, string> {
  * are left in place so an unrecognised marker survives to the rendered
  * page rather than silently disappearing.
  */
-export function substituteMdVars(body: string, root: string): string {
+export function substituteMdVars(body: string, root = process.cwd()): string {
   const vars = readVars(root);
   return body.replace(/\{\{\s*([\w-]+)\s*\}\}/g, (match, key) => {
     return key in vars ? vars[key] : match;

@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {TitleStrategy, type RouterStateSnapshot} from '@angular/router';
-import siteConfig, {navLabels} from '../ngmd.config';
+import siteConfig, {navItems, navLabels} from '../ngmd.config';
 import {stripUrl} from './services/route-url/route-url.service';
 
 /**
@@ -12,22 +12,20 @@ import {stripUrl} from './services/route-url/route-url.service';
  *      by a `.page.ts` component via `routeMeta`).
  *   2. The matching entry in `ngmd.config.ts > navLabels`.
  *   3. A prettified last URL segment ("markdown-routes" → "Markdown Routes").
- *   4. `siteConfig.site.tagline` for the homepage (no `|` separator there).
+ *   4. `siteConfig.site.tagline` for the homepage.
  *
  * Replaces Angular's `DefaultTitleStrategy`, which would otherwise overwrite
  * our format with just the raw frontmatter title.
  */
 @Injectable({providedIn: 'root'})
 export class NgmdTitleStrategy extends TitleStrategy {
-  constructor(private readonly title: Title) {
-    super();
-  }
+  private readonly title = inject(Title);
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const name = siteConfig.site.name;
     const url = stripUrl(snapshot.url);
 
-    // Homepage uses the tagline, no pipe separator.
+    // Homepage uses the tagline in place of a page title.
     if (url === '/' || url === '') {
       const tagline = siteConfig.site.tagline;
       this.title.setTitle(tagline ? `${name} | ${tagline}` : name);
@@ -38,6 +36,7 @@ export class NgmdTitleStrategy extends TitleStrategy {
     if (!pageTitle) {
       const last = url.split('/').filter(Boolean).pop() ?? '';
       pageTitle =
+        navItems.find((n) => n.href === url)?.label ??
         navLabels[last] ??
         last
           .split('-')

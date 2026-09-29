@@ -76,10 +76,10 @@ Open `http://localhost:5173`. You're running.
   <ngmd-card icon="sparkles" title="Agent skills" link="/ai/agent-skills" cta="Read">
     <code>ngmd-new-site</code> and <code>ngmd-authoring</code> ship in <code>skills/</code> for Claude Code, Gemini CLI, Antigravity, and other agentic tools.
   </ngmd-card>
-  <ngmd-card icon="git-branch" title="Multi-version docs">
+  <ngmd-card icon="compass" title="Multi-version docs">
     Header version switcher modelled on adev / PrimeNG. Each version is its own deployment, the switcher is a flat registry of external sibling URLs from <code>ngmd.config.ts &gt; versions</code>, and a status-aware banner above content nudges visitors on a <code>next</code> / <code>rc</code> / <code>deprecated</code> deployment back to the current stable.
   </ngmd-card>
-  <ngmd-card icon="book-open" title="API reference auto-gen">
+  <ngmd-card icon="book" title="API reference auto-gen">
     Drop an <code>ngmd.api.ts</code> scope file at the repo root. The <code>api-gen</code> Vite plugin walks your TypeScript through ts-morph, emits a virtual symbol index, and serves it at <code>/api</code> with per-symbol pages at <code>/api/&lt;group&gt;/&lt;name&gt;</code>. Cmd+K palette indexes symbols alongside content pages.
   </ngmd-card>
 </ngmd-card-grid>
