@@ -128,8 +128,12 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === '--nx') args.nx = true;
     else if (a === '--no-nx') args.nx = false;
-    else if (a === '--directory' || a === '--dir') args.directory = argv[++i];
-    else if (a.startsWith('--directory=')) args.directory = a.slice('--directory='.length);
+    else if (a === '--directory' || a === '--dir') {
+      const value = argv[++i];
+      if (!value || value.startsWith('-'))
+        throw new Error(`${a} needs a folder, like ${a} apps/docs`);
+      args.directory = value;
+    } else if (a.startsWith('--directory=')) args.directory = a.slice('--directory='.length);
     else if (a.startsWith('-')) throw new Error(`unknown option ${a}`);
     else if (!args.name) args.name = a;
     else throw new Error(`unexpected argument ${a}`);
