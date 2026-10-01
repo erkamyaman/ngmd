@@ -134,7 +134,8 @@ export interface NgmdConfig {
 const config: NgmdConfig = {
   site: {
     name: 'NgMd',
-    description: 'Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind.',
+    description:
+      'Modern Angular docs-site starter built on AnalogJS, Vite, and Tailwind. Drop a markdown file, get a route.',
     tagline: 'Angular docs starter',
     url: 'https://ngmd.netlify.app',
     githubUrl: 'https://github.com/erkamyaman/ngmd',

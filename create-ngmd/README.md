@@ -37,6 +37,8 @@ A working AnalogJS + Tailwind v4 + Shiki docs site with:
 - Per-page prev/next navigation, edit-on-GitHub and view-source actions
 - Heading anchor copy buttons, code-block copy buttons
 - Build-time link guards (external + internal)
+- Relative `.md` links (`[Setup](./setup.md)`) that work on GitHub and on the site
+- Page title, description and Open Graph / Twitter tags filled from `ngmd.config.ts`
 - Sitemap + robots.txt auto-generated
 - Light / dark / auto theme with no-flash boot script
 - `*Keyword` inline auto-linking
@@ -68,7 +70,7 @@ Inside a monorepo, keep the scaffolded `.prettierrc.json` and `.prettierignore` 
 
 ## How it works
 
-`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand and GitHub URL, `index.html` title, `README.md` heading) so the new project matches the name you passed. It refuses a non-empty target directory, and does not install dependencies or run `git init`. Inside an Nx workspace, `nx.mjs` then turns the copy into an Nx project.
+`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand and GitHub URL, `README.md` heading; `index.html` reads its title and meta tags from `ngmd.config.ts`) so the new project matches the name you passed. It refuses a non-empty target directory, and does not install dependencies or run `git init`. Inside an Nx workspace, `nx.mjs` then turns the copy into an Nx project.
 
 `template/` is generated from the parent ngmd repo by `build-template.mjs` and is git-ignored. The `prepublishOnly` script regenerates it before every publish, so the npm artifact always carries an up-to-date starter.
 

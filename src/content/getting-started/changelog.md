@@ -6,6 +6,14 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
+## Unreleased
+
+**Relative `.md` links.** Link to another page by its file, like `[Theming](./theming.md)` or `[Search](../concepts/search.md#switching-to-algolia)`. The new `md-links` plugin rewrites the link to the page route at build time, so the same markdown works on GitHub and on the site. The link guard resolves these links from the linking file and fails the build when one points to a file that isn't a page in `src/content`, or to a heading that doesn't exist.
+
+**`index.html` follows the config.** The title, description, Open Graph and Twitter tags now read `site.name`, `site.description` and `site.url` from `ngmd.config.ts` through the new `site-html` plugin, so a new site no longer ships NgMd's metadata. The head also gains `og:type`, `og:site_name`, `og:url`, a 1200x630 `og.png` social card, `theme-color` for light and dark, and an `apple-touch-icon.png`.
+
+**Dark mode gradient.** `--accent-gradient` has its own dark value (rose, fuchsia and purple 400) instead of falling back to the light one, so gradient text and bars stay bright on the dark background.
+
 ## 0.5.0 <ngmd-badge variant="new">Latest</ngmd-badge>
 
 A full review of every component, plugin and page, tested in a real browser. Every page now passes axe (WCAG 2.2 AA).

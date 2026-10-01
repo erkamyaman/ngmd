@@ -26,7 +26,7 @@ const TEMPLATE_DIR = join(HERE, 'template');
  *   2. Validate (lowercase, hyphenated, no path traversal, dir not present).
  *   3. Copy `template/` into ./<project-name>/, or into <dir> (default
  *      apps/<project-name>) of the enclosing Nx workspace when there is one.
- *   4. Replace placeholders ({{name}}) in package.json, ngmd.config.ts, index.html.
+ *   4. Replace placeholders ({{name}}) in package.json, ngmd.config.ts, README.md.
  *   5. In an Nx workspace, turn the copy into an Nx project (see nx.mjs).
  *   6. Print next-step commands tailored to the detected package manager.
  *
@@ -101,13 +101,6 @@ function replacePlaceholders(target, name) {
         s
           .replace(/name:\s*'NgMd'/, `name: '${name}'`)
           .replace(/githubUrl:\s*'[^']*'/, `githubUrl: 'https://github.com/your-org/${name}'`),
-    },
-    {
-      file: 'index.html',
-      replacer: (s) =>
-        s
-          .replace(/<title>[^<]*<\/title>/, `<title>${name}</title>`)
-          .replace(/og:title"\s+content="[^"]*"/, `og:title" content="${name}"`),
     },
     {
       file: 'README.md',

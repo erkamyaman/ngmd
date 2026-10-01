@@ -345,6 +345,7 @@ When in doubt, read the surrounding paragraphs and mirror their cadence. Do not 
 ## 6. Internal vs external links
 
 - **Internal**: write as standard markdown `[label](/route)` or `[label](/route#fragment)`. The internal link guard verifies the target resolves and the fragment matches a real heading. A bad link **fails the build** rather than shipping a 404.
+- **Relative `.md`**: `[label](./other-page.md)` or `[label](../section/page.md#fragment)` also works, resolved from the linking file. `md-links.plugin.ts` rewrites it to the site route at build time, so the same markdown reads correctly on GitHub. The guard checks these too, and fails on a `.md` link that isn't a page in `src/content` (for example `../../README.md`). Use this form when the markdown is also read outside the site.
 - **External**: write as standard markdown `[label](https://example.com)`. `<app-external-links>` adds `target="_blank" rel="noopener noreferrer"` to rendered external links. If you write external links as raw HTML, you must include `target="_blank"` yourself or the build fails.
 
 In the dev server, a broken internal link is a terminal warning and the page still renders; only production builds fail on it.

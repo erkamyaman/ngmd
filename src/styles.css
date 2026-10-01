@@ -248,6 +248,7 @@
     --accent-strong: #f0abfc;
     --accent-fg: #18181b;
     --accent-soft: rgba(217, 70, 239, 0.15);
+    --accent-gradient: linear-gradient(to right, #fb7185 0%, #e879f9 50%, #c084fc 100%);
     --accent-gradient-soft: linear-gradient(
       to bottom right,
       rgba(244, 63, 94, 0.1) 0%,

@@ -5,6 +5,7 @@ import type {Plugin} from 'vite';
 import {internalLinkGuard} from './link-guard.plugin';
 import {rawMdPlugin} from './raw-md.plugin';
 import {searchIndexPlugin} from './search-index.plugin';
+import {siteHtmlPlugin} from './site-html.plugin';
 import {sitemapPlugin} from './sitemap.plugin';
 
 type Hook = (this: unknown, ...args: unknown[]) => unknown;
@@ -85,6 +86,40 @@ describe('internalLinkGuard', () => {
     expect(warning).toContain('"/missing.png" is not a known route or file in public/');
     expect(warning).toContain('"/guide#nope"');
   });
+
+  it('resolves relative .md links from the linking file', () => {
+    expect(
+      check(
+        '[a](./guide/index.md#setup-1) [b](guide/index.md) [c](./some%20page.md) <a href="./hidden.md">d</a> ![e](./logo.png)',
+      ),
+    ).toEqual([]);
+    const [warning] = check(
+      '[a](./missing.md) [b](../README.md) [c](./guide/index.md#nope) [d](./guide/index.md?x=1)',
+    );
+    expect(warning).toContain('"/missing" is not a known route');
+    expect(warning).toContain('"../README.md" is not a page in src/content');
+    expect(warning).toContain('"/guide#nope"');
+    expect(warning).toContain('"./guide/index.md?x=1" is not a page in src/content');
+  });
+
+  it('resolves relative .md links from a nested page and fails the build on a missing one', () => {
+    write({'src/content/guide/deep/page.md': '[a](../index.md#cafe) [b](../../some%20page.md)'});
+    const plugin = internalLinkGuard();
+    call(plugin, 'configResolved', undefined, {root, command: 'build'});
+    const ctx = {
+      warn: () => undefined,
+      error: (m: string) => {
+        throw new Error(m);
+      },
+    };
+    expect(
+      call(plugin, 'transform', ctx, '', join(root, 'src/content/guide/deep/page.md')),
+    ).toBeNull();
+    write({'src/content/guide/deep/page.md': '[a](../gone.md)'});
+    expect(() =>
+      call(plugin, 'transform', ctx, '', join(root, 'src/content/guide/deep/page.md')),
+    ).toThrow('"/guide/gone" is not a known route');
+  });
 });
 
 describe('searchIndexPlugin', () => {
@@ -138,5 +173,22 @@ describe('rawMdPlugin', () => {
     expect(out.get('guide.md')).toContain('## Setup');
     expect(out.get('guide/index.md')).toBe(out.get('guide.md'));
     expect(out.has('some page.md')).toBe(true);
+  });
+});
+
+describe('siteHtmlPlugin', () => {
+  it('fills the site tokens from config, escaped, without a trailing slash on the URL', () => {
+    const plugin = siteHtmlPlugin({
+      name: 'A & B <docs>',
+      description: 'Say "hi" & more',
+      url: 'https://docs.example.com//',
+    });
+    const html =
+      '<title>%SITE_NAME%</title><meta content="%SITE_DESCRIPTION%" />' +
+      '<meta content="%SITE_URL%/og.png" /><meta content="%SITE_NAME%" />';
+    expect(call(plugin, 'transformIndexHtml', undefined, html)).toBe(
+      '<title>A &amp; B &lt;docs></title><meta content="Say &quot;hi&quot; &amp; more" />' +
+        '<meta content="https://docs.example.com/og.png" /><meta content="A &amp; B &lt;docs>" />',
+    );
   });
 });

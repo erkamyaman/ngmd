@@ -57,7 +57,7 @@ The fork: prose in markdown, authoring components in TypeScript. The dual-pipeli
 
 ## What's in the box
 
-Site frame, palette, prev/next footer, edit-on-github, heading anchors, shiki dual-theme, fuchsia accent. Build-time link guards, sitemap, page-meta plugin. Authoring components and code-fence affordances (`*Keyword` auto-linking, ` ```ts file="..." ` imports, group tabs, line highlighting). [Agent skills](https://ngmd.netlify.app/ai/agent-skills) for Claude Code / Gemini CLI / Antigravity so coding agents already know the conventions.
+Site frame, palette, prev/next footer, edit-on-github, heading anchors, shiki dual-theme, fuchsia accent. Build-time link guards, sitemap, page-meta plugin. Relative `.md` links (`[Theming](./theming.md)`) that work on GitHub and on the site. Page title, description and social tags filled from `ngmd.config.ts`. Authoring components and code-fence affordances (`*Keyword` auto-linking, ` ```ts file="..." ` imports, group tabs, line highlighting). [Agent skills](https://ngmd.netlify.app/ai/agent-skills) for Claude Code / Gemini CLI / Antigravity so coding agents already know the conventions.
 
 Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_blank" rel="noopener noreferrer">ngmd.netlify.app</a>.
 
@@ -73,7 +73,7 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 
 ## Deploy
 
-`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/analog/public/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap references the right URL.
+`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/analog/public/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap and the Open Graph tags reference the right URL.
 
 ## Status
 

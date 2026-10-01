@@ -139,13 +139,27 @@ Two marked extensions ship runtime-side so you can drop media into prose without
 
 YouTube and Vimeo URLs are normalised to player iframes. Images get figure plus caption plus lazy-load by default.
 
+## Linking between pages
+
+Link to another page by its route, `[Theming](/concepts/theming)`, or by its file, `[Theming](./theming.md)`. A relative `.md` link resolves from the file that contains it, and a `#fragment` carries over:
+
+```md
+[Theming](./theming.md)
+[Algolia setup](./search.md#switching-to-algolia)
+[Changelog](../getting-started/changelog.md)
+```
+
+At build time `md-links.plugin.ts` rewrites these to site routes (`/concepts/theming`, `/concepts/search#switching-to-algolia`, `/getting-started/changelog`), and an `index.md` maps to its folder's route. The same markdown then works when someone reads it on GitHub, where the `.md` path is the real file. Only relative links ending in `.md` are rewritten. Routes, fragments, external URLs and other files are left alone.
+
+This page links to [Theming](./theming.md) this way.
+
 ## Link integrity
 
 <ngmd-alert severity="critical">
-  The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code> and <code>/route#fragment</code> markdown links must resolve to real headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
+  The build pipeline <strong>fails</strong> on broken anchors. Internal <code>#fragment</code>, <code>/route#fragment</code> and relative <code>./page.md#fragment</code> markdown links must resolve to real pages and headings. External links inside raw HTML must carry <code>target="_blank"</code>. Broken links error at build time rather than reaching production.
 </ngmd-alert>
 
-This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404. In the dev server, a broken internal link is a terminal warning and the page still renders. Editing a page refreshes the heading index, so a link to a heading you just added resolves without a restart.
+This is enforced by two Vite plugins: `link-guard.plugin.ts` (internal anchors) and the `externalLinkGuard` defined inline in `vite.config.ts`. Both walk every `.md` body at build and abort if anything would 404. The internal guard resolves a relative `.md` link the same way `md-links.plugin.ts` does, then checks the route and the fragment. A relative `.md` link that points outside `src/content` (say `../../README.md`) fails the build too, since it has no page on the site. In the dev server, a broken internal link is a terminal warning and the page still renders. Editing a page refreshes the heading index, so a link to a heading you just added resolves without a restart.
 
 Heading ids are slugs of the heading text. When two headings on a page share the same text, the second gets `-1`, the third `-2`, and so on, like GitHub. Two `### Flags` headings become `#flags` and `#flags-1`. The TOC, the link guard and the search index all use the same ids.
 

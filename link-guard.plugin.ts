@@ -12,19 +12,23 @@ import {
   walkPageFiles,
   withoutCode,
 } from './plugin-utils.ts';
+import {resolveMdHref} from './md-links.plugin.ts';
 
 /**
  * Build-time guard that errors on broken internal links inside markdown files.
  *
- * Validates three cases:
+ * Validates four cases:
  *   - `[text](#fragment)` — fragment must be a real heading slug in the same file
  *   - `[text](/path)` — `/path` must be a known route
  *   - `[text](/path#fragment)` — both the route and the heading slug must exist
+ *   - `[text](../dir/page.md#fragment)`: resolved from this file, then checked
+ *     like `/dir/page#fragment`
  *
  * Routes are discovered by walking `src/content/**\/*.md` (each markdown
  * file's path under content/ becomes its route) and `src/app/pages/**\/*.page.ts`.
- * External (`http(s)://`), mail (`mailto:`), and relative (`./foo`) links are
- * skipped; the existing externalLinkGuard covers raw HTML external anchors.
+ * External (`http(s)://`), mail (`mailto:`), and relative links that don't
+ * end in `.md` (`./foo.png`) are skipped; the existing externalLinkGuard
+ * covers raw HTML external anchors.
  *
  * Heading slugs are computed with the same algorithm the rendered TOC uses
  * (see `plugin-utils.slugify`), so dev-time and runtime stay in sync.
@@ -119,10 +123,23 @@ export function internalLinkGuard(): Plugin {
       const content = readFileSync(file, 'utf8');
       const ownSlugs = extractHeadings(content);
       const issues: string[] = [];
+      const pageFile =
+        '/src/content/' + relative(join(root, 'src/content'), file).replace(/\\/g, '/');
 
-      const validate = (href: string, label: string) => {
-        if (!href) return;
-        // external / mail / relative — skip
+      const validate = (link: string, label: string) => {
+        if (!link) return;
+        let href = link;
+        if (!/^([a-z][a-z0-9+.-]*:|\/|#)/i.test(href)) {
+          const route = resolveMdHref(href, pageFile);
+          if (route === null) {
+            if (/\.md([#?]|$)/.test(href)) {
+              issues.push(`  ${label} → "${href}" is not a page in src/content`);
+            }
+            return;
+          }
+          href = route;
+        }
+        // external / mail, skip
         if (!href.startsWith('#') && (!href.startsWith('/') || href.startsWith('//'))) return;
 
         const hashAt = href.indexOf('#');

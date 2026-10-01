@@ -118,7 +118,7 @@ Pick one accent and update its companion tokens in both `:root` and `.dark`. The
 }
 ```
 
-For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft` with the colours you want in the hero wash, and `--code-border-gradient` and `--line-highlight` for inline code chips and highlighted code lines.
+For a full rebrand, also update `--accent-gradient` and `--accent-gradient-soft` with the colours you want in the hero wash (in both blocks: `.dark` uses lighter stops, `#fb7185`, `#e879f9` and `#c084fc`, so gradient text stays bright on the dark background), and `--code-border-gradient` and `--line-highlight` for inline code chips and highlighted code lines.
 
 Components that lean on the accent (sidebar active item, TOC active heading, command palette row, page footer hover, heading anchor hover, card icon, card CTA arrow, pill hover, hero gradient, code-preview headings, install-picker tabs) all pick the new colour up automatically.
 

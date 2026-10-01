@@ -11,8 +11,9 @@ import {fileURLToPath} from 'node:url';
  * What gets copied (the runtime project):
  *   src/, public/, index.html, vite.config.ts, tsconfig*.json, angular.json,
  *   package.json, .gitignore, .prettierrc.json, .prettierignore, and every
- *   build plugin that vite.config.ts imports: page-meta, link-guard, sitemap,
- *   search-index, raw-md, vars, api-gen, plus their shared plugin-utils.
+ *   build plugin that vite.config.ts imports: page-meta, link-guard, md-links,
+ *   site-html, sitemap, search-index, raw-md, vars, api-gen, plus their shared
+ *   plugin-utils.
  *
  * What gets excluded (NgMd-repo-only):
  *   node_modules/, dist/, .git/, .angular/, .vite/, pnpm-lock.yaml,
@@ -25,8 +26,9 @@ import {fileURLToPath} from 'node:url';
  *   - Write a starter README.md geared at the new project, not the dev site.
  *   - Ship .gitignore as `gitignore`: npm leaves dotfile .gitignore out of
  *     the tarball, and index.mjs renames it back.
- *   - ngmd.config.ts and index.html: drop NgMd's URL, tagline, most
- *     keywords, version registry and description.
+ *   - ngmd.config.ts: drop NgMd's URL, tagline, most keywords, version
+ *     registry and description. index.html reads its title, description and
+ *     social tags from that config, so it needs no edits.
  */
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -40,6 +42,8 @@ const INCLUDE = [
   'vite.config.ts',
   'page-meta.plugin.ts',
   'link-guard.plugin.ts',
+  'md-links.plugin.ts',
+  'site-html.plugin.ts',
   'sitemap.plugin.ts',
   'search-index.plugin.ts',
   'raw-md.plugin.ts',
@@ -210,16 +214,6 @@ function slimDocsContent() {
   }
 }
 
-function writeIndexHtml() {
-  const path = join(TEMPLATE, 'index.html');
-  const src = readFileSync(path, 'utf8').replace(
-    /<meta\s+(name="description"|property="og:description")\s+content="[^"]*"\s*\/>/g,
-    '<meta $1 content="Documentation built with NgMd." />',
-  );
-  writeFileSync(path, src);
-  console.log('  ~ generic description in index.html');
-}
-
 /**
  * Replace the busy NgMd landing with a one-screen placeholder that just says
  * "go read /welcome".
@@ -259,7 +253,6 @@ for (const name of INCLUDE) copyOne(name);
 writePkgJson();
 writeGitignore();
 writeReadme();
-writeIndexHtml();
 slimDocsContent();
 writeIndexPage();
 rmSync(join(TEMPLATE, 'public/images'), {recursive: true, force: true});

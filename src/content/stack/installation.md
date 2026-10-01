@@ -48,7 +48,7 @@ Open `http://localhost:5173`. Done.
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="settings" title="Edit site config" link="/concepts/markdown-routes" cta="Routing">
-    Open <code>src/ngmd.config.ts</code>. Change brand name, public URL, GitHub URL, sidebar nav, and the <code>keywords</code> auto-link map.
+    Open <code>src/ngmd.config.ts</code>. Change brand name, description, public URL, GitHub URL, sidebar nav, and the <code>keywords</code> auto-link map. The page title, description and social tags in <code>index.html</code> read from <code>site</code>, and <code>public/og.png</code> is the social card image.
   </ngmd-card>
   <ngmd-card icon="file" title="Write your first page" link="/concepts/markdown-routes" cta="How routing works">
     Drop a <code>.md</code> file under <code>src/content/</code>. The path becomes the URL. No wrapper needed.
@@ -149,13 +149,13 @@ From a scaffolded NgMd project, copy these into yours, along with `src/app/servi
     Nav, brand, keyword auto-link map.
   </ngmd-card>
   <ngmd-card icon="wrench" title="*.plugin.ts at repo root">
-    page-meta, link-guard, sitemap, search-index, raw-md, vars, api-gen, and their shared <code>plugin-utils.ts</code>. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
+    page-meta, link-guard, md-links, site-html, sitemap, search-index, raw-md, vars, api-gen, and their shared <code>plugin-utils.ts</code>. Plus the externalLinkGuard inline in <code>vite.config.ts</code>.
   </ngmd-card>
 </ngmd-card-grid>
 
 ### 5. Wire the plugins in vite.config.ts
 
-Import and register the NgMd plugins next to the analog plugin: `varsPlugin`, `externalLinkGuard`, `internalLinkGuard`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`.
+Import and register the NgMd plugins next to the analog plugin: `siteHtmlPlugin`, `varsPlugin`, `externalLinkGuard`, `internalLinkGuard`, `mdLinksPlugin`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`. Copy `index.html` too: its `%SITE_NAME%`, `%SITE_DESCRIPTION%` and `%SITE_URL%` tokens are filled from `ngmd.config.ts` by `siteHtmlPlugin`.
 
 ### 6. Deploy
 
