@@ -46,6 +46,8 @@ yarn create ngmd <name>
 bun create ngmd <name>
 ```
 
+Inside an Nx workspace (an `nx.json` in the current folder or above it), the same command adds the site as an Nx app in `apps/<name>` instead: it writes a `project.json` with `build`, `serve`, `test` and `typecheck` targets, adds the dependencies to the workspace root `package.json` and keeps any versions already there. Install from the workspace root and run `pnpm nx serve <name>`. Pass `--directory <dir>` for another folder, or `--no-nx` for a standalone project.
+
 The scaffolder is a single Node script with no dependencies. It copies a slim template into `<name>/`, prints a quick-start, and exits. It never runs `git init` or `pnpm install` for the user.
 
 ## 4. Install and start the dev server

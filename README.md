@@ -37,6 +37,18 @@ pnpm run dev
 
 `npm create ngmd@latest`, `yarn create ngmd`, and `bun create ngmd` all work too.
 
+### Inside an Nx workspace
+
+Run the same command anywhere inside an Nx workspace. `create-ngmd` finds `nx.json` and adds the site as an Nx app in `apps/<name>`, with a `project.json` that uses the AnalogJS executors and its dependencies added to the root `package.json`:
+
+```bash
+pnpm create ngmd@latest docs   # writes apps/docs
+pnpm install
+pnpm nx serve docs
+```
+
+Use `--directory <dir>` for another folder and `--no-nx` for a standalone project. Details in [Nx Monorepos](https://ngmd.netlify.app/stack/nx).
+
 ## Authoring model
 
 Two patterns, pick per page. **Prose pages** are markdown files under `src/content/`. Drop `theming.md` under `src/content/concepts/` and `/concepts/theming` resolves to it; one catch-all route handles every prose page. Sidebar, TOC, prev/next, and edit-on-github derive from `ngmd.config.ts` and `git log`. **Component pages** compose Angular components in `.page.ts` directly using NgMd's seventeen authoring components (callout, alert, card, card-grid, tabs, tab, pill-row, pill, workflow, step, hero, code-block, accordion, accordion-item, badge, video, image). Sixteen of them also render inline in markdown via Custom Elements; code-block uses fenced ` ``` ` blocks instead.

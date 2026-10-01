@@ -36,6 +36,10 @@ pnpm run dev
 
 Open `http://localhost:5173`. Done.
 
+<ngmd-callout type="info" title="Inside an Nx workspace">
+  Run the same command inside an Nx workspace and the site becomes an Nx app in <code>apps/my-docs</code>. See <a href="/stack/nx">Nx Monorepos</a>.
+</ngmd-callout>
+
 <ngmd-callout type="tip" title="Pinned versions land in your repo">
   The scaffolder copies a slim template that owns its dependencies. You don't depend on <code>create-ngmd</code> after install. It never appears in your <code>package.json</code>.
 </ngmd-callout>

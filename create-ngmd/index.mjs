@@ -12,19 +12,23 @@ import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createInterface} from 'node:readline/promises';
 import {stdin, stdout} from 'node:process';
+import {convertToNxProject, findNxWorkspace, toPosix} from './nx.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = join(HERE, 'template');
 
 /**
- * `create-ngmd <project-name>` — scaffolds a fresh NgMd project.
+ * `create-ngmd <project-name> [--nx | --no-nx] [--directory <dir>]` — scaffolds
+ * a fresh NgMd project.
  *
  * Behaviour:
- *   1. Accept project name from argv[2] or interactive prompt.
+ *   1. Accept project name from the first positional argument or a prompt.
  *   2. Validate (lowercase, hyphenated, no path traversal, dir not present).
- *   3. Copy `template/` into ./<project-name>/.
+ *   3. Copy `template/` into ./<project-name>/, or into <dir> (default
+ *      apps/<project-name>) of the enclosing Nx workspace when there is one.
  *   4. Replace placeholders ({{name}}) in package.json, ngmd.config.ts, index.html.
- *   5. Print next-step commands tailored to the detected package manager.
+ *   5. In an Nx workspace, turn the copy into an Nx project (see nx.mjs).
+ *   6. Print next-step commands tailored to the detected package manager.
  *
  * Zero npm dependencies. Node builtins only.
  */
@@ -118,9 +122,38 @@ function replacePlaceholders(target, name) {
   }
 }
 
+function parseArgs(argv) {
+  const args = {name: undefined, nx: undefined, directory: undefined};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--nx') args.nx = true;
+    else if (a === '--no-nx') args.nx = false;
+    else if (a === '--directory' || a === '--dir') {
+      const value = argv[++i];
+      if (!value || value.startsWith('-'))
+        throw new Error(`${a} needs a folder, like ${a} apps/docs`);
+      args.directory = value;
+    } else if (a.startsWith('--directory=')) args.directory = a.slice('--directory='.length);
+    else if (a.startsWith('-')) throw new Error(`unknown option ${a}`);
+    else if (!args.name) args.name = a;
+    else throw new Error(`unexpected argument ${a}`);
+  }
+  return args;
+}
+
+function validDirectory(dir) {
+  const parts = toPosix(dir).split('/').filter(Boolean);
+  return (
+    parts.length > 0 &&
+    !dir.startsWith('/') &&
+    !/^[a-zA-Z]:/.test(dir) &&
+    parts.every((p) => p !== '..' && p !== '.' && /^[a-zA-Z0-9._@-]+$/.test(p))
+  );
+}
+
 async function main() {
-  const argv = process.argv.slice(2);
-  const requested = argv[0];
+  const args = parseArgs(process.argv.slice(2));
+  const requested = args.name;
 
   console.log(
     `\n${c.bold}${c.cyan}create-ngmd${c.reset} ${c.dim}— scaffold a new NgMd project${c.reset}\n`,
@@ -149,12 +182,38 @@ async function main() {
     process.exit(1);
   }
 
-  const target = resolve(process.cwd(), name);
+  const workspaceRoot = args.nx === false ? null : findNxWorkspace(process.cwd());
+  if (args.nx && !workspaceRoot) {
+    console.error(
+      `${c.red}error:${c.reset} --nx was passed but no nx.json was found in this directory or above it.`,
+    );
+    process.exit(1);
+  }
+  if (args.directory !== undefined && !workspaceRoot) {
+    console.error(`${c.red}error:${c.reset} --directory only applies inside an Nx workspace.`);
+    process.exit(1);
+  }
+  if (args.directory !== undefined && !validDirectory(args.directory)) {
+    console.error(
+      `${c.red}error:${c.reset} "${args.directory}" is not a valid directory. ` +
+        `Use a path relative to the workspace root, like apps/docs.`,
+    );
+    process.exit(1);
+  }
+
+  const projectRoot = workspaceRoot
+    ? toPosix(args.directory ?? `apps/${name}`).replace(/^\/+|\/+$/g, '')
+    : null;
+  const target = workspaceRoot ? join(workspaceRoot, projectRoot) : resolve(process.cwd(), name);
+  const shown = workspaceRoot ? projectRoot : name;
+  if (workspaceRoot) {
+    console.log(`${c.dim}Nx workspace found at${c.reset} ${workspaceRoot}`);
+  }
   if (existsSync(target)) {
     const isEmpty = readdirSync(target).length === 0;
     if (!isEmpty) {
       console.error(
-        `${c.red}error:${c.reset} directory "${name}" already exists and is not empty.`,
+        `${c.red}error:${c.reset} directory "${shown}" already exists and is not empty.`,
       );
       process.exit(1);
     }
@@ -188,6 +247,28 @@ async function main() {
   const pm = detectPM();
   const install = pm === 'yarn' ? 'yarn' : `${pm} install`;
   const dev = pm === 'npm' ? 'npm run dev' : `${pm} dev`;
+
+  if (workspaceRoot) {
+    const {added, kept} = convertToNxProject({workspaceRoot, target, projectRoot, name});
+    const nx = {npm: 'npx nx', pnpm: 'pnpm nx', yarn: 'yarn nx', bun: 'bunx nx'}[pm];
+    console.log(`${c.green}✓${c.reset} ${c.bold}done${c.reset}\n`);
+    console.log(
+      `${c.dim}Added${c.reset} ${added.length} ${c.dim}dependencies to the workspace package.json.${c.reset}`,
+    );
+    if (kept.length) {
+      console.log(
+        `${c.yellow}Kept your versions of these, which are a different major than NgMd uses:${c.reset}`,
+      );
+      for (const k of kept) console.log(`  ${k}`);
+    }
+    console.log(`\n${c.bold}Next steps:${c.reset}`);
+    if (process.cwd() !== workspaceRoot) console.log(`  ${c.cyan}cd${c.reset} ${workspaceRoot}`);
+    console.log(`  ${c.cyan}${install}${c.reset}`);
+    console.log(`  ${c.cyan}${nx} serve ${name}${c.reset}\n`);
+    console.log(`${c.dim}Docs:${c.reset} https://ngmd.netlify.app/stack/nx`);
+    console.log(`${c.dim}Issues:${c.reset} https://github.com/erkamyaman/ngmd/issues\n`);
+    return;
+  }
 
   console.log(`${c.green}✓${c.reset} ${c.bold}done${c.reset}\n`);
   console.log(`${c.bold}Next steps:${c.reset}`);

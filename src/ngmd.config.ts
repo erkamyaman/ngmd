@@ -157,6 +157,7 @@ const config: NgmdConfig = {
     Starlight: 'https://starlight.astro.build',
     Docusaurus: 'https://docusaurus.io',
     Nextra: 'https://nextra.site',
+    Nx: 'https://nx.dev',
   },
 
   nav: [
@@ -197,6 +198,7 @@ const config: NgmdConfig = {
         {label: 'Overview', href: '/stack/overview'},
         {label: 'Technologies', href: '/stack/technologies'},
         {label: 'Installation', href: '/stack/installation'},
+        {label: 'Nx Monorepos', href: '/stack/nx', status: 'new'},
       ],
     },
   ],

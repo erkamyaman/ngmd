@@ -154,6 +154,8 @@ export function withoutCode(markdown: string): string {
     .replace(/(`+)[^\n]*?\1/g, ' ');
 }
 
+export const siteRoot = import.meta.dirname;
+
 /**
  * Resolve `path` against `root`, following symlinks, and throw when the
  * real target lies outside the real root.

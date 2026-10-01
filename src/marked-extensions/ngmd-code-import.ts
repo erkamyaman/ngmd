@@ -3,7 +3,7 @@ import type {MarkedExtension} from 'marked';
 import {highlightCode} from './shiki-shared.ts';
 import {escapeHtml} from './escape-html.ts';
 import {findFences, getAttr, replaceFences} from './fences.ts';
-import {resolveInside} from '../../plugin-utils.ts';
+import {resolveInside, siteRoot} from '../../plugin-utils.ts';
 import config from '../ngmd.config.ts';
 
 /**
@@ -30,7 +30,7 @@ const IGNORE_LINE_RE = /^.*\/\/\s*ngmd-ignore-line\s*$/;
 
 function loadFile(spec: string): {code: string; rangeFragment: string} {
   const [path, range] = spec.split('#');
-  let content = readFileSync(resolveInside(process.cwd(), path), 'utf8').replace(/\r\n?/g, '\n');
+  let content = readFileSync(resolveInside(siteRoot, path), 'utf8').replace(/\r\n?/g, '\n');
 
   let rangeFragment = '';
   if (range) {

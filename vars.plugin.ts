@@ -1,6 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import type {Plugin} from 'vite';
+import {siteRoot} from './plugin-utils.ts';
 
 /**
  * Single source of truth for "the current published version" in markdown
@@ -41,7 +42,7 @@ function readVars(root: string): Record<string, string> {
  * are left in place so an unrecognised marker survives to the rendered
  * page rather than silently disappearing.
  */
-export function substituteMdVars(body: string, root = process.cwd()): string {
+export function substituteMdVars(body: string, root = siteRoot): string {
   const vars = readVars(root);
   return body.replace(/\{\{\s*([\w-]+)\s*\}\}/g, (match, key) => {
     return key in vars ? vars[key] : match;
