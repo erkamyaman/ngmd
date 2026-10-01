@@ -209,8 +209,8 @@ const config: NgmdConfig = {
   // The live deployment renders one version; clicking a non-self entry
   // opens its deployment in a new tab.
   versions: {
-    self: 'v0.5.0',
-    list: [{label: 'v0.5.0', url: 'https://ngmd.netlify.app', status: 'current'}],
+    self: 'v0.5.1',
+    list: [{label: 'v0.5.1', url: 'https://ngmd.netlify.app', status: 'current'}],
   },
 };
 

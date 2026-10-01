@@ -6,7 +6,9 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
-## Unreleased
+## 0.5.1 <ngmd-badge variant="new">Latest</ngmd-badge>
+
+**Nx workspaces.** Run `create-ngmd` anywhere inside an Nx workspace and it adds the site as an Nx app in `apps/<name>` (or `--directory <dir>`), with a `project.json` that uses the same executors as `nx g @analogjs/platform:application`. Dependencies go to the root `package.json`, and versions the workspace already has are kept. `--no-nx` forces a standalone project. Code imports and the version token now resolve from the site folder, so they work when Nx runs Vite from the workspace root. See [Nx Monorepos](../stack/nx.md).
 
 **Relative `.md` links.** Link to another page by its file, like `[Theming](./theming.md)` or `[Search](../concepts/search.md#switching-to-algolia)`. The new `md-links` plugin rewrites the link to the page route at build time, so the same markdown works on GitHub and on the site. The link guard resolves these links from the linking file and fails the build when one points to a file that isn't a page in `src/content`, or to a heading that doesn't exist.
 
@@ -14,7 +16,7 @@ Release notes and version history for NgMd.
 
 **Dark mode gradient.** `--accent-gradient` has its own dark value (rose, fuchsia and purple 400) instead of falling back to the light one, so gradient text and bars stay bright on the dark background.
 
-## 0.5.0 <ngmd-badge variant="new">Latest</ngmd-badge>
+## 0.5.0
 
 A full review of every component, plugin and page, tested in a real browser. Every page now passes axe (WCAG 2.2 AA).
 
