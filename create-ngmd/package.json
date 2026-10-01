@@ -34,6 +34,7 @@
   "scripts": {
     "build-template": "node build-template.mjs",
     "smoke": "node smoke-test.mjs",
+    "smoke:nx": "node smoke-test.mjs --nx",
     "prepublishOnly": "node build-template.mjs"
   },
   "engines": {
@@ -41,6 +42,7 @@
   },
   "files": [
     "index.mjs",
+    "nx.mjs",
     "README.md",
     "template"
   ],

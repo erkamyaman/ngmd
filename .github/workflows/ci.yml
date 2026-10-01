@@ -44,3 +44,6 @@ jobs:
 
       - name: Scaffold, install, build and test a generated site
         run: pnpm --dir create-ngmd smoke
+
+      - name: Scaffold, build and test a site inside an Nx workspace
+        run: pnpm --dir create-ngmd smoke:nx

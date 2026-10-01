@@ -51,11 +51,24 @@ See the [NgMd repo](https://github.com/erkamyaman/ngmd) for the feature list.
 3. Drop more `.md` files in `src/content/`, or `.page.ts` components in `src/app/pages/`.
 4. Build with `pnpm run build` and deploy `dist/analog/public/` to any static host (with a fallback to `/index.html`), or run `dist/analog/server/` on Node.
 
+## Nx workspaces
+
+Run the command anywhere inside an Nx workspace and the site becomes an Nx app instead of a standalone project:
+
+```bash
+pnpm create ngmd@latest docs                         # apps/docs, Nx project "docs"
+pnpm create ngmd@latest docs --directory sites/docs  # another folder
+pnpm install
+pnpm nx serve docs
+```
+
+The app gets a `project.json` with `build`, `serve`, `test` and `typecheck` targets (the same AnalogJS executors as `nx g @analogjs/platform:application`), and its dependencies go to the workspace root `package.json`. Versions the workspace already has are kept and listed. Pass `--no-nx` to get a standalone project anyway, or `--nx` to fail when no `nx.json` is found. See [Nx Monorepos](https://ngmd.netlify.app/stack/nx).
+
 Inside a monorepo, keep the scaffolded `.prettierrc.json` and `.prettierignore` in the NgMd folder. Otherwise the root Prettier config reformats NgMd's files (bracket spacing, for example) and they drift from upstream.
 
 ## How it works
 
-`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand and GitHub URL, `index.html` title, `README.md` heading) so the new project matches the name you passed. It refuses a non-empty target directory, and does not install dependencies or run `git init`.
+`index.mjs` (zero npm deps; warns if your Node is below the template's `engines.node` floor) copies `template/` into the target directory and rewrites a few placeholders (`package.json` name, `ngmd.config.ts` brand and GitHub URL, `index.html` title, `README.md` heading) so the new project matches the name you passed. It refuses a non-empty target directory, and does not install dependencies or run `git init`. Inside an Nx workspace, `nx.mjs` then turns the copy into an Nx project.
 
 `template/` is generated from the parent ngmd repo by `build-template.mjs` and is git-ignored. The `prepublishOnly` script regenerates it before every publish, so the npm artifact always carries an up-to-date starter.
 

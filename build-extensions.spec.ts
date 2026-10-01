@@ -1,3 +1,4 @@
+import {tmpdir} from 'node:os';
 import {Marked, type MarkedExtension} from 'marked';
 import {getBuildExtensions} from './src/marked-extensions/index';
 import {ngmdCodeGroupExtension} from './src/marked-extensions/ngmd-code-group';
@@ -55,6 +56,16 @@ describe('build-time fence extensions', () => {
     }
     expect(warn).toHaveBeenCalledTimes(3);
     warn.mockRestore();
+  });
+
+  it('resolves imported files from the site root, not the working directory', async () => {
+    const cwd = vi.spyOn(process, 'cwd').mockReturnValue(tmpdir());
+    const html = await preprocess(
+      ngmdCodeImportExtension,
+      '```ts file="src/marked-extensions/escape-html.ts#L1"\n```\n',
+    );
+    expect(html).toContain('escapeHtml');
+    cwd.mockRestore();
   });
 
   it('substitutes vars before the fence extensions run', async () => {
