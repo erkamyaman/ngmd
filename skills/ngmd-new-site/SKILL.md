@@ -160,13 +160,13 @@ Before the user deploys, run a production build at least once. It catches broken
 pnpm run build
 ```
 
-Output lands in `dist/`. `dist/analog/public/` is the static client with the prerendered home page, sitemap, and robots.txt; `dist/analog/server/` is the Node server (`pnpm preview` runs it) for hosts that want SSR.
+Output lands in `dist/`. `dist/analog/public/` is the static client with a prerendered HTML file for every page, `404.html`, sitemap, and robots.txt; `dist/analog/server/` is the Node server (`pnpm preview` runs it) for hosts that want SSR.
 
 _IMPORTANT_: The build will fail on a broken internal link rather than ship it. If the build errors with a link-guard message, point at the offending file and let the user fix the slug or frontmatter heading.
 
 ## 8. Deploy
 
-The output is a static + SSR bundle. Any Node-friendly host works (Netlify, Vercel, Cloudflare, custom Node server). The user does not need any host-specific config beyond pointing the build command at `pnpm run build` and the publish directory at `dist/analog/public/`, with a fallback from every path to `/index.html` for client-side routing. If the user asks for host-specific instructions, point them at the host's "Angular" or "AnalogJS" docs rather than guessing flags.
+The output is a static + SSR bundle. Any Node-friendly host works (Netlify, Vercel, Cloudflare, custom Node server). The user does not need any host-specific config beyond pointing the build command at `pnpm run build` and the publish directory at `dist/analog/public/`, with unknown paths served `/404.html` and a 404 status. Do not add a fallback from every path to `/index.html`: it shows the home page before the requested page loads. If the user asks for host-specific instructions, point them at the host's "Angular" or "AnalogJS" docs rather than guessing flags.
 
 ## Guardrails
 

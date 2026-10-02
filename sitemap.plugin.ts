@@ -1,21 +1,13 @@
-import {readFileSync, statSync} from 'node:fs';
-import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import {
-  gitDate,
-  isNoIndex,
-  parseFrontmatter,
-  routeFromPagePath,
-  walkContentFiles,
-  walkPageFiles,
-} from './plugin-utils.ts';
+import {gitDate, siteRoutes} from './plugin-utils.ts';
 
 /**
  * Emits `sitemap.xml` and `robots.txt` into the client build output.
  *
- * Discovery mirrors the page-meta plugin: walks `src/app/pages/*.page.ts`
- * and `src/content/**\/*.md`, pulls each file's last commit date via
- * `git log -1 --format=%cs` to populate `<lastmod>`, falls back to mtime
+ * Routes come from `siteRoutes` in plugin-utils, the same list the build
+ * prerenders: `src/app/pages/*.page.ts`, `src/content/**\/*.md` and the API
+ * symbol pages, minus `noIndex` pages. Each file's last commit date via
+ * `git log -1 --format=%cs` populates `<lastmod>`, falling back to mtime
  * for uncommitted files.
  *
  * Versioning is per-deployment (each docs version is its own site under the
@@ -47,29 +39,8 @@ export function sitemapPlugin(opts: {siteUrl: string}): Plugin {
     },
     generateBundle() {
       const entries = new Map<string, string>();
-
-      try {
-        const pageFiles = walkPageFiles(join(root, 'src/app/pages'), root);
-        for (const rel of pageFiles) {
-          const route = routeFromPagePath(rel);
-          if (!route) continue;
-          entries.set(route, gitDate(rel, root, today));
-        }
-      } catch {
-        // src/app/pages missing — fine
-      }
-
-      const contentDir = join(root, 'src/content');
-      try {
-        statSync(contentDir);
-        for (const [rel, route] of walkContentFiles(contentDir, root)) {
-          if (isNoIndex(parseFrontmatter(readFileSync(join(root, rel), 'utf8')).attributes)) {
-            continue;
-          }
-          entries.set(route, gitDate(rel, root, today));
-        }
-      } catch {
-        // src/content missing — skip
+      for (const {route, file, noIndex} of siteRoutes(root)) {
+        if (!noIndex) entries.set(route, gitDate(file, root, today));
       }
 
       const urls = [...entries.entries()]

@@ -1,7 +1,7 @@
 # Netlify deploy config for NgMd.
-# Static + SPA fallback. AnalogJS prerenders `/` and ships client-side
-# routing for everything else, so any unknown path falls back to index.html
-# where the Angular router takes over.
+# Static site. The build prerenders every page (see `prerenderRoutes` in
+# plugin-utils.ts), so each route has its own index.html and a refresh shows
+# that page straight away.
 
 [build]
   command = "pnpm install --frozen-lockfile && pnpm run build"
@@ -12,9 +12,10 @@
   # stay aligned. Bump together when the project upgrades.
   NODE_VERSION = "22.22.3"
 
-# SPA fallback — last rule, status 200 (rewrite, not redirect) so the URL
-# in the browser bar stays correct while the SPA shell renders.
+# Unknown paths get the prerendered not-found page with a 404 status. The
+# rule only applies when no file matches, and the URL in the browser bar
+# stays the same, so the Angular router renders the not-found page there too.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404

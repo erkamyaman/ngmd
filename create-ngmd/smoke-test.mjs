@@ -36,6 +36,12 @@ const work = mkdtempSync(join(tmpdir(), 'create-ngmd-smoke-'));
 const workspace = join(work, 'nx-smoke');
 const project = nx ? join(workspace, 'apps/ngmd-smoke') : join(work, 'ngmd-smoke');
 
+function expectPages(publicDir) {
+  for (const file of ['index.html', 'welcome/index.html', '404.html']) {
+    if (!existsSync(join(publicDir, file))) throw new Error(`build did not prerender ${file}`);
+  }
+}
+
 function writeJson(path, value) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n');
 }
@@ -47,6 +53,7 @@ function smokeStandalone() {
   }
   run('pnpm', ['install'], project);
   run('pnpm', ['build'], project);
+  expectPages(join(project, 'dist/analog/public'));
   run('pnpm', ['exec', 'vitest', 'run'], project);
 }
 
@@ -68,9 +75,7 @@ function smokeNx() {
   }
   run('pnpm', ['install'], workspace);
   run('pnpm', ['nx', 'build', 'ngmd-smoke'], workspace);
-  if (!existsSync(join(workspace, 'dist/apps/ngmd-smoke/analog/public/index.html'))) {
-    throw new Error('Nx build did not write dist/apps/ngmd-smoke/analog/public/index.html');
-  }
+  expectPages(join(workspace, 'dist/apps/ngmd-smoke/analog/public'));
   run('pnpm', ['nx', 'test', 'ngmd-smoke'], workspace);
   run('pnpm', ['nx', 'typecheck', 'ngmd-smoke'], workspace);
 }

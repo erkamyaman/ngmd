@@ -3,6 +3,7 @@ import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import type {Plugin} from 'vite';
 import {internalLinkGuard} from './link-guard.plugin';
+import {prerenderRoutes, siteRoot, walkContentFiles} from './plugin-utils';
 import {rawMdPlugin} from './raw-md.plugin';
 import {searchIndexPlugin} from './search-index.plugin';
 import {siteHtmlPlugin} from './site-html.plugin';
@@ -164,6 +165,42 @@ describe('sitemapPlugin', () => {
       'https://example.com/docs/some%20page',
     ]);
     expect(out.get('robots.txt')).toContain('Sitemap: https://example.com/docs/sitemap.xml');
+  });
+});
+
+describe('prerenderRoutes', () => {
+  const API = {
+    'ngmd.api.ts': "export default defineApi({scope: ['lib/**/*.ts']});\n",
+    'lib/math.ts': 'export function add() {}\n',
+  };
+
+  it('lists every static route, noIndex pages included, then the 404 page', () => {
+    expect(prerenderRoutes(root)).toEqual([
+      '/',
+      '/api',
+      '/guide',
+      '/hidden',
+      '/some page',
+      '/404.html',
+    ]);
+  });
+
+  it('adds a page per API symbol and lists it in the sitemap too', () => {
+    write(API);
+    expect(prerenderRoutes(root)).toContain('/api/lib/add');
+    const sitemap = emitted(sitemapPlugin({siteUrl: 'https://example.com'})).get('sitemap.xml');
+    expect(sitemap).toContain('<loc>https://example.com/api/lib/add</loc>');
+  });
+
+  it("covers every page of this site's own content and API reference", () => {
+    const routes = prerenderRoutes(siteRoot);
+    const content = walkContentFiles(join(siteRoot, 'src/content'), siteRoot).map(([, r]) => r);
+    expect(content.length).toBeGreaterThan(0);
+    expect(routes).toEqual(
+      expect.arrayContaining([...content, '/', '/api', '/concepts/components', '/404.html']),
+    );
+    expect(routes).toContain('/api/src-app-ui/NgmdCallout');
+    expect(routes.filter((r) => r.includes('['))).toEqual([]);
   });
 });
 

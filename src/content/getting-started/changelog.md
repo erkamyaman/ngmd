@@ -6,6 +6,10 @@ title: Changelog
 
 Release notes and version history for NgMd.
 
+## Unreleased
+
+**Every page is prerendered.** The build now writes an HTML file for every markdown page, every `.page.ts` route and every API reference page, plus a `404.html`, instead of the home page only. Refreshing or opening a deep link shows that page straight away, where it used to show the home page until Angular loaded. The prerender list comes from the same route discovery as the sitemap, which now lists the API reference pages too. `noIndex` pages are prerendered but stay out of the sitemap. Unknown paths get the not-found page with a 404 status: `netlify.toml` serves `/404.html` instead of rewriting every path to `/index.html`. To update an existing site, copy the new `plugin-utils.ts`, `sitemap.plugin.ts` and `api-gen.plugin.ts`, add `prerender: {routes: async () => prerenderRoutes(import.meta.dirname)}` to `analog()` in `vite.config.ts`, and change the host's fallback the same way.
+
 ## 0.5.1 <ngmd-badge variant="new">Latest</ngmd-badge>
 
 **Nx workspaces.** Run `create-ngmd` anywhere inside an Nx workspace and it adds the site as an Nx app in `apps/<name>` (or `--directory <dir>`), with a `project.json` that uses the same executors as `nx g @analogjs/platform:application`. Dependencies go to the root `package.json`, and versions the workspace already has are kept. `--no-nx` forces a standalone project. Code imports and the version token now resolve from the site folder, so they work when Nx runs Vite from the workspace root. See [Nx Monorepos](../stack/nx.md).

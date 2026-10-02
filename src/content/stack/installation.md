@@ -155,11 +155,11 @@ From a scaffolded NgMd project, copy these into yours, along with `src/app/servi
 
 ### 5. Wire the plugins in vite.config.ts
 
-Import and register the NgMd plugins next to the analog plugin: `siteHtmlPlugin`, `varsPlugin`, `externalLinkGuard`, `internalLinkGuard`, `mdLinksPlugin`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`. Copy `index.html` too: its `%SITE_NAME%`, `%SITE_DESCRIPTION%` and `%SITE_URL%` tokens are filled from `ngmd.config.ts` by `siteHtmlPlugin`.
+Import and register the NgMd plugins next to the analog plugin: `siteHtmlPlugin`, `varsPlugin`, `externalLinkGuard`, `internalLinkGuard`, `mdLinksPlugin`, `pageMetaPlugin`, `sitemapPlugin`, `rawMdPlugin`, `searchIndexPlugin`, `apiGenPlugin`. Pass `prerender: {routes: async () => prerenderRoutes(import.meta.dirname)}` to `analog()` so the build writes an HTML file for every page and a `404.html`. Copy `index.html` too: its `%SITE_NAME%`, `%SITE_DESCRIPTION%` and `%SITE_URL%` tokens are filled from `ngmd.config.ts` by `siteHtmlPlugin`.
 
 ### 6. Deploy
 
-Drop a `netlify.toml` at the repo root with `publish = "dist/analog/public"` and a SPA fallback redirect. Connect the repo to Netlify, Vercel, or any Node-friendly host. Done.
+Drop a `netlify.toml` at the repo root with `publish = "dist/analog/public"` and a `/*` to `/404.html` rule with status 404, so unknown paths show the not-found page. Connect the repo to Netlify, Vercel, or any Node-friendly host. Done.
 
 <ngmd-alert severity="warning">
   Path B goes stale faster than Path A. If a step looks wrong, the scaffolded template at <a href="https://github.com/erkamyaman/ngmd" target="_blank" rel="noopener noreferrer"><code>github.com/erkamyaman/ngmd</code></a> is the source of truth.

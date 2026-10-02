@@ -37,106 +37,14 @@ export function apiGenPlugin(): Plugin {
   let configMemo: ApiConfig | null | undefined;
 
   function loadConfig(): ApiConfig | null {
-    if (configMemo === undefined) configMemo = readConfig();
+    if (configMemo === undefined) configMemo = readApiConfig(root);
     return configMemo;
   }
 
-  function readConfig(): ApiConfig | null {
-    const path = configPath();
-    if (!existsSync(path)) return null;
-    try {
-      const proj = new Project({
-        compilerOptions: {target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext},
-      });
-      const sourceFile = proj.addSourceFileAtPath(path);
-      // We can't trivially evaluate the TS without a runtime; instead lift
-      // the literal passed to `defineApi(...)` via AST traversal. For the
-      // skeleton, every supported field is read as a literal so static
-      // extraction is enough. Read the `export default` expression directly
-      // rather than the first `CallExpression` in the file — otherwise any
-      // helper call before the default export (even a harmless one) would
-      // be parsed as the config.
-      const exportAssignment = sourceFile.getExportAssignment((ea) => !ea.isExportEquals());
-      if (!exportAssignment) return null;
-      const callExpr = exportAssignment.getExpression().asKind(ts.SyntaxKind.CallExpression);
-      if (!callExpr) return null;
-      const literal = callExpr.getArguments()[0];
-      if (!literal || !literal.asKind(ts.SyntaxKind.ObjectLiteralExpression)) return null;
-      return parseLiteralAsConfig(literal as never);
-    } catch (err) {
-      console.warn('[ngmd-api-gen] failed to load ngmd.api.ts:', err);
-      return null;
-    }
-  }
-
-  function ensureProject(config: ApiConfig): Project {
-    if (project) return project;
-    project = new Project({
-      tsConfigFilePath: existsSync(join(root, 'tsconfig.json'))
-        ? join(root, 'tsconfig.json')
-        : undefined,
-      skipAddingFilesFromTsConfig: true,
-    });
-    project.addSourceFilesAtPaths([
-      ...config.scope.map((pattern) => posix.join(root, pattern)),
-      ...(config.exclude ?? []).map((pattern) => '!' + posix.join(root, pattern)),
-    ]);
-    return project;
-  }
-
   function extractRecords(config: ApiConfig): SymbolRecord[] {
-    if (recordsMemo) return recordsMemo;
-    const proj = ensureProject(config);
-    const records: SymbolRecord[] = [];
-    const seen = new Set<string>();
-    const badgeTags = new Set(config.badgesFromJsDoc ?? []);
-
-    for (const sourceFile of proj.getSourceFiles()) {
-      for (const [exportName, declarations] of sourceFile.getExportedDeclarations()) {
-        const decls = declarations.filter((d) => symbolKindOf(d));
-        const first = decls[0];
-        if (!first) continue;
-        const declFile = first.getSourceFile();
-        if (declFile.isInNodeModules() || declFile.isDeclarationFile()) continue;
-        const kind = symbolKindOf(first)!;
-        const name =
-          exportName === 'default'
-            ? ((first as {getName?: () => string | undefined}).getName?.() ?? exportName)
-            : exportName;
-        const filePath = posix.relative(root, declFile.getFilePath());
-        const key = `${filePath}:${first.getStart()}:${name}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-
-        const jsDocsPerDecl = decls.map((d) => {
-          const host = jsDocHostFor(d);
-          return Node.isJSDocable(host) ? host.getJsDocs() : [];
-        });
-        const jsDocs = jsDocsPerDecl.flat();
-        const description =
-          jsDocsPerDecl
-            .find((docs) => docs.length)
-            ?.at(-1)
-            ?.getDescription()
-            .trim() ?? '';
-        const tags = jsDocs.flatMap((d) => d.getTags().map((t) => t.getTagName()));
-        const badges = [...new Set(tags.filter((t) => badgeTags.has(t)))];
-
-        records.push({
-          kind,
-          name,
-          filePath,
-          line: first.getStartLineNumber(),
-          signature: signatureOf(decls),
-          description,
-          badges,
-          group: groupNameFor(filePath, config.groupBy ?? 'directory', kind),
-        });
-      }
-    }
-
-    recordsMemo = records;
-    return records;
+    project ??= createApiProject(root, config);
+    recordsMemo ??= extractApiRecords(root, config, project);
+    return recordsMemo;
   }
 
   return {
@@ -192,6 +100,109 @@ export function apiGenPlugin(): Plugin {
       !(config.exclude ?? []).some((pattern) => posix.matchesGlob(rel, pattern))
     );
   }
+}
+
+function readApiConfig(root: string): ApiConfig | null {
+  const path = posix.join(root, 'ngmd.api.ts');
+  if (!existsSync(path)) return null;
+  try {
+    const proj = new Project({
+      compilerOptions: {target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext},
+    });
+    const sourceFile = proj.addSourceFileAtPath(path);
+    // We can't trivially evaluate the TS without a runtime; instead lift
+    // the literal passed to `defineApi(...)` via AST traversal. For the
+    // skeleton, every supported field is read as a literal so static
+    // extraction is enough. Read the `export default` expression directly
+    // rather than the first `CallExpression` in the file — otherwise any
+    // helper call before the default export (even a harmless one) would
+    // be parsed as the config.
+    const exportAssignment = sourceFile.getExportAssignment((ea) => !ea.isExportEquals());
+    if (!exportAssignment) return null;
+    const callExpr = exportAssignment.getExpression().asKind(ts.SyntaxKind.CallExpression);
+    if (!callExpr) return null;
+    const literal = callExpr.getArguments()[0];
+    if (!literal || !literal.asKind(ts.SyntaxKind.ObjectLiteralExpression)) return null;
+    return parseLiteralAsConfig(literal as never);
+  } catch (err) {
+    console.warn('[ngmd-api-gen] failed to load ngmd.api.ts:', err);
+    return null;
+  }
+}
+
+function createApiProject(root: string, config: ApiConfig): Project {
+  const project = new Project({
+    tsConfigFilePath: existsSync(join(root, 'tsconfig.json'))
+      ? join(root, 'tsconfig.json')
+      : undefined,
+    skipAddingFilesFromTsConfig: true,
+  });
+  project.addSourceFilesAtPaths([
+    ...config.scope.map((pattern) => posix.join(root, pattern)),
+    ...(config.exclude ?? []).map((pattern) => '!' + posix.join(root, pattern)),
+  ]);
+  return project;
+}
+
+export function apiRoutes(root: string): Array<{route: string; file: string}> {
+  const config = readApiConfig(root);
+  if (!config) return [];
+  return extractApiRecords(root, config, createApiProject(root, config)).map((record) => ({
+    route: `/api/${record.group}/${record.name}`,
+    file: record.filePath,
+  }));
+}
+
+function extractApiRecords(root: string, config: ApiConfig, proj: Project): SymbolRecord[] {
+  const records: SymbolRecord[] = [];
+  const seen = new Set<string>();
+  const badgeTags = new Set(config.badgesFromJsDoc ?? []);
+
+  for (const sourceFile of proj.getSourceFiles()) {
+    for (const [exportName, declarations] of sourceFile.getExportedDeclarations()) {
+      const decls = declarations.filter((d) => symbolKindOf(d));
+      const first = decls[0];
+      if (!first) continue;
+      const declFile = first.getSourceFile();
+      if (declFile.isInNodeModules() || declFile.isDeclarationFile()) continue;
+      const kind = symbolKindOf(first)!;
+      const name =
+        exportName === 'default'
+          ? ((first as {getName?: () => string | undefined}).getName?.() ?? exportName)
+          : exportName;
+      const filePath = posix.relative(root, declFile.getFilePath());
+      const key = `${filePath}:${first.getStart()}:${name}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const jsDocsPerDecl = decls.map((d) => {
+        const host = jsDocHostFor(d);
+        return Node.isJSDocable(host) ? host.getJsDocs() : [];
+      });
+      const jsDocs = jsDocsPerDecl.flat();
+      const description =
+        jsDocsPerDecl
+          .find((docs) => docs.length)
+          ?.at(-1)
+          ?.getDescription()
+          .trim() ?? '';
+      const tags = jsDocs.flatMap((d) => d.getTags().map((t) => t.getTagName()));
+      const badges = [...new Set(tags.filter((t) => badgeTags.has(t)))];
+
+      records.push({
+        kind,
+        name,
+        filePath,
+        line: first.getStartLineNumber(),
+        signature: signatureOf(decls),
+        description,
+        badges,
+        group: groupNameFor(filePath, config.groupBy ?? 'directory', kind),
+      });
+    }
+  }
+
+  return records;
 }
 
 function symbolKindOf(decl: Node): SymbolKind | null {

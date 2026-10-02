@@ -1,7 +1,8 @@
 import {execFileSync} from 'node:child_process';
-import {readdirSync, realpathSync, statSync} from 'node:fs';
+import {readFileSync, readdirSync, realpathSync, statSync} from 'node:fs';
 import {isAbsolute, join, relative, resolve} from 'node:path';
 import frontMatter from 'front-matter';
+import {apiRoutes} from './api-gen.plugin.ts';
 
 export {createSlugger, headingText, slugify} from './src/app/utils/heading-slug.ts';
 
@@ -85,6 +86,42 @@ function pageRouteSegments(rel: string): string[] | null {
     .replace(/\.page\.ts$/, '');
   if (trimmed.includes('[...')) return null;
   return trimmed.split(/[/.]/).filter((s) => s !== 'index' && !/^\(.*\)$/.test(s));
+}
+
+export interface SiteRoute {
+  route: string;
+  file: string;
+  noIndex: boolean;
+}
+
+export function siteRoutes(root: string): SiteRoute[] {
+  const routes = new Map<string, SiteRoute>();
+  try {
+    for (const file of walkPageFiles(join(root, 'src/app/pages'), root)) {
+      const route = routeFromPagePath(file);
+      if (route) routes.set(route, {route, file, noIndex: false});
+    }
+  } catch {
+    // src/app/pages missing
+  }
+  try {
+    for (const [file, route] of walkContentFiles(join(root, 'src/content'), root)) {
+      const noIndex = isNoIndex(
+        parseFrontmatter(readFileSync(join(root, file), 'utf8')).attributes,
+      );
+      if (!noIndex || !routes.has(route)) routes.set(route, {route, file, noIndex});
+    }
+  } catch {
+    // src/content missing
+  }
+  for (const {route, file} of apiRoutes(root)) {
+    if (!routes.has(route)) routes.set(route, {route, file, noIndex: false});
+  }
+  return [...routes.values()].sort((a, b) => a.route.localeCompare(b.route));
+}
+
+export function prerenderRoutes(root: string): string[] {
+  return [...siteRoutes(root).map((r) => r.route), '/404.html'];
 }
 
 /**
