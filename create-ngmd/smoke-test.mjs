@@ -51,6 +51,9 @@ function smokeStandalone() {
   for (const file of ['.gitignore', '.prettierrc.json', '.prettierignore']) {
     if (!existsSync(join(project, file))) throw new Error(`scaffolded project is missing ${file}`);
   }
+  // npm must be able to resolve the dependency tree too (it chokes on `$name` overrides).
+  run('npm', ['install', '--package-lock-only', '--ignore-scripts'], project);
+  rmSync(join(project, 'package-lock.json'));
   run('pnpm', ['install'], project);
   run('pnpm', ['build'], project);
   expectPages(join(project, 'dist/analog/public'));
