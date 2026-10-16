@@ -206,6 +206,27 @@ import { Component } from '@angular/core';
 export class Hello {}
 ```
 
+## Page actions
+
+Every page backed by a `.md` file has a **Copy Markdown** button with a menu next to the edit and source icons: Copy Markdown Link, Open in GitHub, Open in ChatGPT and Open in Claude. All five are on by default. Turn individual ones off with `pageActions` in `ngmd.config.ts`:
+
+```ts
+pageActions: {
+  chatgpt: false,
+  claude: false,
+},
+```
+
+| Key            | Controls                                                          |
+| -------------- | ----------------------------------------------------------------- |
+| `copyMarkdown` | The main **Copy Markdown** button                                 |
+| `copyLink`     | **Copy Markdown Link** in the menu                                |
+| `github`       | **Open in GitHub** in the menu                                    |
+| `chatgpt`      | **Open in ChatGPT** in the menu                                   |
+| `claude`       | **Open in Claude** in the menu                                    |
+
+Each key defaults to `true`. If the main button is off the menu opens from a **Page actions** button, the menu disappears once no item is left, and the whole control is hidden when nothing remains. Set `pageActions: false` to hide it outright. The raw `.md` files are still published, so links to them keep working.
+
 ## Auto-linked keywords
 
 Define keywords in `ngmd.config.ts > keywords`. Prefix any name with `*` in markdown prose to turn it into a link without writing the URL each time.
