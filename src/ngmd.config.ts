@@ -118,7 +118,8 @@ export interface NgmdConfig {
    * Inline-link keywords. In any `.md` body, `*Keyword` resolves to a link
    * pointing at the configured URL. Unknown keywords log a warning and fall
    * back to literal `*Keyword` text. Change the URL here once, every doc
-   * follows.
+   * follows. Names may contain dots (`'slide.ng'`, `'Next.js'`); a dot that
+   * ends a sentence is not part of the keyword.
    */
   keywords?: Record<string, string>;
   /**

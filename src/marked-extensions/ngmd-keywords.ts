@@ -8,8 +8,11 @@ import {escapeHtml} from './escape-html.ts';
  *
  *   *AnalogJS  →  <a href="https://analogjs.org">AnalogJS</a>
  *   *NgMd      →  <a href="/welcome">NgMd</a>
+ *   *slide.ng  →  <a href="...">slide.ng</a>   (dotted names work too)
  *
- * Unknown keywords log a one-line warning and fall through to the default
+ * A name may contain dots, so `slide.ng` and `Next.js` can be keywords; the
+ * longest configured name wins and a trailing dot stays outside the link.
+ * Unknown capitalised keywords log a one-line warning and fall through to the default
  * inline tokenizer — they render as literal `*Keyword` text. External URLs
  * get `target="_blank" rel="noopener noreferrer"` automatically.
  *
@@ -25,14 +28,34 @@ interface NgmdKeywordToken extends Tokens.Generic {
 
 // `(?!\*)` after the leading `*` prevents matching the second `*` of a
 // `**bold**` pair. `(?!\*)` after the keyword prevents matching the inside
-// of `**Keyword**` (which would leave one stray `*` and one stray `**`).
-const KEYWORD_RE = /^\*(?!\*)([A-Z][a-zA-Z0-9]+)\b(?!\*)/;
-const HINT_RE = /\*(?!\*)[A-Z]/;
+// of `**Keyword**` and of `*emphasis*` (which would leave a stray `*`).
+// A keyword is letters and digits with optional `.segment` parts. A dot only
+// belongs to the keyword when a letter or digit follows it, so the full stop
+// that ends a sentence (`*slide.ng.`) stays outside the link.
+const KEYWORD_RE = /^\*(?!\*)([A-Za-z][A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*)(?![A-Za-z0-9_])(?!\*)/;
+const HINT_RE = /\*(?!\*)[A-Za-z]/;
 const EMPHASIS_RE = /^\*[^*\n]*[^*\s]\*/;
 const warned = new Set<string>();
 
 function lookup(keyword: string): string | undefined {
-  return config.keywords?.[keyword];
+  const keywords = config.keywords;
+  return keywords && Object.prototype.hasOwnProperty.call(keywords, keyword)
+    ? keywords[keyword]
+    : undefined;
+}
+
+/**
+ * The longest configured keyword at the start of `candidate`, trying each
+ * dotted prefix in turn (`Kw.js.x` → `Kw.js.x`, `Kw.js`, `Kw`).
+ */
+function resolve(candidate: string): {keyword: string; url: string} | undefined {
+  for (let end = candidate.length; end > 0;) {
+    const keyword = candidate.slice(0, end);
+    const url = lookup(keyword);
+    if (url) return {keyword, url};
+    end = keyword.lastIndexOf('.');
+  }
+  return undefined;
 }
 
 export const ngmdKeywordsExtension: MarkedExtension = {
@@ -46,9 +69,12 @@ export const ngmdKeywordsExtension: MarkedExtension = {
       tokenizer(this: TokenizerThis, src: string): Tokens.Generic | undefined {
         const m = KEYWORD_RE.exec(src);
         if (!m) return undefined;
-        const url = lookup(m[1]);
-        if (!url) {
-          if (!warned.has(m[1]) && !EMPHASIS_RE.test(src)) {
+        const hit = resolve(m[1]);
+        if (!hit) {
+          // Only capitalised names are assumed to be intended keywords;
+          // `*note here` or `*foo.bar` stay quiet because they are far more
+          // likely to be stray asterisks or emphasis.
+          if (/^[A-Z]/.test(m[1]) && !warned.has(m[1]) && !EMPHASIS_RE.test(src)) {
             warned.add(m[1]);
             console.warn(
               `[ngmd-keywords] unknown keyword "${m[1]}" — add it to ngmd.config.ts > keywords or escape the asterisk.`,
@@ -56,12 +82,13 @@ export const ngmdKeywordsExtension: MarkedExtension = {
           }
           return undefined;
         }
-        if (this.lexer.state.inLink) return {type: 'text', raw: m[0], text: m[1]};
+        const raw = '*' + hit.keyword;
+        if (this.lexer.state.inLink) return {type: 'text', raw, text: hit.keyword};
         return {
           type: 'ngmdKeyword',
-          raw: m[0],
-          keyword: m[1],
-          url,
+          raw,
+          keyword: hit.keyword,
+          url: hit.url,
         };
       },
       renderer(token: Tokens.Generic) {

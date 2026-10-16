@@ -214,6 +214,8 @@ For example, *NgMd is built on *AnalogJS with *Tailwind v4 and *Shiki for code h
 
 Unknown keywords (`*WrongName`) log a warning at build time and fall back to literal text so the build never fails on a typo.
 
+A keyword can contain dots, such as `'slide.ng': '/welcome'` or `'Next.js': 'https://nextjs.org'`, and can start with a lowercase letter. A dot only counts as part of the keyword when a letter or digit follows it, so a full stop at the end of a sentence stays outside the link: `*slide.ng.` links `slide.ng` and keeps the `.`. When two configured names overlap (`Kw` and `Kw.js`), the longest one wins. Names that start with a lowercase letter or contain a dot link only when they are in the config; an unknown one is left as plain text without a warning, so ordinary emphasis such as `*note*` is never touched.
+
 ## Authoring components inside markdown
 
 `&lt;analog-markdown&gt;` renders the body via `[innerHTML]` after `bypassSecurityTrustHtml`. Angular doesn't compile component selectors inside `innerHTML`, so a naive `&lt;ngmd-callout&gt;` in `.md` would render as an empty unknown element. NgMd registers 16 NgmdUi components as **Custom Elements** via `@angular/elements` at app init (code-block is the exception, since fenced ` ``` ` covers that use case), and the browser upgrades them whenever they appear in the DOM, including inside the markdown body. Drop them straight into prose:
