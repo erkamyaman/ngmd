@@ -103,12 +103,32 @@ export interface Sponsor {
   login: string;
 }
 
+/**
+ * Switches for the "Copy Markdown" control shown on every markdown page.
+ * Each action defaults to `true`; set one to `false` to remove it.
+ */
+export interface PageActionsConfig {
+  /** The main "Copy Markdown" button. */
+  copyMarkdown?: boolean;
+  /** "Copy Markdown Link" in the menu. */
+  copyLink?: boolean;
+  /** "Open in GitHub" in the menu. */
+  github?: boolean;
+  /** "Open in ChatGPT" in the menu. */
+  chatgpt?: boolean;
+  /** "Open in Claude" in the menu. */
+  claude?: boolean;
+}
+
 export interface NgmdConfig {
   site: SiteConfig;
   /** Links rendered in the header next to the brand, in order. Internal
    *  paths route in-app; `http(s)` URLs open in a new tab. Leave undefined
    *  for no header links. */
   headerNav?: NavItem[];
+  /** Actions in the "Copy Markdown" control on markdown pages: turn each on
+   *  or off, or pass `false` to hide the control. All are on when omitted. */
+  pageActions?: PageActionsConfig | false;
   /** Sponsors listed by `<app-sponsor-list>`. Leave undefined to render
    *  nothing. */
   sponsors?: Sponsor[];

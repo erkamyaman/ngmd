@@ -120,6 +120,7 @@ Open follow-ups:
 - ✅ Scaffold installs under npm, pnpm, yarn and bun: `$name` override references are written as literal ranges (npm could not resolve them)
 - ✅ Sitemap skips the empty `/api` landing page until the API reference has symbols
 - ✅ `*Keyword` auto-links accept dotted and lowercase names (`*slide.ng`); a trailing dot at the end of a sentence stays outside the link
+- ✅ `pageActions` in `ngmd.config.ts` switches each Copy Markdown / Open in ChatGPT / Open in Claude action on or off
 - ❌ `ngmd add <component>` CLI for shadcn-style component installation
 - ❌ `ngmd new page <slug>` CLI to generate a new markdown page + sidebar entry
 - ❌ VS Code snippets for common docs patterns (callout, tabs, pill row)

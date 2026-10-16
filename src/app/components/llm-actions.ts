@@ -23,6 +23,7 @@ import {ToastService} from '../services/toast/toast.service';
 import {RouteUrlService} from '../services/route-url/route-url.service';
 import {writeToClipboard} from '../utils/clipboard';
 import siteConfig from '../../ngmd.config';
+import {resolvePageActions} from '../utils/page-actions';
 import {ClaudeIcon, OpenaiIcon} from '../ui/brand-icons';
 
 interface MenuItem {
@@ -40,7 +41,7 @@ interface MenuItem {
  * to the page's raw source. Sits in the page header on every prose route,
  * next to the existing edit / view-source icons.
  *
- * Five actions:
+ * Five actions, each switchable in `ngmd.config.ts > pageActions`:
  *   - Copy Markdown        → clipboard, the page body (fetched from the
  *                            `.md` permalink served by `raw-md.plugin.ts`)
  *   - Copy Markdown Link   → clipboard, the same URL
@@ -59,41 +60,53 @@ interface MenuItem {
   },
   imports: [LucideDynamicIcon, GithubIcon, ClaudeIcon, OpenaiIcon],
   template: `
-    @if (hasMdSource()) {
+    @if (hasMdSource() && visible()) {
       <div class="relative">
         <div
           class="inline-flex items-stretch rounded border border-zinc-200 dark:border-zinc-800 overflow-hidden text-xs text-zinc-600 dark:text-zinc-300"
         >
-          <button
-            type="button"
-            (click)="copyMarkdownAction($event)"
-            class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 min-w-[7.5rem] hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-            [attr.aria-label]="copied() ? 'Markdown copied' : 'Copy markdown to clipboard'"
-          >
-            <svg
-              [lucideIcon]="copied() ? checkIcon : copyIcon"
-              class="size-3.5"
-              [class]="copied() ? 'text-emerald-500' : ''"
-            ></svg>
-            <span>{{ copied() ? 'Copied!' : 'Copy Markdown' }}</span>
-          </button>
-          <button
-            #trigger
-            type="button"
-            (click)="toggle($event)"
-            class="inline-flex items-center px-1.5 border-l border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-            [attr.aria-expanded]="open()"
-            aria-haspopup="menu"
-            aria-label="Show more actions"
-          >
-            <svg
-              [lucideIcon]="chevronIcon"
-              class="size-3.5 transition-transform"
-              [class]="open() ? 'rotate-180' : ''"
-            ></svg>
-          </button>
+          @if (actions().copyMarkdown) {
+            <button
+              type="button"
+              (click)="copyMarkdownAction($event)"
+              class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 min-w-[7.5rem] hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+              [attr.aria-label]="copied() ? 'Markdown copied' : 'Copy markdown to clipboard'"
+            >
+              <svg
+                [lucideIcon]="copied() ? checkIcon : copyIcon"
+                class="size-3.5"
+                [class]="copied() ? 'text-emerald-500' : ''"
+              ></svg>
+              <span>{{ copied() ? 'Copied!' : 'Copy Markdown' }}</span>
+            </button>
+          }
+          @if (items().length) {
+            <button
+              #trigger
+              type="button"
+              (click)="toggle($event)"
+              class="inline-flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+              [class]="
+                actions().copyMarkdown
+                  ? 'px-1.5 border-l border-zinc-200 dark:border-zinc-800'
+                  : 'px-2.5 py-1'
+              "
+              [attr.aria-expanded]="open()"
+              aria-haspopup="menu"
+              [attr.aria-label]="actions().copyMarkdown ? 'Show more actions' : 'Page actions'"
+            >
+              @if (!actions().copyMarkdown) {
+                <span>Page actions</span>
+              }
+              <svg
+                [lucideIcon]="chevronIcon"
+                class="size-3.5 transition-transform"
+                [class]="open() ? 'rotate-180' : ''"
+              ></svg>
+            </button>
+          }
         </div>
-        @if (open()) {
+        @if (open() && items().length) {
           <div
             #menu
             role="menu"
@@ -188,6 +201,14 @@ export class LlmActions {
   readonly open = signal(false);
   readonly copied = signal(false);
 
+  protected readonly actions = computed(() => resolvePageActions(siteConfig.pageActions));
+
+  /** False when the site turned every action off (or set `pageActions: false`). */
+  protected readonly visible = computed(() => {
+    const a = this.actions();
+    return a.copyMarkdown || this.items().length > 0;
+  });
+
   protected readonly editUrl = computed(() => pageMeta[this.cleanUrl()]?.editUrl ?? '');
 
   /** True only for routes whose source is a `.md` file under `src/content/`.
@@ -213,20 +234,33 @@ export class LlmActions {
     return `Please read this ${siteConfig.site.name} documentation page and help me with it: ${this.mdUrl()}`;
   }
 
-  protected readonly items = computed<MenuItem[]>(() => [
-    {label: 'Copy Markdown Link', icon: this.linkIcon, handler: () => this.copyLinkAction()},
-    {label: 'Open in GitHub', icon: 'github', href: this.editUrl()},
-    {
-      label: 'Open in ChatGPT',
-      icon: 'openai',
-      href: `https://chatgpt.com/?q=${encodeURIComponent(this.prompt())}`,
-    },
-    {
-      label: 'Open in Claude',
-      icon: 'claude',
-      href: `https://claude.ai/new?q=${encodeURIComponent(this.prompt())}`,
-    },
-  ]);
+  protected readonly items = computed<MenuItem[]>(() => {
+    const a = this.actions();
+    const items: MenuItem[] = [];
+    if (a.copyLink) {
+      items.push({
+        label: 'Copy Markdown Link',
+        icon: this.linkIcon,
+        handler: () => this.copyLinkAction(),
+      });
+    }
+    if (a.github) items.push({label: 'Open in GitHub', icon: 'github', href: this.editUrl()});
+    if (a.chatgpt) {
+      items.push({
+        label: 'Open in ChatGPT',
+        icon: 'openai',
+        href: `https://chatgpt.com/?q=${encodeURIComponent(this.prompt())}`,
+      });
+    }
+    if (a.claude) {
+      items.push({
+        label: 'Open in Claude',
+        icon: 'claude',
+        href: `https://claude.ai/new?q=${encodeURIComponent(this.prompt())}`,
+      });
+    }
+    return items;
+  });
 
   toggle(event: Event): void {
     event.stopPropagation();
