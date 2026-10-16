@@ -71,7 +71,7 @@ Vite plugins committed alongside `vite.config.ts`:
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `externalLinkGuard` | Errors on raw external anchors missing `target="_blank"`. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `internalLinkGuard` | Errors on broken in-page and cross-page anchor fragments in builds; a terminal warning in dev. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `pageMetaPlugin` | Emits `virtual:ngmd/page-meta` with `editUrl` + `lastUpdated` per route, derived from `git log`. |
-| <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `sitemapPlugin` | Writes `sitemap.xml` and `robots.txt` into the client bundle. Skips pages with `noIndex: true`. |
+| <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `sitemapPlugin` | Writes `sitemap.xml` and `robots.txt` into the client bundle. Skips pages with `noIndex: true`, and the empty `/api` page until the API reference has symbols. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `rawMdPlugin` | Serves every `.md` body at `<route>.md` so LLM consumers can fetch clean markdown. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `searchIndexPlugin` | Collects page, heading and snippet records at build time as `virtual:ngmd/search-index`. The palette builds its Orama index from them in the browser. |
 | <img class="pkg-icon" src="/logos/vite.svg" alt="" /> `apiGenPlugin` | Parses TypeScript sources via ts-morph based on `ngmd.api.ts` and exposes `virtual:ngmd/api-index` for the `/api` routes and palette symbol search. |

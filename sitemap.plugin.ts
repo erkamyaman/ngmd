@@ -8,7 +8,8 @@ import {gitDate, siteRoutes} from './plugin-utils.ts';
  * prerenders: `src/app/pages/*.page.ts`, `src/content/**\/*.md` and the API
  * symbol pages, minus `noIndex` pages. Each file's last commit date via
  * `git log -1 --format=%cs` populates `<lastmod>`, falling back to mtime
- * for uncommitted files.
+ * for uncommitted files. The `/api` landing page is left out while the API
+ * reference has no symbols.
  *
  * Versioning is per-deployment (each docs version is its own site under the
  * adev / PrimeNG model), so there are no in-repo version variants to

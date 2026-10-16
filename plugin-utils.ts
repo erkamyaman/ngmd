@@ -114,9 +114,14 @@ export function siteRoutes(root: string): SiteRoute[] {
   } catch {
     // src/content missing
   }
-  for (const {route, file} of apiRoutes(root)) {
+  const api = apiRoutes(root);
+  for (const {route, file} of api) {
     if (!routes.has(route)) routes.set(route, {route, file, noIndex: false});
   }
+  // The scaffolded `/api` landing page is empty until the API reference has
+  // symbols. Keep it prerendered (the sidebar may link to it) but out of the sitemap.
+  const landing = routes.get('/api');
+  if (landing && api.length === 0) routes.set('/api', {...landing, noIndex: true});
   return [...routes.values()].sort((a, b) => a.route.localeCompare(b.route));
 }
 
