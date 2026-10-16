@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
+import {appBase, withBase} from '../../base';
 import {enhanceOnNavigation} from '../utils/enhance-on-navigation';
 
 /**
@@ -63,7 +64,7 @@ export class MediaEnhancer implements AfterViewInit {
     if (width) figure.style.maxWidth = /^\d+(\.\d+)?$/.test(width) ? `${width}px` : width;
 
     const img = document.createElement('img');
-    img.src = src;
+    img.src = withBase(appBase(), src);
     img.alt = alt;
     img.loading = 'lazy';
     figure.appendChild(img);

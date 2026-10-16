@@ -66,6 +66,12 @@ export interface SiteConfig {
   tagline?: string;
   /** Public origin (no trailing slash). Used by sitemap.xml + robots.txt. */
   url: string;
+  /** Sub-path the site is served from, for hosts like GitHub Pages project
+   *  sites (`https://user.github.io/repo/` uses `'/repo/'`). Defaults to `/`.
+   *  The `NGMD_BASE` environment variable overrides it, so CI can set it
+   *  without editing the config. `url` stays the origin; the base is added to
+   *  the sitemap, `robots.txt` and social URLs. */
+  base?: string;
   /** Repository URL. Powers the GitHub icon in the header. */
   githubUrl: string;
   /** Default branch used to build GitHub blob/edit links (e.g. the

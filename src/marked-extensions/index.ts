@@ -1,7 +1,8 @@
 import type {MarkedExtension} from 'marked';
 import {ngmdRuntimeExtensions} from './runtime.ts';
+import {ngmdBaseExtension} from './ngmd-base.ts';
 
-export {ngmdRuntimeExtensions};
+export {ngmdRuntimeExtensions, ngmdBaseExtension};
 
 /**
  * Marked extensions are split into two arrays.
@@ -21,7 +22,7 @@ export {ngmdRuntimeExtensions};
 // Build-time-only extensions are imported lazily below so the runtime bundle
 // never resolves their `node:fs` / `shiki` imports. The async getter is
 // called by `vite.config.ts` (Node context) only.
-export async function getBuildExtensions(): Promise<MarkedExtension[]> {
+export async function getBuildExtensions(base = '/'): Promise<MarkedExtension[]> {
   const [
     {ngmdCodeImportExtension},
     {ngmdCodeGroupExtension},
@@ -39,5 +40,6 @@ export async function getBuildExtensions(): Promise<MarkedExtension[]> {
     ngmdCodeGroupExtension,
     ngmdCodeHighlightExtension,
     {hooks: {preprocess: (markdown: string) => substituteMdVars(markdown)}},
+    ngmdBaseExtension(base),
   ];
 }

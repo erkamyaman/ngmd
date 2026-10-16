@@ -16,6 +16,10 @@ import {varsPlugin} from './vars.plugin.ts';
 import {apiGenPlugin} from './api-gen.plugin.ts';
 import {prerenderRoutes, withoutCode} from './plugin-utils.ts';
 import config from './src/ngmd.config.ts';
+import {resolveBase} from './src/base.ts';
+
+// Sub-path the site is served from. `NGMD_BASE` wins over `site.base`.
+const base = resolveBase(config.site.base, process.env['NGMD_BASE']);
 
 /**
  * Build-time guard: errors when a markdown file in `src/content/` contains
@@ -53,21 +57,22 @@ export default defineConfig(async () => ({
   build: {
     target: ['es2020'],
   },
+  base,
   resolve: {
     mainFields: ['module'],
   },
   plugins: [
-    siteHtmlPlugin(config.site),
+    siteHtmlPlugin({...config.site, base}),
     varsPlugin(),
     externalLinkGuard(),
     internalLinkGuard(),
-    mdLinksPlugin(),
+    mdLinksPlugin({base}),
     pageMetaPlugin({
       repoUrl: config.site.githubUrl,
       branch: config.site.githubBranch ?? 'main',
       dir: config.site.githubDir,
     }),
-    sitemapPlugin({siteUrl: config.site.url}),
+    sitemapPlugin({siteUrl: config.site.url, base}),
     rawMdPlugin(),
     searchIndexPlugin(),
     apiGenPlugin(),
@@ -79,7 +84,7 @@ export default defineConfig(async () => ({
       content: {
         highlighter: 'shiki',
         markedOptions: {
-          extensions: await getBuildExtensions(),
+          extensions: await getBuildExtensions(base),
         },
         shikiOptions: {
           highlight: {

@@ -1,3 +1,4 @@
+import {appBase} from '../../../base';
 import type {SearchHit, SearchHitKind, SearchProvider} from '../../../types/search';
 import {escapeHtml} from './escape-html';
 
@@ -141,7 +142,13 @@ function toHtml(value: string | null | undefined): string | undefined {
 function toRelativeUrl(url: string): string {
   try {
     const parsed = new URL(url);
-    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    // The router adds the site base itself, so drop it from the crawled path.
+    const base = appBase().replace(/\/+$/, '');
+    const path =
+      base && (parsed.pathname === base || parsed.pathname.startsWith(`${base}/`))
+        ? parsed.pathname.slice(base.length) || '/'
+        : parsed.pathname;
+    return `${path}${parsed.search}${parsed.hash}`;
   } catch {
     // Already relative (or malformed). Pass through unchanged; the
     // palette's `navigateTo` will report any genuine breakage.

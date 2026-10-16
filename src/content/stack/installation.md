@@ -130,7 +130,7 @@ export const appConfig: ApplicationConfig = {
 
 ### 4. Copy the NgMd source
 
-From a scaffolded NgMd project, copy these into yours, along with `src/app/services/`, `src/app/utils/`, `src/types/` and `src/app/register-elements.ts`:
+From a scaffolded NgMd project, copy these into yours, along with `src/app/services/`, `src/app/utils/`, `src/types/`, `src/base.ts` and `src/app/register-elements.ts`:
 
 <ngmd-card-grid columns="2">
   <ngmd-card icon="layers" title="src/app/components/">
@@ -167,6 +167,36 @@ Drop a `netlify.toml` at the repo root with `publish = "dist/analog/public"` and
 
   </ngmd-accordion-item>
 </ngmd-accordion>
+
+## Hosting under a sub-path
+
+A GitHub Pages project site lives at `https://user.github.io/repo/`, not at the root of its host. Set the path in `ngmd.config.ts`:
+
+```ts
+site: {
+  url: 'https://user.github.io',
+  base: '/repo/',
+  // ...
+},
+```
+
+`site.url` stays the origin. The `NGMD_BASE` environment variable overrides `site.base`, so CI can set it without touching the config:
+
+```bash
+NGMD_BASE=/repo/ pnpm run build
+```
+
+The value can be written `repo`, `/repo` or `/repo/`; all become `/repo/`. A full URL or a relative path (`./`) is rejected. With a base set, the build:
+
+- passes it to Vite as `base`, so scripts, styles and `public/` files load from `/repo/`
+- sets `<base href>` in `index.html`, which the Angular router reads, so route links, the sidebar and search results stay under `/repo/`
+- prefixes root-absolute links and images in your markdown (`[Theming](/concepts/theming)`, `![](/images/a.png)`) and relative `.md` links with `/repo/`
+- puts the base in the sitemap, `robots.txt`, `og:url` and `og:image`, and in the "Copy Markdown Link" permalink
+- prerenders every page as before, so `/repo/concepts/theming` opens directly
+
+Link to pages and images with root-absolute paths (`/images/a.png`), as in the rest of these docs. Hand-written `<a>` and `<img>` tags in markdown are covered too, but a `src` or `href` set from code, such as `[src]="logo"` in a component, needs the base added or a path relative to the page base (`logos/vite.svg`, no leading slash). For a host that serves a `404.html` from the sub-path (GitHub Pages does), no extra rule is needed.
+
+To update an existing site, copy `src/base.ts`, `src/marked-extensions/ngmd-base.ts` and the new `site-html.plugin.ts`, `sitemap.plugin.ts` and `md-links.plugin.ts`. Replace `<base href="/" />` in `index.html` with `<base href="%SITE_BASE%" />`, and in `vite.config.ts` add `base` to the config and pass it to `siteHtmlPlugin`, `sitemapPlugin`, `mdLinksPlugin` and `getBuildExtensions`, as in the starter.
 
 ## Where to next
 

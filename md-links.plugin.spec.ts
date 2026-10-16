@@ -42,6 +42,13 @@ describe('resolveDocLinks', () => {
     );
   });
 
+  it('puts the site base in front of the route when the site is served from a sub-path', () => {
+    const html = '<a href="./configuration.md#auth">a</a> <a href="../index.md">home</a>';
+    expect(resolveDocLinks(html, '/src/content/getting-started/installation', '/repo/')).toBe(
+      '<a href="/repo/getting-started/configuration#auth">a</a> <a href="/repo/">home</a>',
+    );
+  });
+
   it('leaves escaped markup in code and non-anchor attributes alone', () => {
     const html =
       '<pre><code>&lt;a href="./configuration.md"&gt;</code></pre> ' +

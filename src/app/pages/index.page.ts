@@ -371,13 +371,13 @@ export default class Home implements AfterViewInit {
   }
 
   readonly stack = [
-    {name: 'Angular', url: 'https://angular.dev', logo: '/logos/angular.svg'},
+    {name: 'Angular', url: 'https://angular.dev', logo: 'logos/angular.svg'},
     {
       name: 'AnalogJS',
       url: 'https://analogjs.org',
       logo: 'https://analogjs.org/img/logos/analog-logo.svg',
     },
-    {name: 'Vite', url: 'https://vite.dev', logo: '/logos/vite.svg'},
+    {name: 'Vite', url: 'https://vite.dev', logo: 'logos/vite.svg'},
     {
       name: 'Tailwind',
       url: 'https://tailwindcss.com',

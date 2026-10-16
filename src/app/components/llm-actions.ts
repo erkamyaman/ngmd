@@ -25,6 +25,7 @@ import {writeToClipboard} from '../utils/clipboard';
 import siteConfig from '../../ngmd.config';
 import {resolvePageActions} from '../utils/page-actions';
 import {ClaudeIcon, OpenaiIcon} from '../ui/brand-icons';
+import {appBase} from '../../base';
 
 interface MenuItem {
   label: string;
@@ -225,7 +226,8 @@ export class LlmActions {
    * served by `raw-md.plugin.ts` in dev and emitted as a static asset in
    * production. Absolute (with origin) so LLM URLs are shareable. */
   protected readonly mdUrl = computed(() => {
-    const path = this.cleanUrl().replace(/\/+$/, '');
+    // The route has no base; the raw `.md` file lives under it.
+    const path = appBase().replace(/\/+$/, '') + this.cleanUrl().replace(/\/+$/, '');
     if (typeof window === 'undefined') return `${path}.md`;
     return `${window.location.origin}${path}.md`;
   });
