@@ -5,7 +5,16 @@ import {ngmdKeywordsExtension} from './ngmd-keywords';
 import {ngmdVideoExtension} from './ngmd-video';
 import {ngmdRuntimeExtensions} from './runtime';
 
-vi.mock('../ngmd.config.ts', () => ({default: {keywords: {Kw: '/kw'}}}));
+vi.mock('../ngmd.config.ts', () => ({
+  default: {
+    keywords: {
+      Kw: '/kw',
+      'slide.ng': '/slide-ng',
+      'Next.js': 'https://nextjs.org',
+      'Kw.js': '/kw-js',
+    },
+  },
+}));
 
 function render(markdown: string): string {
   return new Marked({extensions: [ngmdImageExtension, ngmdVideoExtension]}).parse(
@@ -82,6 +91,54 @@ describe('ngmd-keywords', () => {
     expect(md('*Kw. [the *Kw docs](/x) `*Kw`')).toBe(
       '<p><a href="/kw">Kw</a>. <a href="/x">the Kw docs</a> <code>*Kw</code></p>\n',
     );
+  });
+
+  describe('dotted keywords', () => {
+    it('links a keyword that contains a dot', () => {
+      expect(md('Built with *slide.ng today')).toBe(
+        '<p>Built with <a href="/slide-ng">slide.ng</a> today</p>\n',
+      );
+      expect(md('Use *Next.js here')).toBe(
+        '<p>Use <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer">Next.js</a> here</p>\n',
+      );
+    });
+
+    it('leaves a trailing dot at the end of a sentence outside the link', () => {
+      expect(md('It is *slide.ng.')).toBe('<p>It is <a href="/slide-ng">slide.ng</a>.</p>\n');
+      expect(md('See *slide.ng... or *Kw.')).toBe(
+        '<p>See <a href="/slide-ng">slide.ng</a>... or <a href="/kw">Kw</a>.</p>\n',
+      );
+      expect(md('(*slide.ng.) and *slide.ng, *slide.ng; *slide.ng!')).toBe(
+        '<p>(<a href="/slide-ng">slide.ng</a>.) and <a href="/slide-ng">slide.ng</a>, <a href="/slide-ng">slide.ng</a>; <a href="/slide-ng">slide.ng</a>!</p>\n',
+      );
+    });
+
+    it('prefers the longest configured keyword and falls back to a shorter prefix', () => {
+      expect(md('*Kw.js is fast')).toBe('<p><a href="/kw-js">Kw.js</a> is fast</p>\n');
+      expect(md('*Kw.Other thing')).toBe('<p><a href="/kw">Kw</a>.Other thing</p>\n');
+      expect(md('*slide.ng.x')).toBe('<p><a href="/slide-ng">slide.ng</a>.x</p>\n');
+    });
+
+    it('keeps dotted keywords out of links and code', () => {
+      expect(md('[the *slide.ng docs](/x) `*slide.ng`')).toBe(
+        '<p><a href="/x">the slide.ng docs</a> <code>*slide.ng</code></p>\n',
+      );
+    });
+
+    it('leaves lowercase emphasis and unknown lowercase words alone, without warning', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      expect(md('*slide.ng* and *other.thing here *note* *constructor x')).toBe(
+        '<p><em>slide.ng</em> and *other.thing here <em>note</em> *constructor x</p>\n',
+      );
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it('does not treat a double dot or bold as part of the keyword', () => {
+      expect(md('**slide.ng** and *slide..ng')).toBe(
+        '<p><strong>slide.ng</strong> and *slide..ng</p>\n',
+      );
+    });
   });
 
   it('does not warn about emphasis that starts with a capital', () => {
