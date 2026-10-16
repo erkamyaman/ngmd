@@ -2,6 +2,7 @@
 import {cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {resolveOverrideRefs} from './package-json.mjs';
 
 /**
  * Generates `create-ngmd/template/` from the parent ngmd repo source so the
@@ -21,7 +22,8 @@ import {fileURLToPath} from 'node:url';
  *   (NgMd's own API-reference scope; api-gen no-ops without it).
  *
  * Post-copy edits:
- *   - package.json: drop "private", reset version, leave name as `ngmd` so
+ *   - package.json: drop "private", reset version, replace `$name` overrides
+ *     with literal ranges (npm cannot resolve them), leave name as `ngmd` so
  *     the CLI can regex-replace it on scaffold.
  *   - Write a starter README.md geared at the new project, not the dev site.
  *   - Ship .gitignore as `gitignore`: npm leaves dotfile .gitignore out of
@@ -77,7 +79,7 @@ function copyOne(name) {
 
 function writePkgJson() {
   const path = join(TEMPLATE, 'package.json');
-  const pkg = JSON.parse(readFileSync(path, 'utf8'));
+  const pkg = resolveOverrideRefs(JSON.parse(readFileSync(path, 'utf8')));
   delete pkg.private;
   delete pkg.repository;
   delete pkg.bugs;
@@ -87,7 +89,9 @@ function writePkgJson() {
   pkg.description = 'NgMd docs site';
   pkg.scripts.start = pkg.scripts.dev;
   writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
-  console.log('  ~ trimmed package.json (dropped repo/bugs/homepage/author)');
+  console.log(
+    '  ~ trimmed package.json (dropped repo/bugs/homepage/author, resolved override refs)',
+  );
 }
 
 function writeGitignore() {
