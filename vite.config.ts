@@ -96,6 +96,12 @@ export default defineConfig(async () => ({
   ],
   test: {
     globals: true,
+    // @analogjs/vitest-angular defaults to `vmThreads`, where `isolate` has no
+    // effect, so spec files that land in the same worker share module state.
+    // That made `vi.mock('../ngmd.config.ts')` and module-level caches leak
+    // between files, and failures depended on file order. `forks` restores
+    // per-file isolation.
+    pool: 'forks',
     environment: 'jsdom',
     setupFiles: ['src/test-setup.ts'],
     include: ['**/*.spec.ts'],

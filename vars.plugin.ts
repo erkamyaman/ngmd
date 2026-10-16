@@ -19,10 +19,14 @@ import {siteRoot} from './plugin-utils.ts';
  * as the rendered page.
  */
 
-let memo: Record<string, string> | null = null;
+// Keyed by root: callers pass different roots (the site itself, a scaffolded
+// site, a temp dir in tests), and one root's result must never be served for
+// another.
+const memo = new Map<string, Record<string, string>>();
 
 function readVars(root: string): Record<string, string> {
-  if (memo) return memo;
+  const cached = memo.get(root);
+  if (cached) return cached;
   let version = '';
   for (const file of ['create-ngmd/package.json', 'package.json']) {
     try {
@@ -33,8 +37,9 @@ function readVars(root: string): Record<string, string> {
       }
     } catch {}
   }
-  memo = {'ngmd-version': version};
-  return memo;
+  const vars = {'ngmd-version': version};
+  memo.set(root, vars);
+  return vars;
 }
 
 /**
@@ -56,7 +61,7 @@ export function varsPlugin(): Plugin {
     enforce: 'pre',
     configResolved(cfg) {
       root = cfg.root;
-      memo = null;
+      memo.clear();
     },
     transform(code, id) {
       if (!id.endsWith('.md')) return null;
