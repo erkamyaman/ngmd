@@ -18,6 +18,8 @@ import {withInMemoryScrolling, withViewTransitions, TitleStrategy} from '@angula
 import {ViewportScroller} from '@angular/common';
 import {marked} from 'marked';
 import {ngmdRuntimeExtensions} from '../marked-extensions/runtime';
+import {ngmdBaseExtension} from '../marked-extensions/ngmd-base';
+import {appBase} from '../base';
 import {NgmdTitleStrategy} from './title-strategy';
 import {registerNgmdElements} from './register-elements';
 
@@ -46,7 +48,7 @@ export const appConfig: ApplicationConfig = {
     // at runtime, so register our preprocess hooks on the shared marked
     // singleton here too.
     provideAppInitializer(() => {
-      marked.use(...ngmdRuntimeExtensions);
+      marked.use(...ngmdRuntimeExtensions, ngmdBaseExtension(appBase()));
       // Sticky header is ~57px tall; offset anchor scroll so headings land
       // below it with breathing room. Without this, Angular's anchor scroll
       // ignores CSS scroll-margin-top and pins headings flush against the

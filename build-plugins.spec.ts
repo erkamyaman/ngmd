@@ -165,6 +165,28 @@ describe('sitemapPlugin', () => {
     ]);
     expect(out.get('robots.txt')).toContain('Sitemap: https://example.com/docs/sitemap.xml');
   });
+
+  it('adds the base to every URL and to robots.txt', () => {
+    const plugin = sitemapPlugin({siteUrl: 'https://user.github.io/', base: '/repo/'});
+    const out = emitted(plugin);
+    const locs = [...out.get('sitemap.xml')!.matchAll(/<loc>(.*)<\/loc>/g)].map((m) => m[1]);
+    expect(locs).toEqual(
+      expect.arrayContaining([
+        'https://user.github.io/repo/',
+        'https://user.github.io/repo/guide',
+        'https://user.github.io/repo/some%20page',
+      ]),
+    );
+    expect(locs.every((l) => l.startsWith('https://user.github.io/repo/'))).toBe(true);
+    expect(out.get('robots.txt')).toContain('Sitemap: https://user.github.io/repo/sitemap.xml');
+  });
+
+  it('does not repeat a base that siteUrl already ends with', () => {
+    const plugin = sitemapPlugin({siteUrl: 'https://user.github.io/repo', base: '/repo/'});
+    const sitemap = emitted(plugin).get('sitemap.xml')!;
+    expect(sitemap).toContain('<loc>https://user.github.io/repo/guide</loc>');
+    expect(sitemap).not.toContain('/repo/repo');
+  });
 });
 
 describe('prerenderRoutes', () => {
@@ -239,5 +261,34 @@ describe('siteHtmlPlugin', () => {
       '<title>A &amp; B &lt;docs></title><meta content="Say &quot;hi&quot; &amp; more" />' +
         '<meta content="https://docs.example.com/og.png" /><meta content="A &amp; B &lt;docs>" />',
     );
+  });
+
+  describe('with a base', () => {
+    const site = {name: 'Docs', description: 'd', url: 'https://user.github.io'};
+    const html = '<base href="%SITE_BASE%" /><meta content="%SITE_URL%/og.png" />';
+
+    it('sets <base href> and puts the base in the social URLs', () => {
+      const plugin = siteHtmlPlugin({...site, base: '/repo/'});
+      expect(call(plugin, 'transformIndexHtml', undefined, html)).toBe(
+        '<base href="/repo/" /><meta content="https://user.github.io/repo/og.png" />',
+      );
+    });
+
+    it('defaults to the root and does not repeat a base already in site.url', () => {
+      expect(call(siteHtmlPlugin(site), 'transformIndexHtml', undefined, html)).toBe(
+        '<base href="/" /><meta content="https://user.github.io/og.png" />',
+      );
+      const plugin = siteHtmlPlugin({...site, url: 'https://user.github.io/repo', base: 'repo'});
+      expect(call(plugin, 'transformIndexHtml', undefined, html)).toBe(
+        '<base href="/repo/" /><meta content="https://user.github.io/repo/og.png" />',
+      );
+    });
+
+    it('also fixes an older index.html that hardcodes <base href="/">', () => {
+      const plugin = siteHtmlPlugin({...site, base: '/repo/'});
+      expect(call(plugin, 'transformIndexHtml', undefined, '<base href="/" />')).toBe(
+        '<base href="/repo/" />',
+      );
+    });
   });
 });

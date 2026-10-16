@@ -94,7 +94,7 @@ import {ContentBanners} from './components/content-banners';
           class="flex items-center gap-2 text-lg font-bold tracking-tight font-[Geist_Mono,ui-monospace,monospace]"
         >
           <img
-            src="/logo-mark.svg"
+            src="logo-mark.svg"
             alt=""
             class="size-[34px] text-zinc-900 dark:text-zinc-50"
             aria-hidden="true"

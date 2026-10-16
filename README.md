@@ -73,7 +73,7 @@ Full feature list and live demos at <a href="https://ngmd.netlify.app" target="_
 
 ## Deploy
 
-`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/analog/public/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap and the Open Graph tags reference the right URL.
+`pnpm run build` produces a static + SSR bundle under `dist/`. Deploy to Vercel, Netlify, or any node host. Sitemap and `robots.txt` land in `dist/analog/public/` automatically. Update `site.url` in `ngmd.config.ts` to your live origin so the sitemap and the Open Graph tags reference the right URL. Served from a sub-path such as a GitHub Pages project site? Set `site.base: '/repo/'` (or `NGMD_BASE=/repo/` at build time).
 
 ## Status
 

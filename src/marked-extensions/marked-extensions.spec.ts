@@ -1,6 +1,7 @@
 import {Marked} from 'marked';
 import {findFences, getAttr, hasFlag} from './fences';
 import {ngmdImageExtension} from './ngmd-image';
+import {ngmdBaseExtension, prefixRootLinks} from './ngmd-base';
 import {ngmdKeywordsExtension} from './ngmd-keywords';
 import {ngmdVideoExtension} from './ngmd-video';
 import {ngmdRuntimeExtensions} from './runtime';
@@ -146,6 +147,45 @@ describe('ngmd-keywords', () => {
     expect(md('*Note:* hi')).toBe('<p><em>Note:</em> hi</p>\n');
     expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
+  });
+});
+
+describe('ngmd-base', () => {
+  const md = (src: string, base: string) =>
+    new Marked(ngmdBaseExtension(base)).parse(src) as string;
+
+  it('prefixes root-absolute links and images with the base', () => {
+    expect(md('[Theming](/concepts/theming) ![cat](/images/cat.jpg)', '/repo/')).toBe(
+      '<p><a href="/repo/concepts/theming">Theming</a> <img src="/repo/images/cat.jpg" alt="cat"></p>\n',
+    );
+  });
+
+  it('keeps the link fragment and handles the home link', () => {
+    expect(md('[a](/guide#setup) [home](/)', '/repo/')).toBe(
+      '<p><a href="/repo/guide#setup">a</a> <a href="/repo/">home</a></p>\n',
+    );
+  });
+
+  it('leaves external, protocol-relative, relative and fragment links alone', () => {
+    const src = '[a](https://x.dev/a) [b](//cdn.x.dev/b) [c](rel/c) [d](#frag) [e](mailto:a@b.c)';
+    expect(md(src, '/repo/')).toBe(new Marked().parse(src));
+  });
+
+  it('prefixes raw HTML anchors and media, but not custom elements', () => {
+    const html =
+      '<a class="x" href="/a">a</a><img alt="" src=\'/logos/v.svg\'><video src="/v.mp4"></video>' +
+      '<ngmd-card href="/concepts/theming"></ngmd-card><ngmd-pill href="/x"></ngmd-pill>';
+    expect(prefixRootLinks(html, '/repo/')).toBe(
+      '<a class="x" href="/repo/a">a</a><img alt="" src=\'/repo/logos/v.svg\'><video src="/repo/v.mp4"></video>' +
+        '<ngmd-card href="/concepts/theming"></ngmd-card><ngmd-pill href="/x"></ngmd-pill>',
+    );
+  });
+
+  it('does nothing when the base is the root, and ignores code samples', () => {
+    expect(prefixRootLinks('<a href="/a">a</a>', '/')).toBe('<a href="/a">a</a>');
+    expect(md('`<a href="/a">`', '/repo/')).toBe(
+      '<p><code>&lt;a href=&quot;/a&quot;&gt;</code></p>\n',
+    );
   });
 });
 

@@ -31,6 +31,8 @@ pnpm run build        # production build, runs link guards + sitemap
 
 Node 22.22.3+ or 24.15.0+ required (Angular 22 floor).
 
+To check sub-path hosting end to end, run `node scripts/check-base.mjs [--base /repo/]`. It builds with the base, serves `dist/analog/public` from that path and opens the site in Chromium (needs `playwright-core` and a Chromium, found through `PLAYWRIGHT_BROWSERS_PATH` or `CHROMIUM_PATH`).
+
 ## Code style
 
 Prettier owns formatting. Config mirrors the Angular monorepo's `.prettierrc` (single quotes, width 100, trailing comma all, no bracket spacing, HTML parsed as Angular templates).

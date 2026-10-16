@@ -1,7 +1,14 @@
 import {join, relative} from 'node:path';
 import type {Plugin} from 'vite';
+import {normalizeBase, withBase} from './src/base.ts';
 
-export function mdLinksPlugin(): Plugin {
+/**
+ * Rewrites relative `.md` links in rendered pages to page routes. With a
+ * `base` (the site is served from a sub-path) the route gets the base as a
+ * prefix, like every other root-absolute link in the rendered markdown.
+ */
+export function mdLinksPlugin(opts: {base?: string} = {}): Plugin {
+  const base = normalizeBase(opts.base);
   let contentDir = join(process.cwd(), 'src/content');
   return {
     name: 'ngmd-md-links',
@@ -19,7 +26,7 @@ export function mdLinksPlugin(): Plugin {
           `[ngmd] Unexpected content module shape for ${rel}, can't resolve .md links.`,
         );
       }
-      const html = resolveDocLinks(JSON.parse(match[1]) as string, `/src/content/${rel}`);
+      const html = resolveDocLinks(JSON.parse(match[1]) as string, `/src/content/${rel}`, base);
       return {code: `export default ${JSON.stringify(html)}`, map: null};
     },
   };
@@ -41,12 +48,12 @@ export function resolveMdHref(href: string, pageFile: string): string | null {
   return route + (hashAt === -1 ? '' : href.slice(hashAt));
 }
 
-export function resolveDocLinks(html: string, pageFile: string): string {
+export function resolveDocLinks(html: string, pageFile: string, base = '/'): string {
   return html.replace(
     /(<a\s(?:[^>]*?\s)?href=)(["'])([^"']*)\2/gi,
     (match, attr: string, quote: string, href: string) => {
       const route = resolveMdHref(href, pageFile);
-      return route === null ? match : `${attr}${quote}${route}${quote}`;
+      return route === null ? match : `${attr}${quote}${withBase(base, route)}${quote}`;
     },
   );
 }
