@@ -160,7 +160,6 @@ describe('sitemapPlugin', () => {
     const locs = [...out.get('sitemap.xml')!.matchAll(/<loc>(.*)<\/loc>/g)].map((m) => m[1]);
     expect(locs).toEqual([
       'https://example.com/docs/',
-      'https://example.com/docs/api',
       'https://example.com/docs/guide',
       'https://example.com/docs/some%20page',
     ]);
@@ -190,6 +189,19 @@ describe('prerenderRoutes', () => {
     expect(prerenderRoutes(root)).toContain('/api/lib/add');
     const sitemap = emitted(sitemapPlugin({siteUrl: 'https://example.com'})).get('sitemap.xml');
     expect(sitemap).toContain('<loc>https://example.com/api/lib/add</loc>');
+    expect(sitemap).toContain('<loc>https://example.com/api</loc>');
+  });
+
+  it('keeps the empty /api page out of the sitemap but still prerenders it', () => {
+    expect(prerenderRoutes(root)).toContain('/api');
+    const sitemap = emitted(sitemapPlugin({siteUrl: 'https://example.com'})).get('sitemap.xml');
+    expect(sitemap).not.toContain('/api');
+  });
+
+  it('drops /api from the sitemap when ngmd.api.ts matches no symbols', () => {
+    write({'ngmd.api.ts': "export default defineApi({scope: ['nothing/**/*.ts']});\n"});
+    const sitemap = emitted(sitemapPlugin({siteUrl: 'https://example.com'})).get('sitemap.xml');
+    expect(sitemap).not.toContain('/api');
   });
 
   it("covers every page of this site's own content and API reference", () => {

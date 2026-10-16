@@ -118,6 +118,7 @@ Open follow-ups:
 
 - ✅ `npx create-ngmd` scaffolder — published as `create-ngmd@0.0.3` on npm. Works via `pnpm create ngmd@latest`, `npm create ngmd@latest`, `yarn create ngmd`, `bun create ngmd`. Slim template ships with the `[...slug].page.ts` catch-all so users drop `.md` files and get routes with no wrapper.
 - ✅ Scaffold installs under npm, pnpm, yarn and bun: `$name` override references are written as literal ranges (npm could not resolve them)
+- ✅ Sitemap skips the empty `/api` landing page until the API reference has symbols
 - ❌ `ngmd add <component>` CLI for shadcn-style component installation
 - ❌ `ngmd new page <slug>` CLI to generate a new markdown page + sidebar entry
 - ❌ VS Code snippets for common docs patterns (callout, tabs, pill row)
